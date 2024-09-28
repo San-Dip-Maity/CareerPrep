@@ -7,13 +7,16 @@ import Jobs from "./pages/Jobs";
 import { Employers } from "./pages/Employers";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import { ThemeProvider } from "./context/ThemeContext";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 
 const Layout = () => {
   return (
-    <div>
-     <Header/>
+    <div className="bg-purple-50 dark:bg-gray-900 min-h-screen">
+      <Header />
       <Outlet />
-      <Footer /> 
+      <Footer />
     </div>
   );
 };
@@ -21,37 +24,46 @@ const Layout = () => {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />, 
+    element: <Layout />,
     children: [
       {
         path: "/",
-        element: <Home />, 
+        element: <Home />,
       },
       {
         path: "/jobs",
-        element: <Jobs />, 
+        element: <Jobs />,
       },
       {
         path: "/Employers",
-        element: <Employers />, 
+        element: <Employers />,
       },
       {
         path: "/About",
-        element: <About />, 
+        element: <About />,
+      },
+      {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
+        path: "/signup",
+        element: <SignupPage />,
       },
       {
         path: "*",
         element: <NotFound />,
-      }
+      },
     ],
   },
 ]);
 
-
 function App() {
   return (
     <>
-      <RouterProvider router={router} />
+      <ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </>
   );
 }
