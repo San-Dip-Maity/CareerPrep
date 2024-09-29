@@ -92,36 +92,39 @@ export default function Home() {
           </div>
           
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             <JobCard
-              title="Technical Support Specialist"
-              company="Google Inc."
-              location="New Delhi, India"
-              type="PART-TIME"
-              salary="Salary: 20,000 INR - 25,000 INR"
-              applicants="10+"
+               title="Technical Support Specialist"
+               company="Google Inc."
+               location="New Delhi, India"
+               sift="Full time"
+               salary="20,000 INR - 25,000 INR"
+               applicants="10+"
+               logo="companiesLogo/google.svg"
             />
             <JobCard
               title="Senior UI/UX Designer"
-              company="Apple"
+              company="Microsoft"
               location="Boston, USA"
-              type="FULL-TIME"
-              salary="Salary: $30,000 - $55,000"
+              sift="Part time"
+              salary="$30,000 - $55,000"
               applicants="9+"
+              logo="companiesLogo/microsoft.svg"
             />
             <JobCard
               title="Marketing Officer"
-              company="Intel Corp"
+              company="IBM Co"
               location="Bangalore, India"
-              type="PART-TIME"
-              salary="Salary: 15,000 INR - 35,000 INR"
+              sift="Full time"
+              salary="15,000 INR - 35,000 INR"
               applicants="30+"
+              logo="companiesLogo/ibm.svg"
             />
           </div>
 
           <div className="text-center mt-8">
             <Link
-              to="#"
+              to="/jobsearch"
               className="text-purple-600 dark:text-purple-400 hover:underline"
             >
               View all

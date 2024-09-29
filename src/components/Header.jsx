@@ -39,11 +39,11 @@ const Header = () => {
         }`}
       >
         <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <img 
+          <Link to ="/"><img 
             src={isDarkMode ? "logo-light.png" : "logo-dark.png"} 
             alt="CareerPrep Logo" 
             className="h-6"
-          />
+          /></Link>
           <div className="flex items-center space-x-4">
             <div className="hidden md:flex space-x-4">
               <NavLink
@@ -57,7 +57,7 @@ const Header = () => {
                 Home
               </NavLink>
               <NavLink
-                to="/jobs"
+                to="/jobsearch"
                 className={({ isActive }) =>
                   isActive
                     ? "text-purple-600 dark:text-purple-400"
