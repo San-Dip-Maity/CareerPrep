@@ -100,25 +100,23 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
-            
           </div>
-          <div className="mt-4 space-x-4 flex justify-end items-center text-gray-600 dark:text-gray-300 pr-48">
+          <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-300 flex flex-col items-center justify-center gap-5">
+            <div className="mt-4 space-x-4 flex justify-end items-center text-gray-600 dark:text-gray-300">
               <Link to="/facebook" className="hover:text-purple-600">
-              <Facebook />
+                <Facebook />
               </Link>
               <Link to="/youtube" className="hover:text-purple-600">
                 <Youtube />
               </Link>
               <Link to="/instagram" className="hover:text-purple-600">
-                <Instagram/>
+                <Instagram />
               </Link>
               <Link to="/twitter" className="hover:text-purple-600">
-                <Twitter/>
+                <Twitter />
               </Link>
             </div>
-          <div className="mt-8 text-center text-sm text-gray-600 dark:text-gray-300">
             <p>© 2024 CareerPrep - Job Portal. All Rights Reserved</p>
-            
           </div>
         </div>
       </footer>
