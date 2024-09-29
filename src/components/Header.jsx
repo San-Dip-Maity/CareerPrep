@@ -142,7 +142,7 @@ const Header = () => {
                   Home
                 </Link>
                 <Link
-                  to="/jobs"
+                  to="/jobsearch"
                   className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
                   onClick={toggleMenu}
                 >
