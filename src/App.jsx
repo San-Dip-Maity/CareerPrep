@@ -1,4 +1,5 @@
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { useEffect, useState } from "react";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -11,6 +12,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import JobSearch from "./pages/JobSearch";
 import Contact from "./pages/Contact";
+import { RingLoader } from "react-spinners";
 
 const Layout = () => {
   return (
@@ -64,10 +66,27 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  // Simulating a loading delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000); // Adjust time as needed
+
+    return () => clearTimeout(timer); // Cleanup the timer
+  });
+
   return (
     <>
       <ThemeProvider>
-        <RouterProvider router={router} />
+        {loading ? (
+          <div className="flex items-center justify-center min-h-screen bg-gray-900">
+            <RingLoader color="#7d02e1" loading={loading} size={100} />
+          </div>
+        ) : (
+          <RouterProvider router={router} />
+        )}
       </ThemeProvider>
     </>
   );
