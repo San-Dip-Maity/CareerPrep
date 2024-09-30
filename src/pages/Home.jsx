@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import JobCard from "../components/JobCard";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 
 const CompanyLogo = ({ name }) => (
   <div className="bg-gray-200 dark:bg-gray-700 p-2 rounded">
@@ -16,6 +16,12 @@ const CompanyLogo = ({ name }) => (
 export default function Home() {
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  const handleSearch = () => {
+    // Navigate to the JobSearch page with query parameters
+    navigate(`/jobsearch?title=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}`);
+  };
 
   return (
     <div className="bg-purple-50 dark:bg-gray-900 min-h-screen px-10">
@@ -57,7 +63,10 @@ export default function Home() {
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                 />
-                <button className="w-full sm:w-auto bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-300">
+                <button 
+                  onClick={handleSearch} // Use the handleSearch function
+                  className="w-full sm:w-auto bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-300"
+                >
                   Find Job
                 </button>
               </div>
@@ -87,20 +96,19 @@ export default function Home() {
               Featured Jobs
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mb-8">
-            Choose jobs from the top employers and apply for the same.
-          </p>
+              Choose jobs from the top employers and apply for the same.
+            </p>
           </div>
-          
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             <JobCard
-               title="Technical Support Specialist"
-               company="Google Inc."
-               location="New Delhi, India"
-               sift="Full time"
-               salary="20,000 INR - 25,000 INR"
-               applicants="10+"
-               logo="companiesLogo/google.svg"
+              title="Technical Support Specialist"
+              company="Google Inc."
+              location="New Delhi, India"
+              sift="Full time"
+              salary="20,000 INR - 25,000 INR"
+              applicants="10+"
+              logo="companiesLogo/google.svg"
             />
             <JobCard
               title="Senior UI/UX Designer"
@@ -133,12 +141,12 @@ export default function Home() {
         </section>
 
         <section className="mb-12">
-        <div className="flex justify-between items-center mb-10">
+          <div className="flex justify-between items-center mb-10">
             <hr className="w-[38%]" />
             <h2 className="text-2xl font-semibold dark:text-white">
-            Top companies hiring now
+              Top companies hiring now
             </h2>
-            <hr className="w-[38%]"/>
+            <hr className="w-[38%]" />
           </div>
           <div className="flex flex-wrap justify-center gap-8">
             <CompanyLogo name="Google" />

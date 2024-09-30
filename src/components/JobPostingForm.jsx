@@ -84,7 +84,7 @@ const JobPostingForm = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="max-w-4xl mx-auto p-6 bg-white dark:bg-gray-900 rounded-md"
+      className="max-w-4xl mx-auto my-8 p-6 bg-white dark:bg-gray-800 rounded-md"
     >
       <h1 className="text-3xl font-bold mb-6 dark:text-white">Post a job</h1>
       <p className="text-gray-600 dark:text-gray-300 mb-8">

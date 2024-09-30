@@ -1,13 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, MapPin, Clock } from "lucide-react";
 import JobCard from "../components/JobCard";
 import JobSearchFilters from "../components/JobSearchFilters";
+import { useLocation } from "react-router-dom"; // Import useLocation
 
 const JobSearch = () => {
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
   const [experience, setExperience] = useState("");
   const [sortOption, setSortOption] = useState("popular");
+
+  const locationObj = useLocation(); // Initialize useLocation
+
+  useEffect(() => {
+    const params = new URLSearchParams(locationObj.search);
+    setJobTitle(params.get("title") || "");
+    setLocation(params.get("location") || "");
+  }, [locationObj]);
 
   const jobs = [
     {
@@ -252,7 +261,11 @@ const JobSearch = () => {
       <div className="flex flex-col md:flex-row gap-8">
         <div className="w-full md:w-1/4">
           <h2 className="text-xl font-semibold mb-4 dark:text-white">Filter</h2>
-          <JobSearchFilters />
+          <JobSearchFilters
+          setExperience={setExperience}
+          setSortOption={setSortOption}
+          handleSearch={handleSearch}
+        />
         </div>
         <div className="w-full md:w-3/4">
           <div className="flex justify-between items-center mb-4">
