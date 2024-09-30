@@ -113,7 +113,7 @@ const Header = () => {
             <button className="text-purple-600 dark:text-purple-400 border border-purple-600 dark:border-purple-400 px-4 py-2 rounded hover:bg-purple-600 hover:text-white dark:hover:bg-purple-500 dark:hover:text-white">
               Contact Us
             </button>
-            <button href="/login" className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
+            <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
               <Link to='/login'>Login</Link>
             </button>
           </div>
@@ -189,7 +189,7 @@ const Header = () => {
                   className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
                   onClick={toggleMenu}
                 >
-                  Login
+                  <Link to='/login'>Login</Link>
                 </button>
               </div>
             </motion.div>
