@@ -13,7 +13,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
       <motion.main
-        className="container px-10 mx-14 flex flex-col md:flex-row items-center justify-between bg-white dark:bg-gray-800 rounded-lg shadow-2xl overflow-hidden"
+        className="container px-10 mx-14 md:mx-0 flex flex-col md:flex-row items-center justify-between bg-white dark:bg-gray-800 rounded-lg shadow-2xl overflow-hidden"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
