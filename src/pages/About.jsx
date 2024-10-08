@@ -78,54 +78,57 @@ export default function About() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <TeamMember
-              name="Jane Doe"
+              name="Sandip Maity"
               role="CEO & Founder"
-              image="/api/placeholder/150/150"
+              image="team-member.png"
             />
+            <TeamMember name="Joy Mahata" role="CTO" image="team-member.png" />
             <TeamMember
-              name="John Smith"
-              role="CTO"
-              image="/api/placeholder/150/150"
-            />
-            <TeamMember
-              name="Alice Johnson"
+              name="Zaheed hasan Mollah"
               role="Head of HR"
-              image="/api/placeholder/150/150"
+              image="team-member.png"
             />
           </div>
         </motion.section>
 
         <motion.section
-          className="mb-12"
+          className="mb-12 px-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.5 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
         >
-          <h2 className="text-3xl font-semibold mb-6 text-center dark:text-white">
-            Why Choose Our AI Mock Interview Platform
+          <h2 className="text-3xl font-semibold mb-8 text-center dark:text-white">
+            Why Choose Our AI-Powered Mock Interview Platform
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              "Personalized Interview Questions",
-              "Real-time Feedback",
-              "Comprehensive Skill Assessment",
+              {
+                title: "Personalized Interview Questions",
+                description:
+                  "Receive questions customized to your specific job role and experience, ensuring a focused and relevant practice session.",
+              },
+              {
+                title: "Real-time Feedback",
+                description:
+                  "Get immediate feedback on your responses, allowing you to adjust and improve your answers as you practice.",
+              },
+              {
+                title: "Comprehensive Skill Assessment",
+                description:
+                  "Our platform evaluates your strengths and weaknesses to provide a detailed skill report and guide your improvements.",
+              },
             ].map((feature, index) => (
               <motion.div
                 key={index}
-                className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
+                className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-xl"
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
               >
-                <h3 className="text-xl font-semibold mb-2 dark:text-white">
-                  {feature}
+                <h3 className="text-xl font-semibold mb-4 dark:text-white">
+                  {feature.title}
                 </h3>
                 <p className="text-gray-600 dark:text-gray-300">
-                  {index === 0 &&
-                    "Get tailored questions based on your resume and job role to help you prepare effectively."}
-                  {index === 1 &&
-                    "Receive instant feedback on your answers, helping you improve with each practice."}
-                  {index === 2 &&
-                    "Evaluate your skills and identify areas for improvement to boost your confidence."}
+                  {feature.description}
                 </p>
               </motion.div>
             ))}

@@ -77,7 +77,7 @@ const Header = () => {
                 Employers
               </NavLink>
               <NavLink
-                to="/MockInterview"
+                to="/mockInterview/Dashboard"
                 className={({ isActive }) =>
                   isActive
                     ? "text-purple-600 dark:text-purple-400"
@@ -156,7 +156,7 @@ const Header = () => {
                   Employers
                 </Link>
                 <Link
-                  to="/mockinterview"
+                  to="/mockInterview/Dashboard"
                   className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
                   onClick={toggleMenu}
                 >

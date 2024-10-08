@@ -13,6 +13,8 @@ import SignupPage from "./pages/SignupPage";
 import JobSearch from "./pages/JobSearch";
 import Contact from "./pages/Contact";
 import { RingLoader } from "react-spinners";
+import Dashboard from "./pages/Dashboard";
+
 
 const Layout = () => {
   return (
@@ -48,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: "/contact",
         element: <Contact />,
+      },
+      {
+        path: "/mockInterview/Dashboard",
+        element: <Dashboard />,
       },
       {
         path: "/login",
