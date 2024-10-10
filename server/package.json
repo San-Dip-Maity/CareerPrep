@@ -1,11 +1,25 @@
 {
-  "name": "server",
+  "name": "careerprep",
   "version": "1.0.0",
-  "description": "A Job portal with AI mock interview.",
-  "main": "index.js",
+  "main": "backend/server.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js"
   },
-  "author": "Sandip Maity, Zaheed hossain Molla, Joy Mahata",
-  "license": "ISC"
+  "keywords": [],
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
 }
