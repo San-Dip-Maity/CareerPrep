@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import InterviewFormPopup from "../components/MockInterview/InterviewFormPopup";
+import InterviewFormPopup from "../../components/MockInterview/InterviewFormPopup";
+
 
 const Dashboard = () => {
   const [showDashboard, setShowDashboard] = useState(false);
@@ -16,22 +17,58 @@ const Dashboard = () => {
     },
     {
       id: 2,
-      title: "Full Stack Developer",
-      experience: "2 Years of Experience",
-      createdAt: "05-06-2024",
+      title: "Frontend Developer",
+      experience: "3 Years of Experience",
+      createdAt: "10-07-2024",
     },
     {
       id: 3,
-      title: "Full Stack Developer",
-      experience: "2 Years of Experience",
-      createdAt: "05-06-2024",
+      title: "Backend Developer",
+      experience: "1 Year of Experience",
+      createdAt: "15-08-2024",
     },
     {
       id: 4,
-      title: "Full Stack Developer",
-      experience: "2 Years of Experience",
-      createdAt: "05-06-2024",
+      title: "Data Scientist",
+      experience: "4 Years of Experience",
+      createdAt: "20-06-2024",
     },
+    {
+      id: 5,
+      title: "Machine Learning Engineer",
+      experience: "2.5 Years of Experience",
+      createdAt: "25-09-2024",
+    },
+    {
+      id: 6,
+      title: "DevOps Engineer",
+      experience: "3 Years of Experience",
+      createdAt: "30-07-2024",
+    },
+    {
+      id: 7,
+      title: "Mobile App Developer",
+      experience: "1.5 Years of Experience",
+      createdAt: "05-10-2024",
+    },
+    {
+      id: 8,
+      title: "UI/UX Designer",
+      experience: "2 Years of Experience",
+      createdAt: "12-06-2024",
+    },
+    {
+      id: 9,
+      title: "Cloud Architect",
+      experience: "5 Years of Experience",
+      createdAt: "18-09-2024",
+    },
+    {
+      id: 10,
+      title: "Cyber Security Analyst",
+      experience: "4 Years of Experience",
+      createdAt: "28-08-2024",
+    }
   ];
 
   const handleGetStarted = () => {
@@ -81,7 +118,7 @@ const Dashboard = () => {
               transition={{ delay: 0.4, duration: 0.5 }}
             >
               <img
-                src="interview.png"
+                src="interview/interview.png"
                 alt="AI Interview Coach"
                 className="object-cover rounded-lg"
               />
@@ -125,7 +162,7 @@ const Dashboard = () => {
                 key={interview.id}
                 className="bg-white dark:bg-gray-800 dark:text-gray-200 rounded-lg shadow-md p-6"
                 whileHover={{ scale: 1.03 }}
-                transition={{ type: "spring", stiffness: 300 }}
+                transition={{ type: "tween", stiffness: 300 }}
               >
                 <h3 className="text-lg font-semibold text-purple-600 dark:text-purple-400 mb-1">
                   {interview.title}

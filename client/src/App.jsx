@@ -13,7 +13,7 @@ import SignupPage from "./pages/SignupPage";
 import JobSearch from "./pages/JobSearch";
 import Contact from "./pages/Contact";
 import { RingLoader } from "react-spinners";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/interview/Dashboard";
 
 
 const Layout = () => {
@@ -74,13 +74,12 @@ const router = createBrowserRouter([
 function App() {
   const [loading, setLoading] = useState(true);
 
-  // Simulating a loading delay
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000); // Adjust time as needed
+    }, 2000); 
 
-    return () => clearTimeout(timer); // Cleanup the timer
+    return () => clearTimeout(timer); 
   });
 
   return (
