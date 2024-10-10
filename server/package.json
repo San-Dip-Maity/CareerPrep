@@ -1,0 +1,11 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "A Job portal with AI mock interview.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "author": "Sandip Maity, Zaheed hossain Molla, Joy Mahata",
+  "license": "ISC"
+}
