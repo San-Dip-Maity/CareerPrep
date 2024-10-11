@@ -1,16 +1,26 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Menu, X, Sun, Moon, User, LogOut } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import ThemeContext from "../context/ThemeContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { isDarkMode, toggleDarkMode } = useContext(ThemeContext);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // You'll need to implement actual auth state management
+  const navigate = useNavigate();
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);;
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen);
 
+  const handleLogout = () => {
+    // Implement your logout logic here
+    setIsLoggedIn(false);
+    setIsUserMenuOpen(false);
+    navigate("/");
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,7 +35,7 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -39,11 +49,13 @@ const Header = () => {
         }`}
       >
         <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <Link to ="/"><img 
-            src={isDarkMode ? "logo-light.png" : "logo-dark.png"} 
-            alt="CareerPrep Logo" 
-            className="h-6"
-          /></Link>
+          <Link to="/">
+            <img
+              src={isDarkMode ? "logo-light.png" : "logo-dark.png"}
+              alt="CareerPrep Logo"
+              className="h-6"
+            />
+          </Link>
           <div className="flex items-center space-x-4">
             <div className="hidden md:flex space-x-4">
               <NavLink
@@ -113,9 +125,39 @@ const Header = () => {
             <button className="text-purple-600 dark:text-purple-400 border border-purple-600 dark:border-purple-400 px-4 py-2 rounded hover:bg-purple-600 hover:text-white dark:hover:bg-purple-500 dark:hover:text-white">
               Contact Us
             </button>
-            <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
-              <Link to='/login'>Login</Link>
-            </button>
+            {isLoggedIn ? (
+              <div className="relative">
+                <button
+                  onClick={toggleUserMenu}
+                  className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white"
+                >
+                  <User size={20} />
+                </button>
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1">
+                    <Link
+                      to="/profile"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <User size={16} className="mr-2" />
+                      View Profile
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      <LogOut size={16} className="mr-2" />
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
+                <Link to="/login">Login</Link>
+              </button>
+            )}
           </div>
           <button className="md:hidden" onClick={toggleMenu}>
             {isMenuOpen ? (
@@ -179,18 +221,41 @@ const Header = () => {
                   {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                   <span>{isDarkMode ? "Light Mode" : "Dark Mode"}</span>
                 </button>
-                <button 
+                <button
                   className="text-purple-600 dark:text-purple-400 border border-purple-600 dark:border-purple-400 px-4 py-2 rounded hover:bg-purple-600 hover:text-white dark:hover:bg-purple-500"
                   onClick={toggleMenu}
                 >
                   Contact Us
                 </button>
-                <button 
-                  className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
-                  onClick={toggleMenu}
-                >
-                  <Link to='/login'>Login</Link>
-                </button>
+                {isLoggedIn ? (
+                  <>
+                    <Link
+                      to="/profile"
+                      className="flex items-center text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                      onClick={toggleMenu}
+                    >
+                      <User size={16} className="mr-2" />
+                      View Profile
+                    </Link>
+                    <button
+                      className="flex items-center text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                      onClick={() => {
+                        handleLogout();
+                        toggleMenu();
+                      }}
+                    >
+                      <LogOut size={16} className="mr-2" />
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
+                    onClick={toggleMenu}
+                  >
+                    <Link to="/login">Login</Link>
+                  </button>
+                )}
               </div>
             </motion.div>
           )}

@@ -1,42 +1,83 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Facebook, Linkedin, Eye, EyeOff, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Facebook,
+  Linkedin,
+  Eye,
+  EyeOff,
+  ChevronDown,
+  ChevronUp,
+  Loader2,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function SignupPage() {
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [showSkills, setShowSkills] = useState(false);
-    const [selectedSkills, setSelectedSkills] = useState([]);
-  
-    const togglePasswordVisibility = () => {
-      setShowPassword((prev) => !prev);
-    };
-  
-    const toggleConfirmPasswordVisibility = () => {
-      setShowConfirmPassword((prev) => !prev);
-    };
-  
-    const toggleSkillsDropdown = () => {
-      setShowSkills((prev) => !prev);
-    };
-  
-    const handleSkillChange = (skill) => {
-      setSelectedSkills((prev) =>
-        prev.includes(skill)
-          ? prev.filter((s) => s !== skill)
-          : [...prev, skill]
-      );
-    };
-  
-    const skillOptions = [
-        "JavaScript", "React", "Node.js", "Python", "Java", "C++", "SQL", 
-        "DevOps", "Machine Learning", "UI/UX Design", "HTML", "CSS", 
-        "TypeScript", "Angular", "Vue.js", "PHP", "Ruby", "Swift", "Kotlin",
-        "Go", "Rust", "Scala", "Docker", "Kubernetes", "AWS", "Azure", 
-        "Google Cloud", "GraphQL", "REST API", "MongoDB"
-      ];
-  
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showSkills, setShowSkills] = useState(false);
+  const [selectedSkills, setSelectedSkills] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword((prev) => !prev);
+  };
+
+  const toggleSkillsDropdown = () => {
+    setShowSkills((prev) => !prev);
+  };
+
+  const handleSkillChange = (skill) => {
+    setSelectedSkills((prev) =>
+      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
+    );
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    // Simulate async operation
+    setTimeout(() => {
+      setLoading(false);
+      alert("Signup successful!");
+    }, 2000);
+  };
+
+  const skillOptions = [
+    "JavaScript",
+    "React",
+    "Node.js",
+    "Python",
+    "Java",
+    "C++",
+    "SQL",
+    "DevOps",
+    "Machine Learning",
+    "UI/UX Design",
+    "HTML",
+    "CSS",
+    "TypeScript",
+    "Angular",
+    "Vue.js",
+    "PHP",
+    "Ruby",
+    "Swift",
+    "Kotlin",
+    "Go",
+    "Rust",
+    "Scala",
+    "Docker",
+    "Kubernetes",
+    "AWS",
+    "Azure",
+    "Google Cloud",
+    "GraphQL",
+    "REST API",
+    "MongoDB",
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
@@ -68,6 +109,7 @@ export default function SignupPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
+            onSubmit={handleSubmit}
           >
             <div>
               <label
@@ -229,9 +271,25 @@ export default function SignupPage() {
                 </Link>
               </label>
             </div>
-            <button className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition duration-300 dark:bg-purple-500 dark:hover:bg-purple-600">
-              Sign Up
-            </button>
+            <div>
+              {loading ? (
+                <button
+                  type="button"
+                  disabled
+                  className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition duration-300 dark:bg-purple-500 dark:hover:bg-purple-600 flex items-center justify-center"
+                >
+                  <Loader2 className="h-4 w-4 animate-spin" />{" "}
+                  Please wait...
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition duration-300 dark:bg-purple-500 dark:hover:bg-purple-600"
+                >
+                  SignUp
+                </button>
+              )}
+            </div>
           </motion.form>
           <motion.div
             className="mt-6"
