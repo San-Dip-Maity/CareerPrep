@@ -13,7 +13,7 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <img
-                src={isDarkMode ? "logo-light.png" : "logo-dark.png"}
+                src={isDarkMode ? "https://res.cloudinary.com/dvodvtbqr/image/upload/v1728742692/logo-light_xysuxm.png" : "https://res.cloudinary.com/dvodvtbqr/image/upload/v1728742684/logo-dark_sgs0e3.png"}
                 alt="CareerPrep Logo"
                 className="h-6"
               />

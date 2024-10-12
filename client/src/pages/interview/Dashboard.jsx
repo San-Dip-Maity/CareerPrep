@@ -118,7 +118,7 @@ const Dashboard = () => {
               transition={{ delay: 0.4, duration: 0.5 }}
             >
               <img
-                src="interview/interview.png"
+                src="https://res.cloudinary.com/dvodvtbqr/image/upload/v1728742702/interview_rqvmul.png"
                 alt="AI Interview Coach"
                 className="object-cover rounded-lg"
               />
