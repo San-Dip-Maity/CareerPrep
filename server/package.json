@@ -1,25 +1,23 @@
 {
-  "name": "careerprep",
+  "name": "server",
   "version": "1.0.0",
-  "main": "backend/server.js",
+  "description": "A Server for CreerPrep",
+  "main": "src/server.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
   },
-  "keywords": [],
-  "type": "module",
-  "author": "",
+  "author": "Sandip Maity",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
+    "mailtrap": "^3.4.0",
     "mongoose": "^8.7.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.7"
   }
 }
