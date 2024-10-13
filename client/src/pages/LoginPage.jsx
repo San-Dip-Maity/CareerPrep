@@ -167,7 +167,7 @@ export default function LoginPage() {
           </motion.p>
         </div>
         <div>
-        <motion.img src="herologin.png"
+        <motion.img src="https://res.cloudinary.com/dvodvtbqr/image/upload/v1728742700/herologin_uqh1st.png"
           className="max-w-[80%]"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}

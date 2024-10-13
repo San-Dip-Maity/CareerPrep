@@ -13,8 +13,9 @@ import SignupPage from "./pages/SignupPage";
 import JobSearch from "./pages/JobSearch";
 import Contact from "./pages/Contact";
 import { RingLoader } from "react-spinners";
+import MockInterview from "./pages/MockInterview";
 import Dashboard from "./pages/interview/Dashboard";
-
+import StartInterview from "./pages/interview/StartInterview";
 
 const Layout = () => {
   return (
@@ -52,8 +53,16 @@ const router = createBrowserRouter([
         element: <Contact />,
       },
       {
-        path: "/mockInterview/Dashboard",
+        path: "/mockInterview",
+        element: <MockInterview />,
+      },
+      {
+        path: "/mockInterview/dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "/mockInterview/startInterview",
+        element: <StartInterview />,
       },
       {
         path: "/login",
@@ -77,9 +86,9 @@ function App() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000); 
+    }, 2000);
 
-    return () => clearTimeout(timer); 
+    return () => clearTimeout(timer);
   });
 
   return (

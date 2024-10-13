@@ -51,7 +51,7 @@ const Header = () => {
         <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Link to="/">
             <img
-              src={isDarkMode ? "logo-light.png" : "logo-dark.png"}
+              src={isDarkMode ? "https://res.cloudinary.com/dvodvtbqr/image/upload/v1728742692/logo-light_xysuxm.png" : "https://res.cloudinary.com/dvodvtbqr/image/upload/v1728742684/logo-dark_sgs0e3.png"}
               alt="CareerPrep Logo"
               className="h-6"
             />
@@ -89,7 +89,7 @@ const Header = () => {
                 Employers
               </NavLink>
               <NavLink
-                to="/mockInterview/Dashboard"
+                to="/mockInterview"
                 className={({ isActive }) =>
                   isActive
                     ? "text-purple-600 dark:text-purple-400"
@@ -198,7 +198,7 @@ const Header = () => {
                   Employers
                 </Link>
                 <Link
-                  to="/mockInterview/Dashboard"
+                  to="/mockInterview"
                   className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
                   onClick={toggleMenu}
                 >

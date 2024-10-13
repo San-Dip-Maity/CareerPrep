@@ -198,7 +198,6 @@ const JobSearch = () => {
 
       <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mb-8">
         <div className="flex flex-wrap gap-4">
-         
           <div className="flex-1">
             <label className="sr-only" htmlFor="job-title">
               Enter Job title

@@ -82,7 +82,7 @@ export default function Home() {
               transition={{ delay: 0.4, duration: 0.5 }}
             >
               <img
-                src="hero1.png"
+                src="https://res.cloudinary.com/dvodvtbqr/image/upload/v1728742693/hero1_fhbnhv.png"
                 alt="hero"
                 className="h-[32rem] object-cover rounded-lg pl-24"
               />
