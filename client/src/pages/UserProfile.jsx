@@ -50,7 +50,7 @@ const UserProfile = () => {
                     name="name"
                     value={user.name}
                     onChange={handleChange}
-                    className="bg-gray-100 dark:bg-gray-700 p-2 rounded-md w-full sm:w-auto"
+                    className="bg-gray-100 dark:bg-gray-700 text-white p-2 rounded-md w-full sm:w-auto"
                   />
                 ) : (
                   user.name
@@ -82,7 +82,7 @@ const UserProfile = () => {
                     name="title"
                     value={user.title}
                     onChange={handleChange}
-                    className="bg-gray-100 dark:bg-gray-700 p-2 rounded-md w-full"
+                    className="bg-gray-100 dark:bg-gray-700 text-white p-2 rounded-md w-full"
                   />
                 ) : (
                   <p className="text-xl text-gray-600 dark:text-gray-300">
@@ -101,7 +101,7 @@ const UserProfile = () => {
                     name="phone"
                     value={user.phone}
                     onChange={handleChange}
-                    className="bg-gray-100 dark:bg-gray-700 p-1 rounded-md"
+                    className="bg-gray-100 dark:bg-gray-700 text-white p-1 rounded-md"
                   />
                 ) : (
                   <p>{user.phone}</p>
@@ -118,7 +118,7 @@ const UserProfile = () => {
                     name="about"
                     value={user.about}
                     onChange={handleChange}
-                    className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md"
+                    className="w-full bg-gray-100 dark:bg-gray-700 text-white p-2 rounded-md"
                     rows="4"
                   />
                 ) : (
@@ -147,7 +147,7 @@ const UserProfile = () => {
                         })
                       )
                     }
-                    className="w-full bg-gray-100 dark:bg-gray-700 p-2 rounded-md"
+                    className="w-full bg-gray-100 dark:bg-gray-700 text-white p-2 rounded-md"
                   />
                 ) : (
                   <div className="flex flex-wrap gap-2">
@@ -182,7 +182,7 @@ const UserProfile = () => {
                             updateUser({ experience: updatedExperience })
                           );
                         }}
-                        className="bg-gray-100 dark:bg-gray-700 p-2 rounded-md w-full"
+                        className="bg-gray-100 dark:bg-gray-700 text-white p-2 rounded-md w-full"
                       />
                       <input
                         type="text"
@@ -195,7 +195,7 @@ const UserProfile = () => {
                             updateUser({ experience: updatedExperience })
                           );
                         }}
-                        className="bg-gray-100 dark:bg-gray-700 p-2 rounded-md w-full"
+                        className="bg-gray-100 dark:bg-gray-700 text-white p-2 rounded-md w-full"
                       />
                       <input
                         type="text"
@@ -208,7 +208,7 @@ const UserProfile = () => {
                             updateUser({ experience: updatedExperience })
                           );
                         }}
-                        className="bg-gray-100 dark:bg-gray-700 p-2 rounded-md w-full"
+                        className="bg-gray-100 dark:bg-gray-700 text-white p-2 rounded-md w-full"
                       />
                     </div>
                   ))
@@ -243,7 +243,7 @@ const UserProfile = () => {
                           updatedEducation[index].degree = e.target.value;
                           dispatch(updateUser({ education: updatedEducation }));
                         }}
-                        className="bg-gray-100 dark:bg-gray-700 p-2 rounded-md w-full"
+                        className="bg-gray-100 dark:bg-gray-700 text-white p-2 rounded-md w-full"
                       />
                       <input
                         type="text"
@@ -254,7 +254,7 @@ const UserProfile = () => {
                           updatedEducation[index].school = e.target.value;
                           dispatch(updateUser({ education: updatedEducation }));
                         }}
-                        className="bg-gray-100 dark:bg-gray-700 p-2 rounded-md w-full"
+                        className="bg-gray-100 dark:bg-gray-700 text-white p-2 rounded-md w-full"
                       />
                       <input
                         type="text"
@@ -265,7 +265,7 @@ const UserProfile = () => {
                           updatedEducation[index].year = e.target.value;
                           dispatch(updateUser({ education: updatedEducation }));
                         }}
-                        className="bg-gray-100 dark:bg-gray-700 p-2 rounded-md w-full"
+                        className="bg-gray-100 dark:bg-gray-700 text-white p-2 rounded-md w-full"
                       />
                     </div>
                   ))
