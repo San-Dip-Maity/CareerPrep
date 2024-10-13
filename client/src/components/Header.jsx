@@ -3,14 +3,18 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Menu, X, Sun, Moon, User, LogOut } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import ThemeContext from "../context/ThemeContext";
+import { useSelector, useDispatch } from "react-redux";
+import { updateUser } from "../redux/actions";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { isDarkMode, toggleDarkMode } = useContext(ThemeContext);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // You'll need to implement actual auth state management
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen);
@@ -39,6 +43,15 @@ const Header = () => {
     };
   }, []);
 
+  const handleViewProfile = () => {
+    if (user && user.id) {
+      navigate(`/profile/${user.id}`);
+    } else {
+      navigate("/profile");
+    }
+    setIsUserMenuOpen(false);
+  };
+
   return (
     <>
       <header
@@ -51,7 +64,11 @@ const Header = () => {
         <nav className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Link to="/">
             <img
-              src={isDarkMode ? "https://res.cloudinary.com/dvodvtbqr/image/upload/v1728742692/logo-light_xysuxm.png" : "https://res.cloudinary.com/dvodvtbqr/image/upload/v1728742684/logo-dark_sgs0e3.png"}
+              src={
+                isDarkMode
+                  ? "https://res.cloudinary.com/dvodvtbqr/image/upload/v1728742692/logo-light_xysuxm.png"
+                  : "https://res.cloudinary.com/dvodvtbqr/image/upload/v1728742684/logo-dark_sgs0e3.png"
+              }
               alt="CareerPrep Logo"
               className="h-6"
             />
@@ -125,7 +142,7 @@ const Header = () => {
             <button className="text-purple-600 dark:text-purple-400 border border-purple-600 dark:border-purple-400 px-4 py-2 rounded hover:bg-purple-600 hover:text-white dark:hover:bg-purple-500 dark:hover:text-white">
               Contact Us
             </button>
-            {isLoggedIn ? (
+            {user ? (
               <div className="relative">
                 <button
                   onClick={toggleUserMenu}
@@ -135,14 +152,13 @@ const Header = () => {
                 </button>
                 {isUserMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1">
-                    <Link
-                      to="/profile"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={() => setIsUserMenuOpen(false)}
+                    <button
+                      onClick={handleViewProfile}
+                      className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       <User size={16} className="mr-2" />
                       View Profile
-                    </Link>
+                    </button>
                     <button
                       onClick={handleLogout}
                       className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -227,16 +243,18 @@ const Header = () => {
                 >
                   Contact Us
                 </button>
-                {isLoggedIn ? (
+                {user ? (
                   <>
-                    <Link
-                      to="/profile"
+                    <button
+                      onClick={() => {
+                        handleViewProfile();
+                        toggleMenu();
+                      }}
                       className="flex items-center text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
-                      onClick={toggleMenu}
                     >
                       <User size={16} className="mr-2" />
                       View Profile
-                    </Link>
+                    </button>
                     <button
                       className="flex items-center text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
                       onClick={() => {

@@ -16,6 +16,8 @@ import { RingLoader } from "react-spinners";
 import MockInterview from "./pages/MockInterview";
 import Dashboard from "./pages/interview/Dashboard";
 import StartInterview from "./pages/interview/StartInterview";
+import UserProfile from "./pages/UserProfile";
+import Profile from "./pages/Profile";
 
 const Layout = () => {
   return (
@@ -35,6 +37,14 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
+      {
+        path: "/profile/:id",
+        element: <UserProfile />,
       },
       {
         path: "/jobsearch",

@@ -3,12 +3,24 @@ import { motion } from "framer-motion";
 import JobCard from "../components/JobCard";
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 
+
+
+const companies = [
+  "faunadb",
+  "filezilla",
+  "insomnia",
+  "oracle",
+  "photonengine",
+  "rabbitmq",
+  "sequelize",
+];
+
 const CompanyLogo = ({ name }) => (
-  <div className="bg-gray-200 dark:bg-gray-700 p-2 rounded">
+  <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md px-6">
     <img
-      src={`/companiesLogo/${name.toLowerCase()}.svg`}
+      src={`/logoscmp/${name.toLowerCase()}.png`}
       alt={`${name} logo`}
-      className="h-8"
+      className="max-w-none w-36"
     />
   </div>
 );
@@ -20,7 +32,11 @@ export default function Home() {
 
   const handleSearch = () => {
     // Navigate to the JobSearch page with query parameters
-    navigate(`/jobsearch?title=${encodeURIComponent(jobTitle)}&location=${encodeURIComponent(location)}`);
+    navigate(
+      `/jobsearch?title=${encodeURIComponent(
+        jobTitle
+      )}&location=${encodeURIComponent(location)}`
+    );
   };
 
   return (
@@ -63,7 +79,7 @@ export default function Home() {
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                 />
-                <button 
+                <button
                   onClick={handleSearch} // Use the handleSearch function
                   className="w-full sm:w-auto bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-300"
                 >
@@ -148,12 +164,17 @@ export default function Home() {
             </h2>
             <hr className="w-[38%]" />
           </div>
-          <div className="flex flex-wrap justify-center gap-8">
-            <CompanyLogo name="Google" />
-            <CompanyLogo name="Microsoft" />
-            <CompanyLogo name="Flipkart" />
-            <CompanyLogo name="YouTube" />
-            <CompanyLogo name="IBM" />
+
+          <div className="relative overflow-hidden py-14">
+            <div className="logos-slide flex gap-5 whitespace-nowrap animate-scroll">
+              {companies.map((company, index) => (
+                <CompanyLogo key={index} name={company} />
+              ))}
+
+              {companies.map((company, index) => (
+                <CompanyLogo key={index} name={company}  />
+              ))}
+            </div>
           </div>
         </section>
       </main>
