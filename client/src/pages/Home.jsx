@@ -100,7 +100,7 @@ export default function Home() {
               <img
                 src="https://res.cloudinary.com/dvodvtbqr/image/upload/v1728742693/hero1_fhbnhv.png"
                 alt="hero"
-                className="h-[32rem] object-cover rounded-lg pl-24"
+                className="md:h-[32rem]  object-cover rounded-lg md:pl-24"
               />
             </motion.div>
           </div>
