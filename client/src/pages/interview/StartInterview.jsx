@@ -92,7 +92,7 @@ const StartInterview = () => {
                 <p className="text-sm dark:text-gray-800">
                   Enable Video Web Cam and Microphone to Start your AI Generated Mock Interview.
                   It Has 5 questions, and at the end, you will get a report based on your answers.
-                  NOTE: We never record your video. You can disable webcam access at any time.
+                  <span className="font-bold">NOTE: We never record your video. You can disable webcam access at any time.</span>
                 </p>
               </div>
             </div>

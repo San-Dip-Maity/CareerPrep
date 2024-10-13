@@ -1,4 +1,5 @@
 # **CareerPrep** – Job Portal with AI-Powered Mock Interviews
+![Alt text](https://res.cloudinary.com/dvodvtbqr/image/upload/v1728820503/Screenshot_2024-10-13_172412_c6m2mj.png)
 
 **CareerPrep** is a modern job portal that not only helps users find job opportunities but also prepares them for interviews through an AI-powered mock interview feature. This platform is designed to make the job-seeking process easier and more effective by providing a one-stop solution for both job search and interview practice.
 
