@@ -1,52 +1,57 @@
 import mongoose from "mongoose";
 
 const jobSchema = new mongoose.Schema({
-    title:{
+    title: {
         type: String,
         required: true
     },
-    description:{
+    description: {
         type: String,
         required: true
     },
-    requirements:[{
+    requirements: [{
         type: String,
+        default: []
     }],
-    salary:{
+    salary: {
         type: Number,
-        required: true
+        required: true,
+        min: [0, 'Salary must be a positive number']
     },
-    experience:{
+    experience: {
         type: Number,
-        required: true
+        required: true,
+        min: [0, 'Experience must be a positive number']
     },
-    location:{
+    location: {
         type: String,
         required: true
     },
-    jobType:{
+    jobType: {
+        type: String,
+        required: true,
+        enum: ['full-time', 'part-time', 'contract', 'internship', 'freelance']
+    },
+    position: {
         type: String,
         required: true
     },
-    position:{
-        type: Number,
-        required: true
-    },
-    company:{
+    company: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Company",
         required: true
     },
-    created_by:{
+    created_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true
     },
-    applications:[{
+    applications: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Application"
+        ref: "Application",
+        default: []
     }]
-},{
+}, {
     timestamps: true
 });
 
