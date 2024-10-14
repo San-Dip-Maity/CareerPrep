@@ -1,3 +1,5 @@
+import cloudinary from "../lib/cloudinary.js";
+import getDataUri from "../lib/datauri.js";
 import User from "../models/UserSchema.js";
 import generateTokenAndSetCookie from "../token/generateToken.js";
 
@@ -75,4 +77,76 @@ export const logout =(req,res) =>{
       console.log("Error in Logout controller",error.message);
       res.status(500).json({error:"Internal Server error"});
   }
-}
+};
+
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { fullname, email, phoneNumber, bio, skills, education, experience } = req.body;
+    const file = req.file; 
+
+    let userId = req.id; 
+
+   
+    let user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found.",
+        success: false,
+      });
+    }
+
+    
+    let skillsArray;
+    if (skills) {
+      skillsArray = skills.split(",");
+    }
+
+    
+    if (file) {
+      const fileUri = getDataUri(file);
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content, {
+        folder: "resumes",
+      });
+
+      user.profile.resume = cloudResponse.secure_url; // Save Cloudinary URL
+      user.profile.resumeOriginalName = file.originalname; // Save original file name
+    }
+
+    
+    if (fullname) user.fullName = fullname;
+    if (email) user.email = email;
+    if (phoneNumber) user.phoneNumber = phoneNumber;
+    if (bio) user.profile.bio = bio;
+    if (skills) user.profile.skills = skillsArray;
+
+    
+    if (education) user.profile.education = JSON.parse(education); 
+    if (experience) user.profile.experience = JSON.parse(experience);
+
+   
+    await user.save();
+
+   
+    const updatedUser = {
+      _id: user._id,
+      fullname: user.fullname,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      role: user.role,
+      profile: user.profile,
+    };
+
+    return res.status(200).json({
+      message: "Profile updated successfully.",
+      user: updatedUser,
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    return res.status(500).json({
+      message: "Internal server error.",
+      success: false,
+    });
+  }
+};

@@ -1,6 +1,37 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
+
+const experienceSchema = new mongoose.Schema({
+    title:{
+        type: String,
+        required: true
+    },
+    company:{
+        type: String,
+        required: true
+    },
+    period:{
+        type: String,
+        required: true
+    },
+});
+
+const educationSchema = new mongoose.Schema({
+    degree:{
+        type: String,
+        required: true
+    },
+    school:{
+        type: String,
+        required: true
+    },
+    year:{
+        type: String,
+        required: true
+    },
+});
+
 const userSchema = new mongoose.Schema({
     fullName:{
         type:String,
@@ -35,7 +66,36 @@ const userSchema = new mongoose.Schema({
     createAt:{
         type:Date,
         default:Date.now,
-    }
+    },
+    role:{
+        type:String,
+        enum: ["student", "admin"],
+        default: "student",
+    },
+    profile:{
+        bio:{
+            type: String,
+        },
+        skills:[{
+            type: String,
+        }],
+        resume:{
+            type: String,
+        },
+        resumeOriginalName:{
+            type: String,
+        },
+        company:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Company",
+        },
+        profilePhoto:{
+            type: String,
+            default:""
+        },
+        experience:[experienceSchema],
+        education:[educationSchema],
+    },
 });
 
 // Hash password before saving data to the database
