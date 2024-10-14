@@ -76,19 +76,21 @@ const UserProfile = () => {
         transition={{ duration: 0.5 }}
       >
         <div className="md:flex">
-          <div className="md:flex-shrink-0 relative">
-            <img
-              className="h-48 w-full object-cover md:h-full md:w-48"
-              src={user.img}
-              alt="User avatar"
-            />
-            <div
-              className={`absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center ${
-                isEditing ? "cursor-pointer" : ""
-              }`}
-              onClick={() => isEditing && imageInputRef.current.click()}
-            >
-              <Camera className="text-white w-12 h-12" />
+          <div className="md:flex-shrink-0 relative p-4 md:p-8 flex items-center justify-center">
+            <div className="md:mb-[30rem] relative">
+              <img
+                className="h-48 w-48 object-cover rounded-full border-4 border-white dark:border-gray-700 shadow-lg"
+                src={user.img}
+                alt="User avatar"
+              />
+              {isEditing && (
+                <div
+                  className="absolute -right-4 top-1/2 -translate-y-1/2 bg-white dark:bg-gray-700 rounded-full p-2 cursor-pointer shadow-md"
+                  onClick={() => imageInputRef.current.click()}
+                >
+                  <Camera className="text-gray-600 dark:text-white w-6 h-6" />
+                </div>
+              )}
             </div>
             <input
               type="file"
