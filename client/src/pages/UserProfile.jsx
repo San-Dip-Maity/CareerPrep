@@ -1,14 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUser } from "../redux/actions";
-import { Camera } from "lucide-react";
+import { Camera, FileText, BarChart2, Upload } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 const UserProfile = () => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
+  const [showResume, setShowResume] = useState(false);
+  const [showStats, setShowStats] = useState(false);
+  const [resumePdf, setResumePdf] = useState(null);
+  const fileInputRef = useRef(null);
+  const imageInputRef = useRef(null);
 
   const handleEdit = () => setIsEditing(true);
   const handleSave = () => setIsEditing(false);
@@ -16,6 +31,41 @@ const UserProfile = () => {
     const { name, value } = e.target;
     dispatch(updateUser({ [name]: value }));
   };
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type === "application/pdf") {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setResumePdf(e.target.result);
+        dispatch(updateUser({ resumePdf: e.target.result }));
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert("Please upload a PDF file.");
+    }
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        dispatch(updateUser({ img: e.target.result }));
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert("Please upload an image file.");
+    }
+  };
+
+  // Mock interview performance stats
+  const performanceStats = [
+    { skill: "Technical Knowledge", score: 85 },
+    { skill: "Communication", score: 78 },
+    { skill: "Problem Solving", score: 92 },
+    { skill: "Cultural Fit", score: 88 },
+  ];
 
   return (
     <div className="bg-gradient-to-br from-purple-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 min-h-screen p-4 sm:p-8">
@@ -32,9 +82,21 @@ const UserProfile = () => {
               src={user.img}
               alt="User avatar"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+            <div
+              className={`absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center ${
+                isEditing ? "cursor-pointer" : ""
+              }`}
+              onClick={() => isEditing && imageInputRef.current.click()}
+            >
               <Camera className="text-white w-12 h-12" />
             </div>
+            <input
+              type="file"
+              ref={imageInputRef}
+              onChange={handleImageUpload}
+              accept="image/*"
+              className="hidden"
+            />
           </div>
           <div className="p-8 w-full">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
@@ -283,6 +345,106 @@ const UserProfile = () => {
                 )}
               </div>
             </div>
+
+            {/* Resume Buttons */}
+            <motion.div
+              className="mt-4 flex space-x-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+            >
+              <button
+                onClick={() => setShowResume(!showResume)}
+                className="flex items-center bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white font-bold px-4 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300 shadow-md"
+              >
+                <FileText className="mr-2" />
+                {showResume ? "Hide Resume" : "View Resume"}
+              </button>
+              <button
+                onClick={() => fileInputRef.current.click()}
+                className="flex items-center bg-blue-500 text-white font-bold px-4 py-2 rounded-md hover:bg-blue-600 transition-all duration-300 shadow-md"
+              >
+                <Upload className="mr-2" />
+                Update Resume
+              </button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                accept="application/pdf"
+                className="hidden"
+              />
+            </motion.div>
+
+            {/* Resume Section */}
+            {showResume && (
+              <motion.div
+                className="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-md"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                transition={{ duration: 0.3 }}
+              >
+                <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
+                  Resume
+                </h3>
+                {resumePdf ? (
+                  <div className="w-full h-96">
+                    <iframe
+                      src={resumePdf}
+                      className="w-full h-full"
+                      title="Resume PDF"
+                    />
+                  </div>
+                ) : (
+                  <p className="text-gray-600 dark:text-gray-300">
+                    No resume uploaded yet. Click "Update Resume" to upload a
+                    PDF.
+                  </p>
+                )}
+              </motion.div>
+            )}
+
+            {/* Mock Interview Stats Button */}
+            <motion.div
+              className="mt-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+            >
+              <button
+                onClick={() => setShowStats(!showStats)}
+                className="flex items-center bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white font-bold px-4 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300 shadow-md"
+              >
+                <BarChart2 className="mr-2" />
+                {showStats
+                  ? "Hide Performance Stats"
+                  : "View Performance Stats"}
+              </button>
+            </motion.div>
+
+            {/* Mock Interview Performance Stats */}
+            {showStats && (
+              <motion.div
+                className="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-md"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                transition={{ duration: 0.3 }}
+              >
+                <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
+                  Mock Interview Performance
+                </h3>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={performanceStats}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="skill" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="score" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </motion.div>
+            )}
 
             {/* Mock Interview Link */}
             <motion.div
