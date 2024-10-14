@@ -1,10 +1,12 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Facebook, Youtube, Instagram, Twitter } from "lucide-react";
-import ThemeContext from "../context/ThemeContext";
+import { useSelector } from "react-redux";
+
+
 
 const Footer = () => {
-  const { isDarkMode } = useContext(ThemeContext);
+  const isDarkMode = useSelector((state) => state.theme.isDarkMode);
 
   return (
     <>

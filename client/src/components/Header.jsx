@@ -1,37 +1,53 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Menu, X, Sun, Moon, User, LogOut } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import ThemeContext from "../context/ThemeContext";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleTheme, setTheme, detectSystemTheme } from "../redux/themeSlice";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const { isDarkMode, toggleDarkMode } = useContext(ThemeContext);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const user = useSelector((state) => state.user);
+  const isDarkMode = useSelector((state) => state.theme.isDarkMode);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen);
-
   const handleLogout = () => {
-    // Implement your logout logic here
     setIsLoggedIn(false);
     setIsUserMenuOpen(false);
     navigate("/");
   };
 
   useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      dispatch(setTheme(savedTheme === 'dark'));
+    } else {
+      dispatch(detectSystemTheme());
+    }
+
+    const systemThemeListener = window.matchMedia('(prefers-color-scheme: dark)');
+    systemThemeListener.addEventListener('change', (e) => {
+      dispatch(setTheme(e.matches));
+    });
+
+    return () => {
+      systemThemeListener.removeEventListener('change', (e) => {
+        dispatch(setTheme(e.matches));
+      });
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
     const handleScroll = () => {
       const offset = window.scrollY;
-      if (offset > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(offset > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -127,7 +143,7 @@ const Header = () => {
           </div>
           <div className="hidden md:flex items-center space-x-4">
             <button
-              onClick={toggleDarkMode}
+              onClick={() => dispatch(toggleTheme())}
               className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
             >
               {isDarkMode ? (
@@ -228,7 +244,7 @@ const Header = () => {
                 </Link>
                 <button
                   onClick={() => {
-                    toggleDarkMode();
+                    dispatch(toggleTheme());
                     toggleMenu();
                   }}
                   className="flex items-center space-x-2 text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"

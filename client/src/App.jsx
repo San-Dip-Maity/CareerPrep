@@ -7,7 +7,6 @@ import Home from "./pages/Home";
 import { Employers } from "./pages/Employers";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
-import { ThemeProvider } from "./context/ThemeContext";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import JobSearch from "./pages/JobSearch";
@@ -103,15 +102,13 @@ function App() {
 
   return (
     <>
-      <ThemeProvider>
-        {loading ? (
-          <div className="flex items-center justify-center min-h-screen bg-gray-900">
-            <RingLoader color="#7d02e1" loading={loading} size={100} />
-          </div>
-        ) : (
-          <RouterProvider router={router} />
-        )}
-      </ThemeProvider>
+      {loading ? (
+        <div className="flex items-center justify-center min-h-screen bg-gray-900">
+          <RingLoader color="#7d02e1" loading={loading} size={100} />
+        </div>
+      ) : (
+        <RouterProvider router={router} />
+      )}
     </>
   );
 }
