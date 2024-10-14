@@ -3,8 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Menu, X, Sun, Moon, User, LogOut } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import ThemeContext from "../context/ThemeContext";
-import { useSelector, useDispatch } from "react-redux";
-import { updateUser } from "../redux/actions";
+import { useSelector } from "react-redux";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,7 +12,6 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -138,10 +136,11 @@ const Header = () => {
                 <Moon size={20} className="text-gray-800" />
               )}
             </button>
-
-            <button className="text-purple-600 dark:text-purple-400 border border-purple-600 dark:border-purple-400 px-4 py-2 rounded hover:bg-purple-600 hover:text-white dark:hover:bg-purple-500 dark:hover:text-white">
-              Contact Us
-            </button>
+            <Link to="/contact">
+              <button className="text-purple-600 dark:text-purple-400 border border-purple-600 dark:border-purple-400 px-4 py-2 rounded hover:bg-purple-600 hover:text-white dark:hover:bg-purple-500 dark:hover:text-white">
+                Contact Us
+              </button>
+            </Link>
             {user ? (
               <div className="relative">
                 <button

@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.2.8",
     "axios": "^1.7.7",
     "framer-motion": "^11.8.0",
     "lucide-react": "^0.446.0",

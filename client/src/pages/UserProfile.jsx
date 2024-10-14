@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { updateUser } from "../redux/actions";
+import { updateUser } from "../redux/userSlice";
 import { Camera, FileText, BarChart2, Upload } from "lucide-react";
 import {
   BarChart,
