@@ -31,3 +31,17 @@
 
 **CareerPrep** is designed to simplify the job-seeking process and help users succeed in their job search by enhancing both their application and interview skills.
 
+### Getting Started
+- Clone project.
+    ```git clone https://github.com/San-Dip-Maity/CareerPrep.git```
+#### Setting up server
+- Step in server folder ```cd ./server```
+- Install dependecies ``` npm i ```
+- Create `.env` file variables
+- To run the server ```npm run start```
+
+#### Setting up frontend
+
+- Step in server folder ```cd ./client```
+- Install dependecies ``` npm i ```
+- To run project ```npm run dev```
