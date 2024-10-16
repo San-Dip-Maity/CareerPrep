@@ -4,41 +4,54 @@ import { Menu, X, Sun, Moon, User, LogOut } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme, setTheme, detectSystemTheme } from "../redux/themeSlice";
+import { AUTH_API_END_POINT } from "../utils/constUtils";
+import { toast } from "sonner";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const user = useSelector((state) => state.user);
+  const { user } = useSelector((store) => store.auth);
   const isDarkMode = useSelector((state) => state.theme.isDarkMode);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen);
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setIsUserMenuOpen(false);
-    navigate("/");
+  const logoutHandler = async () => {
+    try {
+      const res = await axios.get(`${AUTH_API_END_POINT}/logout`, {
+        withCredentials: true,
+      });
+      if (res.data.success) {
+        dispatch(setUser(null));
+        navigate("/");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
   };
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
-      dispatch(setTheme(savedTheme === 'dark'));
+      dispatch(setTheme(savedTheme === "dark"));
     } else {
       dispatch(detectSystemTheme());
     }
 
-    const systemThemeListener = window.matchMedia('(prefers-color-scheme: dark)');
-    systemThemeListener.addEventListener('change', (e) => {
+    const systemThemeListener = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    );
+    systemThemeListener.addEventListener("change", (e) => {
       dispatch(setTheme(e.matches));
     });
 
     return () => {
-      systemThemeListener.removeEventListener('change', (e) => {
+      systemThemeListener.removeEventListener("change", (e) => {
         dispatch(setTheme(e.matches));
       });
     };
@@ -109,26 +122,31 @@ const Header = () => {
               >
                 Find Jobs
               </NavLink>
-              <NavLink
-                to="/Employers"
-                className={({ isActive }) =>
-                  isActive
-                    ? "text-purple-600 dark:text-purple-400"
-                    : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
-                }
-              >
-                Employers
-              </NavLink>
-              <NavLink
-                to="/mockInterview"
-                className={({ isActive }) =>
-                  isActive
-                    ? "text-purple-600 dark:text-purple-400"
-                    : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
-                }
-              >
-                Mock Interview
-              </NavLink>
+              {user && user.role === "recruiter" && (
+                <>
+                  <NavLink
+                    to="/employers"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "text-purple-600 dark:text-purple-400"
+                        : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                    }
+                  >
+                    Employers
+                  </NavLink>
+
+                  <NavLink
+                    to="/mockInterview"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "text-purple-600 dark:text-purple-400"
+                        : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                    }
+                  >
+                    Mock Interview
+                  </NavLink>
+                </>
+              )}
               <NavLink
                 to="/about"
                 className={({ isActive }) =>
@@ -138,6 +156,16 @@ const Header = () => {
                 }
               >
                 About Us
+              </NavLink>
+              <NavLink
+                to="/contact"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-purple-600 dark:text-purple-400"
+                    : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                }
+              >
+                Contact Us
               </NavLink>
             </div>
           </div>
@@ -152,11 +180,7 @@ const Header = () => {
                 <Moon size={20} className="text-gray-800" />
               )}
             </button>
-            <Link to="/contact">
-              <button className="text-purple-600 dark:text-purple-400 border border-purple-600 dark:border-purple-400 px-4 py-2 rounded hover:bg-purple-600 hover:text-white dark:hover:bg-purple-500 dark:hover:text-white">
-                Contact Us
-              </button>
-            </Link>
+            
             {user ? (
               <div className="relative">
                 <button
@@ -175,7 +199,7 @@ const Header = () => {
                       View Profile
                     </button>
                     <button
-                      onClick={handleLogout}
+                      onClick={logoutHandler}
                       className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       <LogOut size={16} className="mr-2" />
@@ -185,9 +209,14 @@ const Header = () => {
                 )}
               </div>
             ) : (
-              <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
-                <Link to="/login">Login</Link>
-              </button>
+              <div className="flex items-center justify-center gap-3">
+                <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
+                  <Link to="/login">Login</Link>
+                </button>
+                <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
+                  <Link to="/signup">SignUp</Link>
+                </button>
+              </div>
             )}
           </div>
           <button className="md:hidden" onClick={toggleMenu}>
@@ -221,20 +250,27 @@ const Header = () => {
                 >
                   Find Jobs
                 </Link>
-                <Link
-                  to="/employers"
-                  className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
-                  onClick={toggleMenu}
-                >
-                  Employers
-                </Link>
-                <Link
-                  to="/mockInterview"
-                  className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
-                  onClick={toggleMenu}
-                >
-                  Mock Interview
-                </Link>
+                {user && user.role === "recruiter" && (
+                  <>
+                    <Link
+                      to="/employers"
+                      className={({ isActive }) =>
+                        isActive
+                          ? "text-purple-600 dark:text-purple-400"
+                          : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                      }
+                    >
+                      Employers
+                    </Link>
+                    <Link
+                      to="/mockInterview"
+                      className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                      onClick={toggleMenu}
+                    >
+                      Mock Interview
+                    </Link>
+                  </>
+                )}
                 <Link
                   to="/about"
                   className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
@@ -273,7 +309,7 @@ const Header = () => {
                     <button
                       className="flex items-center text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
                       onClick={() => {
-                        handleLogout();
+                        logoutHandler();
                         toggleMenu();
                       }}
                     >
@@ -282,12 +318,20 @@ const Header = () => {
                     </button>
                   </>
                 ) : (
-                  <button
-                    className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
-                    onClick={toggleMenu}
-                  >
-                    <Link to="/login">Login</Link>
-                  </button>
+                  <div className="flex items-center justify-center gap-6">
+                    <button
+                      className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
+                      onClick={toggleMenu}
+                    >
+                      <Link to="/login">Login</Link>
+                    </button>
+                    <button
+                      className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
+                      onClick={toggleMenu}
+                    >
+                      <Link to="/signup">SignUp</Link>
+                    </button>
+                  </div>
                 )}
               </div>
             </motion.div>

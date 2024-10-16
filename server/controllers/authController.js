@@ -5,9 +5,9 @@ import generateTokenAndSetCookie from "../token/generateToken.js";
 
 
 export const signup = async(req, res) => {
-   const { fullName, email, password, mobileNumber, skills} = req.body;
+   const { fullName, email, password, mobileNumber, role  } = req.body;
 
-   if (!fullName || !email || !mobileNumber || !skills || !password) {
+   if (!fullName || !email || !mobileNumber || !password || !role) {
     return res.status(400).json({ message: 'Please fill in all fields' });
   }
 
@@ -21,8 +21,9 @@ export const signup = async(req, res) => {
       fullName,
       email,
       mobileNumber,
-      skills,
+      profilePic,
       password,
+      role
     });
 
     if(newUser){

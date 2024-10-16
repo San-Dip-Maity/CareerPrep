@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Facebook,
   Linkedin,
@@ -8,76 +8,91 @@ import {
   ChevronDown,
   ChevronUp,
   Loader2,
+  Upload,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { AUTH_API_END_POINT } from "../utils/constUtils";
+import { toast } from "sonner";
+import { setLoading } from "../redux/authSlice";
 
 export default function SignupPage() {
+  const [input, setInput] = useState({
+    fullname: "",
+    email: "",
+    phoneNumber: "",
+    password: "",
+    confirmPassword: "",
+    role: "",
+    file: null,
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [showSkills, setShowSkills] = useState(false);
-  const [selectedSkills, setSelectedSkills] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const { loading, user } = useSelector((store) => store.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
+  const changeEventHandler = (e) => {
+    setInput({ ...input, [e.target.name]: e.target.value });
+  };
+
+  const changeFileHandler = (e) => {
+    setInput({ ...input, file: e.target.files?.[0] });
+  };
+
+  const handleProfilePictureClick = () => {
+    fileInputRef.current.click();
+  };
 
   const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
+    setShowPassword(!showPassword);
   };
 
   const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword((prev) => !prev);
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const toggleSkillsDropdown = () => {
-    setShowSkills((prev) => !prev);
-  };
-
-  const handleSkillChange = (skill) => {
-    setSelectedSkills((prev) =>
-      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
-    );
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    // Simulate async operation
-    setTimeout(() => {
-      setLoading(false);
-      alert("Signup successful!");
-    }, 2000);
-  };
+    if (input.password !== input.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("fullname", input.fullname);
+    formData.append("email", input.email);
+    formData.append("phoneNumber", input.phoneNumber);
+    formData.append("password", input.password);
+    formData.append("role", input.role);
+    if (input.file) {
+      formData.append("file", input.file);
+    }
 
-  const skillOptions = [
-    "JavaScript",
-    "React",
-    "Node.js",
-    "Python",
-    "Java",
-    "C++",
-    "SQL",
-    "DevOps",
-    "Machine Learning",
-    "UI/UX Design",
-    "HTML",
-    "CSS",
-    "TypeScript",
-    "Angular",
-    "Vue.js",
-    "PHP",
-    "Ruby",
-    "Swift",
-    "Kotlin",
-    "Go",
-    "Rust",
-    "Scala",
-    "Docker",
-    "Kubernetes",
-    "AWS",
-    "Azure",
-    "Google Cloud",
-    "GraphQL",
-    "REST API",
-    "MongoDB",
-  ];
+    try {
+      dispatch(setLoading(true));
+      const res = await axios.post(`${AUTH_API_END_POINT}signup`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+
+      if (res.data.success) {
+        navigate("/login");
+        toast.success(res.data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
@@ -111,16 +126,48 @@ export default function SignupPage() {
             transition={{ delay: 0.4, duration: 0.5 }}
             onSubmit={handleSubmit}
           >
+            <div className="flex flex-col items-center mb-4">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Profile Picture
+              </label>
+              <div
+                className="w-32 h-32 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center cursor-pointer overflow-hidden"
+                onClick={handleProfilePictureClick}
+              >
+                {input.file ? (
+                  <img
+                    src={URL.createObjectURL(input.file)}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <Upload className="h-8 w-8 text-gray-400" />
+                )}
+              </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={changeFileHandler}
+              />
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                Click to upload a profile picture
+              </p>
+            </div>
             <div>
               <label
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                htmlFor="fullName"
+                htmlFor="fullname"
               >
                 Full Name
               </label>
               <input
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                id="fullName"
+                id="fullname"
+                name="fullname"
+                value={input.fullname}
+                onChange={changeEventHandler}
                 placeholder="Enter your full name"
                 type="text"
               />
@@ -135,6 +182,9 @@ export default function SignupPage() {
               <input
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 id="email"
+                name="email"
+                value={input.email}
+                onChange={changeEventHandler}
                 placeholder="Enter your email address"
                 type="email"
               />
@@ -142,60 +192,47 @@ export default function SignupPage() {
             <div>
               <label
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                htmlFor="mobileNumber"
+                htmlFor="phoneNumber"
               >
                 Mobile Number
               </label>
               <input
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                id="mobileNumber"
+                id="phoneNumber"
+                name="phoneNumber"
+                value={input.phoneNumber}
+                onChange={changeEventHandler}
                 placeholder="Enter your mobile number"
                 type="tel"
               />
             </div>
             <div>
-              <label
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                htmlFor="skills"
-              >
-                Your Skills
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Choose Your Role
               </label>
-              <div className="relative">
-                <button
-                  type="button"
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white text-left flex justify-between items-center"
-                  onClick={toggleSkillsDropdown}
-                >
-                  <span className="truncate">
-                    {selectedSkills.length > 0
-                      ? selectedSkills.join(", ")
-                      : "Select your skills"}
-                  </span>
-                  {showSkills ? (
-                    <ChevronUp className="h-5 w-5 text-gray-400 flex-shrink-0" />
-                  ) : (
-                    <ChevronDown className="h-5 w-5 text-gray-400 flex-shrink-0" />
-                  )}
-                </button>
-                {showSkills && (
-                  <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                    {skillOptions.map((skill, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
-                        onClick={() => handleSkillChange(skill)}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedSkills.includes(skill)}
-                          onChange={() => {}}
-                          className="mr-2"
-                        />
-                        <span>{skill}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <div className="flex space-x-4">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    className="form-radio text-purple-600"
+                    name="role"
+                    value="student"
+                    checked={input.role === "student"}
+                    onChange={changeEventHandler}
+                  />
+                  <span className="ml-2 dark:text-gray-300">Student</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    className="form-radio text-purple-600"
+                    name="role"
+                    value="recruiter"
+                    checked={input.role === "recruiter"}
+                    onChange={changeEventHandler}
+                  />
+                  <span className="ml-2 dark:text-gray-300">Recruiter</span>
+                </label>
               </div>
             </div>
             <div>
@@ -207,14 +244,14 @@ export default function SignupPage() {
               </label>
               <div className="relative">
                 <input
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white pr-10"
                   id="password"
                   placeholder="Create a password"
                   type={showPassword ? "text" : "password"}
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 px-3 flex items-center"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={togglePasswordVisibility}
                 >
                   {showPassword ? (
@@ -225,6 +262,8 @@ export default function SignupPage() {
                 </button>
               </div>
             </div>
+
+            {/* Confirm Password field with eye button */}
             <div>
               <label
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
@@ -234,14 +273,14 @@ export default function SignupPage() {
               </label>
               <div className="relative">
                 <input
-                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white pr-10"
                   id="confirmPassword"
                   placeholder="Confirm your password"
                   type={showConfirmPassword ? "text" : "password"}
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 px-3 flex items-center"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={toggleConfirmPasswordVisibility}
                 >
                   {showConfirmPassword ? (
@@ -253,45 +292,27 @@ export default function SignupPage() {
               </div>
             </div>
             <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="terms"
-                className="rounded text-purple-600 focus:ring-purple-500 dark:bg-gray-700 dark:border-gray-600"
-              />
-              <label
-                className="ml-2 text-sm text-gray-600 dark:text-gray-400"
-                htmlFor="terms"
-              >
-                I agree to the{" "}
-                <Link
-                  className="text-purple-600 hover:underline dark:text-purple-400"
-                  to="#"
-                >
-                  Terms and Conditions
-                </Link>
-              </label>
-            </div>
-            <div>
               {loading ? (
                 <button
                   type="button"
                   disabled
-                  className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition duration-300 dark:bg-purple-500 dark:hover:bg-purple-600 flex items-center justify-center"
+                  className="w-full bg-purple-600 text-white py-2 rounded-md flex justify-center items-center"
                 >
-                  <Loader2 className="h-4 w-4 animate-spin" />{" "}
-                  Please wait...
+                  <Loader2 className="animate-spin h-5 w-5" />
+                  <span className="ml-2">Signing up...</span>
                 </button>
               ) : (
                 <button
                   type="submit"
-                  className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition duration-300 dark:bg-purple-500 dark:hover:bg-purple-600"
+                  className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700"
                 >
-                  SignUp
+                  Sign up
                 </button>
               )}
             </div>
           </motion.form>
-          <motion.div
+        </div>
+        <motion.div
             className="mt-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -340,7 +361,7 @@ export default function SignupPage() {
             </div>
           </motion.div>
           <motion.p
-            className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400"
+            className="mt-8 mb-4 text-center text-sm text-gray-600 dark:text-gray-400"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.5 }}
@@ -353,7 +374,6 @@ export default function SignupPage() {
               Log in
             </Link>
           </motion.p>
-        </div>
       </motion.main>
     </div>
   );

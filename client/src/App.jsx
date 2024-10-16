@@ -1,4 +1,9 @@
-import { createBrowserRouter, Outlet, RouterProvider, Navigate } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Outlet,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./App.css";
 import Header from "./components/Header";
@@ -18,8 +23,6 @@ import StartInterview from "./pages/interview/StartInterview";
 import UserProfile from "./pages/UserProfile";
 import Profile from "./pages/Profile";
 import { useDispatch } from "react-redux";
-import { setLogout, setLogin } from "./redux/authSlice";
-import API from "./utils/axiosConfig";
 
 const Layout = () => {
   return (
@@ -38,35 +41,17 @@ const ProtectedRoute = ({ isAuth, children }) => {
 };
 
 const App = () => {
-  const [isAuth, setAuth] = useState(null);
-  const dispatch = useDispatch();
+  const [isAuth, setAuth] = useState(null); // Authentication state
   const [loading, setLoading] = useState(true);
 
+  // Simulate authentication check
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    function checkAuthentication() {
-      if (user?.token) {
-        API.get("/auth/isAuthenticated")
-          .then((res) => {
-            localStorage.setItem("user", JSON.stringify(res.data));
-            dispatch(setLogin(res.data));
-            setAuth(true);
-          })
-          .catch((err) => {
-            if (err.response?.status === 403) {
-              dispatch(setLogout());
-              setAuth(false);
-            }
-          });
-      } else {
-        setAuth(true);
-      }
-    }
-    checkAuthentication();
-  }, [dispatch]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2000);
+    const timer = setTimeout(() => {
+      // Check if the user is authenticated (can be from localStorage or API call)
+      const storedAuth = localStorage.getItem("isAuth"); // Example: stored auth state
+      setAuth(storedAuth === "true"); // Assuming the auth state is saved as a boolean string
+      setLoading(false);
+    }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -77,11 +62,7 @@ const App = () => {
       children: [
         {
           path: "/",
-          element: (
-            <ProtectedRoute isAuth={isAuth}>
-              <Home />
-            </ProtectedRoute>
-          ),
+          element: <Home />,
         },
         {
           path: "/profile",
@@ -91,8 +72,8 @@ const App = () => {
             </ProtectedRoute>
           ),
         },
-        { 
-          path: "/profile/:id", 
+        {
+          path: "/profile/:id",
           element: (
             <ProtectedRoute isAuth={isAuth}>
               <UserProfile />
@@ -145,7 +126,7 @@ const App = () => {
         },
         {
           path: "/login",
-          element: <LoginPage isAuth={isAuth} />,
+          element: <LoginPage setAuth={setAuth} />, // Pass setAuth to handle login
         },
         {
           path: "/signup",

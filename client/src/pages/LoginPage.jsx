@@ -4,7 +4,6 @@ import { Facebook, Linkedin, Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
 import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-import { setLogin as authLogin } from "../redux/authSlice"; // your Redux slice
 import axios from "axios"; // Ensure axios is installed
 
 export default function LoginPage() {
@@ -118,7 +117,7 @@ export default function LoginPage() {
             <img
               src="https://res.cloudinary.com/dvodvtbqr/image/upload/v1728742700/herologin_uqh1st.png"
               alt="Login"
-              className="object-cover w-full h-full"
+              className="object-cover w-full h-full p-2"
             />
           </div>
         </div>
