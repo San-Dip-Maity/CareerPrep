@@ -159,7 +159,7 @@ export default function Home() {
         <section className="mb-12">
           <div className="flex justify-between items-center mb-10">
             <hr className="w-[38%]" />
-            <h2 className="text-2xl font-semibold dark:text-white">
+            <h2 className="text-2xl font-semibold dark:text-white flex text-center">
               Top companies hiring now
             </h2>
             <hr className="w-[38%]" />
