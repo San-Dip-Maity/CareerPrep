@@ -1,27 +1,18 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Facebook,
-  Linkedin,
-  Eye,
-  EyeOff,
-  ChevronDown,
-  ChevronUp,
-  Loader2,
-  Upload,
-} from "lucide-react";
+import { Facebook, Linkedin, Eye, EyeOff, Loader2, Upload } from "lucide-react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { AUTH_API_END_POINT } from "../utils/constUtils";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import { setLoading } from "../redux/authSlice";
 
 export default function SignupPage() {
   const [input, setInput] = useState({
-    fullname: "",
+    fullName: "",
     email: "",
-    phoneNumber: "",
+    mobileNumber: "",
     password: "",
     confirmPassword: "",
     role: "",
@@ -67,9 +58,9 @@ export default function SignupPage() {
       return;
     }
     const formData = new FormData();
-    formData.append("fullname", input.fullname);
+    formData.append("fullName", input.fullName);
     formData.append("email", input.email);
-    formData.append("phoneNumber", input.phoneNumber);
+    formData.append("mobileNumber", input.mobileNumber);
     formData.append("password", input.password);
     formData.append("role", input.role);
     if (input.file) {
@@ -88,7 +79,13 @@ export default function SignupPage() {
         toast.success(res.data.message);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error(error.response.data.message);
+      } else {
+        
+        toast.error("An error occurred. Please try again.");
+        console.error("Error details:", error); 
+      }
     } finally {
       dispatch(setLoading(false));
     }
@@ -96,6 +93,7 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+      <Toaster position="top-right" />
       <motion.main
         className="container px-10 my-10 max-w-2xl flex flex-col items-center justify-between bg-white dark:bg-gray-800 rounded-lg shadow-2xl overflow-hidden"
         initial={{ opacity: 0, y: 20 }}
@@ -158,15 +156,15 @@ export default function SignupPage() {
             <div>
               <label
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                htmlFor="fullname"
+                htmlFor="fullName"
               >
                 Full Name
               </label>
               <input
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                id="fullname"
-                name="fullname"
-                value={input.fullname}
+                id="fullName"
+                name="fullName"
+                value={input.fullName || ""}
                 onChange={changeEventHandler}
                 placeholder="Enter your full name"
                 type="text"
@@ -183,7 +181,7 @@ export default function SignupPage() {
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                 id="email"
                 name="email"
-                value={input.email}
+                value={input.email || ""}
                 onChange={changeEventHandler}
                 placeholder="Enter your email address"
                 type="email"
@@ -192,15 +190,15 @@ export default function SignupPage() {
             <div>
               <label
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                htmlFor="phoneNumber"
+                htmlFor="mobileNumber"
               >
                 Mobile Number
               </label>
               <input
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                id="phoneNumber"
-                name="phoneNumber"
-                value={input.phoneNumber}
+                id="mobileNumber"
+                name="mobileNumber"
+                value={input.mobileNumber || ""}
                 onChange={changeEventHandler}
                 placeholder="Enter your mobile number"
                 type="tel"
@@ -246,6 +244,9 @@ export default function SignupPage() {
                 <input
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white pr-10"
                   id="password"
+                  name="password"
+                  value={input.password || ""}
+                  onChange={changeEventHandler}
                   placeholder="Create a password"
                   type={showPassword ? "text" : "password"}
                 />
@@ -275,6 +276,9 @@ export default function SignupPage() {
                 <input
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white pr-10"
                   id="confirmPassword"
+                  name="confirmPassword"
+                  value={input.confirmPassword || ""}
+                  onChange={changeEventHandler}
                   placeholder="Confirm your password"
                   type={showConfirmPassword ? "text" : "password"}
                 />
@@ -313,67 +317,67 @@ export default function SignupPage() {
           </motion.form>
         </div>
         <motion.div
-            className="mt-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-          >
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-300 dark:border-gray-600" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
-                  or sign up with
-                </span>
-              </div>
+          className="mt-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-gray-300 dark:border-gray-600" />
             </div>
-            <div className="mt-6 grid grid-cols-3 gap-3">
-              <button className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                  <path
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    fill="#4285F4"
-                  />
-                  <path
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    fill="#34A853"
-                  />
-                  <path
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    fill="#FBBC05"
-                  />
-                  <path
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    fill="#EA4335"
-                  />
-                </svg>
-                Google
-              </button>
-              <button className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <Facebook className="w-5 h-5 mr-2 text-blue-600" />
-                Facebook
-              </button>
-              <button className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <Linkedin className="w-5 h-5 mr-2 text-blue-700" />
-                LinkedIn
-              </button>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                or sign up with
+              </span>
             </div>
-          </motion.div>
-          <motion.p
-            className="mt-8 mb-4 text-center text-sm text-gray-600 dark:text-gray-400"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
+          </div>
+          <div className="mt-6 grid grid-cols-3 gap-3">
+            <button className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                <path
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  fill="#4285F4"
+                />
+                <path
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  fill="#34A853"
+                />
+                <path
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                  fill="#FBBC05"
+                />
+                <path
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  fill="#EA4335"
+                />
+              </svg>
+              Google
+            </button>
+            <button className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <Facebook className="w-5 h-5 mr-2 text-blue-600" />
+              Facebook
+            </button>
+            <button className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <Linkedin className="w-5 h-5 mr-2 text-blue-700" />
+              LinkedIn
+            </button>
+          </div>
+        </motion.div>
+        <motion.p
+          className="mt-8 mb-4 text-center text-sm text-gray-600 dark:text-gray-400"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
+        >
+          Already have an account?{" "}
+          <Link
+            className="font-medium text-purple-600 hover:underline dark:text-purple-400"
+            to="/login"
           >
-            Already have an account?{" "}
-            <Link
-              className="font-medium text-purple-600 hover:underline dark:text-purple-400"
-              to="/login"
-            >
-              Log in
-            </Link>
-          </motion.p>
+            Log in
+          </Link>
+        </motion.p>
       </motion.main>
     </div>
   );
