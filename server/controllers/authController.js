@@ -37,7 +37,7 @@ export const signup = async(req, res) => {
     }
   } catch (error) {
     console.log("Error in signup controller",error.message);
-    res.status(500).json({ message: 'Server error. Please try again later.',error});
+    res.status(500).json({ message: 'Server error. Please try again later.',message:error.message});
   }
    
 };
@@ -52,7 +52,7 @@ export const login = async(req, res) => {
   try {
     const user = await User.findOne({ email });
     if(!user){
-      return res.status(401).json({ message: 'Invalid email or password' });
+      return res.status(401).json({ message: "Please check your email or password" });
     }
 
     const isPasswordValid = await user.comparePassword(password);
@@ -62,10 +62,10 @@ export const login = async(req, res) => {
     }
 
     generateTokenAndSetCookie(user._id, res);
-    res.status(200).json({ message: 'Login successful' });
+    res.status(200).json({ message: "Login successful" });
   } catch (error) {
     console.log("Error in login controller", error.message);
-    res.status(500).json({ message: 'Server error. Please try again later.', error });
+    res.status(500).json({ message: 'Server error. Please try again later.',message:error.message});
   }
 };
 
@@ -76,7 +76,7 @@ export const logout =(req,res) =>{
       res.status(200).json({message : "Logout sucessfully"})
   } catch (error) {
       console.log("Error in Logout controller",error.message);
-      res.status(500).json({error:"Internal Server error"});
+      res.status(500).json({error:"Server error. Please try again later.",message:error.message});
   }
 };
 
