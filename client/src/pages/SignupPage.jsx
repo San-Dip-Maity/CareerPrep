@@ -5,8 +5,8 @@ import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { AUTH_API_END_POINT } from "../utils/constUtils";
-import { toast, Toaster } from "sonner";
 import { setLoading } from "../redux/authSlice";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function SignupPage() {
   const [input, setInput] = useState({
@@ -93,7 +93,6 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
-      <Toaster position="top-right" />
       <motion.main
         className="container px-10 my-10 max-w-2xl flex flex-col items-center justify-between bg-white dark:bg-gray-800 rounded-lg shadow-2xl overflow-hidden"
         initial={{ opacity: 0, y: 20 }}
