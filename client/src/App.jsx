@@ -22,7 +22,8 @@ import Dashboard from "./pages/interview/Dashboard";
 import StartInterview from "./pages/interview/StartInterview";
 import UserProfile from "./pages/UserProfile";
 import Profile from "./pages/Profile";
-import { useDispatch } from "react-redux";
+import {Toaster} from "react-hot-toast";
+
 
 const Layout = () => {
   return (
@@ -149,6 +150,7 @@ const App = () => {
       ) : (
         <RouterProvider router={router} />
       )}
+      <Toaster position="top-right" />
     </>
   );
 };

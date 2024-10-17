@@ -1,32 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Facebook, Linkedin, Eye, EyeOff } from "lucide-react";
+import { Facebook, Linkedin, Eye, EyeOff, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import axios from "axios"; // Ensure axios is installed
+import axios from "axios";
+import { setLoading, setUser } from "../redux/authSlice";
+import { AUTH_API_END_POINT } from "../utils/constUtils";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
+  const {loading, user} = useSelector((store) => store.auth);
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
   const { register, handleSubmit, formState: { errors } } = useForm();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
+
   // Actual login logic using Axios
   const login = async (data) => {
-    setError(""); // Clear any previous errors
+    dispatch(setLoading(true));
     try {
-      const response = await axios.post("https://localhost:5000/api/login", data);
-      const user = response.data;
-      dispatch(authLogin(user));
-      navigate("/");
-    } catch (err) {
-      setError(err.response?.data?.message || "An error occurred");
+      const response = await axios.post(`${AUTH_API_END_POINT}login`,data,{
+        headers:{
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+      if(response.status === 200){
+        dispatch(setUser(response.data.user));
+        navigate("/");
+        toast.success(response.data.message);
+      }else{
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      const errorMessage =
+      error.response?.data?.message || "An unexpected error occurred.";
+      console.error("Login Error:", errorMessage);
+      toast.error(errorMessage);
+    }finally{
+      dispatch(setLoading(false));
     }
   };
+
+  useEffect(() => {
+    if(user){
+      navigate("/")
+    }
+  },[user,navigate])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
@@ -44,12 +68,6 @@ export default function LoginPage() {
             <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
               Welcome back! Please enter your details.
             </p>
-
-            {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
-                <span className="block sm:inline">{error}</span>
-              </div>
-            )}
 
             <form onSubmit={handleSubmit(login)} className="space-y-4">
               <div className="space-y-2">
@@ -88,12 +106,21 @@ export default function LoginPage() {
                 {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
               </div>
 
-              <button
-                type="submit"
-                className="w-full p-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors dark:bg-purple-700 dark:hover:bg-purple-800"
-              >
-                Log In
-              </button>
+              {loading ? (
+                <button
+                  disabled
+                  className="w-full p-2 bg-purple-600 text-white flex items-center justify-center rounded-md"
+                >
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full p-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors dark:bg-purple-700 dark:hover:bg-purple-800"
+                >
+                  Log In
+                </button>
+              )}
             </form>
 
             <p className="text-sm text-gray-600 dark:text-gray-300 mt-6 text-center">

@@ -2,7 +2,6 @@ import cloudinary from "../lib/cloudinary.js";
 import getDataUri from "../lib/datauri.js";
 import User from "../models/UserSchema.js";
 import generateTokenAndSetCookie from "../token/generateToken.js";
-import bcrypt from "bcryptjs";
 
 export const signup = async (req, res) => {
   try {
