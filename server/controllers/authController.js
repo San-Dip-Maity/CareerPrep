@@ -25,13 +25,14 @@ export const signup = async (req, res) => {
             success: false,
         })
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
+   
+    
 
     await User.create({
       fullName,
         email,
         mobileNumber,
-        password: hashedPassword,
+        password,
         role,
         profile:{
             profilePhoto:cloudResponse.secure_url,
