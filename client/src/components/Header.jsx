@@ -297,7 +297,7 @@ const Header = () => {
                 >
                   Contact Us
                 </button>
-                {user ? (
+                {isAuthenticated ? (
                   <>
                     <button
                       onClick={() => {

@@ -69,9 +69,9 @@ export default function SignupPage() {
       toast.error(error);
       dispatch(clearAllUserErrors());
     }
-    // if (isAuthenticated && !error) {
-    //   navigate("/");
-    // }
+    if (isAuthenticated && !error) {
+      navigate("/");
+    }
   }, [dispatch, error, loading, isAuthenticated, message]);
 
   return (
