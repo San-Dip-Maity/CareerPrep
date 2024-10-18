@@ -84,9 +84,9 @@ export default function About() {
             />
             <TeamMember name="Joy Mahata" role="CTO" image="team-member.png" />
             <TeamMember
-              name="Zaheed hasan Mollah"
+              name="Zaheed Hossain Molla"
               role="Head of HR"
-              image="team-member.png"
+              image="team-member1.jpg"
             />
           </div>
         </motion.section>
