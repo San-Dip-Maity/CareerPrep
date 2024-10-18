@@ -81,21 +81,29 @@ export const login = async (req, res) => {
     }
 
     const isPasswordValid = await user.comparePassword(password);
-
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
     generateTokenAndSetCookie(user._id, res);
-    res.status(200).json({ message: "Login successful" });
+
+    return res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        email: user.email,
+        fullName: user.fullName,
+        role: user.role,  
+      },
+    });
   } catch (error) {
     console.log("Error in login controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Server error. Please try again later.",
-      message: error.message,
     });
   }
 };
+
 
 export const logout = (req, res) => {
   try {
@@ -109,6 +117,20 @@ export const logout = (req, res) => {
     });
   }
 };
+
+export const getUser = async (req, res, next) => {
+  try {
+    const user = req.user;
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    next(error); 
+  }
+};
+
 
 export const updateProfile = async (req, res) => {
   try {

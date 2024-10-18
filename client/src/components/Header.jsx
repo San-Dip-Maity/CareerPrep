@@ -4,36 +4,39 @@ import { Menu, X, Sun, Moon, User, LogOut } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme, setTheme, detectSystemTheme } from "../redux/themeSlice";
-import { AUTH_API_END_POINT } from "../utils/constUtils";
+import { logout, clearAllUserErrors } from "../redux/authSlice";
 import { toast } from "react-hot-toast";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { loading, isAuthenticated, error, user } = useSelector(
+    (state) => state.user
+  );
+
   const dispatch = useDispatch();
+  const navigateTo = useNavigate();
   const navigate = useNavigate();
 
-  const { user } = useSelector((store) => store.auth);
+  const handleLogout = () => {
+    dispatch(logout());
+    toast.success("Logged out successfully.");
+  };
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(clearAllUserErrors());
+    }
+    if (!isAuthenticated) {
+      navigateTo("/");
+    }
+  }, [dispatch, error, loading, isAuthenticated]);
+
   const isDarkMode = useSelector((state) => state.theme.isDarkMode);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleUserMenu = () => setIsUserMenuOpen(!isUserMenuOpen);
-  const logoutHandler = async () => {
-    try {
-      const res = await axios.get(`${AUTH_API_END_POINT}/logout`, {
-        withCredentials: true,
-      });
-      if (res.data.success) {
-        dispatch(setUser(null));
-        navigate("/");
-        toast.success(res.data.message);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(error.response.data.message);
-    }
-  };
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -181,7 +184,7 @@ const Header = () => {
               )}
             </button>
             
-            {user ? (
+            {isAuthenticated ? (
               <div className="relative">
                 <button
                   onClick={toggleUserMenu}
@@ -199,7 +202,7 @@ const Header = () => {
                       View Profile
                     </button>
                     <button
-                      onClick={logoutHandler}
+                      onClick={handleLogout}
                       className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       <LogOut size={16} className="mr-2" />

@@ -3,10 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Facebook, Linkedin, Eye, EyeOff, Loader2, Upload } from "lucide-react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
-import { AUTH_API_END_POINT } from "../utils/constUtils";
-import { setLoading } from "../redux/authSlice";
-import toast, { Toaster } from "react-hot-toast";
+import { signup, clearAllUserErrors } from "../redux/authSlice";
+import toast from "react-hot-toast";
 
 export default function SignupPage() {
   const [input, setInput] = useState({
@@ -20,16 +18,9 @@ export default function SignupPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { loading, user } = useSelector((store) => store.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
-
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user, navigate]);
 
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
@@ -51,6 +42,10 @@ export default function SignupPage() {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  const { loading, isAuthenticated, error, message } = useSelector(
+    (state) => state.user
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (input.password !== input.confirmPassword) {
@@ -66,30 +61,18 @@ export default function SignupPage() {
     if (input.file) {
       formData.append("file", input.file);
     }
-
-    try {
-      dispatch(setLoading(true));
-      const res = await axios.post(`${AUTH_API_END_POINT}signup`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-      });
-
-      if (res.data.success) {
-        navigate("/login");
-        toast.success(res.data.message);
-      }
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
-        toast.error(error.response.data.message);
-      } else {
-        
-        toast.error("An error occurred. Please try again.");
-        console.error("Error details:", error); 
-      }
-    } finally {
-      dispatch(setLoading(false));
-    }
+    dispatch(signup(formData));
   };
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(clearAllUserErrors());
+    }
+    // if (isAuthenticated && !error) {
+    //   navigate("/");
+    // }
+  }, [dispatch, error, loading, isAuthenticated, message]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
