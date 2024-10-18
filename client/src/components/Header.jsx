@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme, setTheme, detectSystemTheme } from "../redux/themeSlice";
 import { AUTH_API_END_POINT } from "../utils/constUtils";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
