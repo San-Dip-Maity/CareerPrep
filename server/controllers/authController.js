@@ -6,46 +6,64 @@ import generateTokenAndSetCookie from "../token/generateToken.js";
 export const signup = async (req, res) => {
   try {
     const { fullName, email, mobileNumber, password, role } = req.body;
-     
+
     if (!fullName || !email || !mobileNumber || !password || !role) {
-        return res.status(400).json({
-            message: "Please fill in all fields",
-            success: false
-        });
-    };
+      return res.status(400).json({
+        message: "Please fill in all fields",
+        success: false,
+      });
+    }
+
     const file = req.file;
+    if (!file) {
+      return res.status(400).json({ message: "File not uploaded" });
+    }
+
     const fileUri = getDataUri(file);
     const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
-    const user = await User.findOne({ email });
-    if (user) {
-        return res.status(400).json({
-            message: 'User already exist with this email.',
-            success: false,
-        })
+    // Check if user exists with the same email
+    const userByEmail = await User.findOne({ email });
+    if (userByEmail) {
+      return res.status(400).json({
+        message: "User already exists with this email.",
+        success: false,
+      });
     }
-   
-    
 
+    // Check if user exists with the same mobile number
+    const userByMobile = await User.findOne({ mobileNumber });
+    if (userByMobile) {
+      return res.status(400).json({
+        message: "User already exists with this mobile number.",
+        success: false,
+      });
+    }
+
+    // Create new user
     await User.create({
       fullName,
-        email,
-        mobileNumber,
-        password,
-        role,
-        profile:{
-            profilePhoto:cloudResponse.secure_url,
-        }
+      email,
+      mobileNumber,
+      password,
+      role,
+      profile: {
+        profilePhoto: cloudResponse.secure_url,
+      },
     });
 
     return res.status(201).json({
-        message: "Account created successfully.",
-        success: true
+      message: "Account created successfully.",
+      success: true,
     });
-} catch (error) {
+  } catch (error) {
     console.log(error);
-}
-}
+    return res.status(500).json({
+      message: "Something went wrong",
+      success: false,
+    });
+  }
+};
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -72,12 +90,10 @@ export const login = async (req, res) => {
     res.status(200).json({ message: "Login successful" });
   } catch (error) {
     console.log("Error in login controller", error.message);
-    res
-      .status(500)
-      .json({
-        message: "Server error. Please try again later.",
-        message: error.message,
-      });
+    res.status(500).json({
+      message: "Server error. Please try again later.",
+      message: error.message,
+    });
   }
 };
 
@@ -87,12 +103,10 @@ export const logout = (req, res) => {
     res.status(200).json({ message: "Logout sucessfully" });
   } catch (error) {
     console.log("Error in Logout controller", error.message);
-    res
-      .status(500)
-      .json({
-        error: "Server error. Please try again later.",
-        message: error.message,
-      });
+    res.status(500).json({
+      error: "Server error. Please try again later.",
+      message: error.message,
+    });
   }
 };
 
