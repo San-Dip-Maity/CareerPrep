@@ -96,13 +96,13 @@ export const login = async (req, res) => {
         role: user.role,
       },
     });
-  } catch (error) {
-    console.log("Error in login controller", error.message);
-    return res.status(500).json({
-      message: "Server error. Please try again later.",
-    });
-  }
-};
+    } catch (error) {
+      console.log("Error in login controller", error.message);
+      return res.status(500).json({
+        message: "Server error. Please try again later.",
+      });
+    }
+  };
 
 
 export const logout = (req, res) => {

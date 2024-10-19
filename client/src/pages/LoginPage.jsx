@@ -4,31 +4,33 @@ import { Facebook, Linkedin, Eye, EyeOff, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { login, clearAllUserErrors } from "../redux/authSlice";
+import { useForm } from "react-hook-form"; // Import useForm
 import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  
+  // Use useForm hook
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const { loading, isAuthenticated, error } = useSelector(
     (state) => state.user
   );
 
-
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const handleLogin = (data) => {
     const formData = new FormData();
-    formData.append("email", email);
-    formData.append("password", password);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
     dispatch(login(formData));
-
   };
 
-  // Actual login logic using Axios
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -39,7 +41,6 @@ export default function LoginPage() {
       navigate("/");
     }
   }, [dispatch, error, loading, isAuthenticated]);
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
@@ -58,33 +59,41 @@ export default function LoginPage() {
               Welcome back! Please enter your details.
             </p>
 
-            <form onSubmit={handleLogin} className="space-y-4">
+            {/* Use handleSubmit to handle form submission */}
+            <form onSubmit={handleSubmit(handleLogin)} className="space-y-4">
               <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Email ID / Username
                 </label>
                 <input
                   id="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  {...register("email", { required: "Email is required" })}
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   placeholder="Enter email id / username"
                 />
+                {errors.email && (
+                  <p className="text-sm text-red-500">{errors.email.message}</p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
                   Password
                 </label>
                 <div className="relative">
                   <input
                     id="password"
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     type={showPassword ? "text" : "password"}
+                    {...register("password", { required: "Password is required" })}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     placeholder="Enter password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <button
                     type="button"
@@ -94,6 +103,9 @@ export default function LoginPage() {
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
+                {errors.password && (
+                  <p className="text-sm text-red-500">{errors.password.message}</p>
+                )}
               </div>
 
               {!loading ? (
@@ -101,7 +113,8 @@ export default function LoginPage() {
                   disabled
                   className="w-full p-2 bg-purple-600 text-white flex items-center justify-center rounded-md"
                 >
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Logging
+                  in...
                 </button>
               ) : (
                 <button
@@ -115,7 +128,10 @@ export default function LoginPage() {
 
             <p className="text-sm text-gray-600 dark:text-gray-300 mt-6 text-center">
               Don't have an account?{" "}
-              <Link className="text-purple-600 hover:underline dark:text-purple-400" to="/signup">
+              <Link
+                className="text-purple-600 hover:underline dark:text-purple-400"
+                to="/signup"
+              >
                 Register here
               </Link>
             </p>

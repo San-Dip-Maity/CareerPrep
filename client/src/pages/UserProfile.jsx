@@ -252,15 +252,19 @@ const UserProfile = () => {
                   )) || <p>No experience available.</p>
                 ) : (
                   <ul className="list-disc ml-6 space-y-2 text-gray-600 dark:text-gray-300">
-                    {user.experiences?.map((job, index) => (
+                  {user.experiences?.length > 0 ? (
+                    user.experiences.map((job, index) => (
                       <li key={index}>
-                        <strong>{experiences.title}</strong> at {job.company}{" "}
+                        <strong>{job.title}</strong> at {job.company}{" "}
                         <span className="text-gray-500 dark:text-gray-400">
                           ({job.period})
                         </span>
                       </li>
-                    )) || <p>No experience to display.</p>}
-                  </ul>
+                    ))
+                  ) : (
+                    <p>No experience to display.</p>
+                  )}
+                </ul>                
                 )}
               </div>
 

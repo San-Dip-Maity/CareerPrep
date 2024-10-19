@@ -2,7 +2,6 @@ import {
   createBrowserRouter,
   Outlet,
   RouterProvider,
-  Navigate,
 } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./App.css";
@@ -22,10 +21,9 @@ import Dashboard from "./pages/interview/Dashboard";
 import StartInterview from "./pages/interview/StartInterview";
 import UserProfile from "./pages/UserProfile";
 import Profile from "./pages/Profile";
-import {Toaster} from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { getUser } from "./redux/authSlice";
-
 
 const Layout = () => {
   return (
@@ -37,12 +35,10 @@ const Layout = () => {
   );
 };
 
-
 const App = () => {
   const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
-
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -63,24 +59,15 @@ const App = () => {
         },
         {
           path: "/profile",
-          element: (
-            
-              <Profile />
-          ),
+          element: <Profile />,
         },
         {
           path: "/profile/:id",
-          element: (
-              <UserProfile />
-          ),
+          element: <UserProfile />,
         },
         {
           path: "/jobsearch",
-          element: (
-            
-              <JobSearch />
-           
-          ),
+          element: <JobSearch />,
         },
         {
           path: "/Employers",
@@ -96,27 +83,15 @@ const App = () => {
         },
         {
           path: "/mockInterview",
-          element: (
-            
-              <MockInterview />
-            
-          ),
+          element: <MockInterview />,
         },
         {
           path: "/mockInterview/dashboard",
-          element: (
-           
-              <Dashboard />
-            
-          ),
+          element: <Dashboard />,
         },
         {
           path: "/mockInterview/startInterview",
-          element: (
-            
-              <StartInterview />
-            
-          ),
+          element: <StartInterview />,
         },
         {
           path: "/login",
@@ -143,7 +118,7 @@ const App = () => {
       ) : (
         <RouterProvider router={router} />
       )}
-      <Toaster position="top-right" />
+      <Toaster position="bottom-right" />
     </>
   );
 };
