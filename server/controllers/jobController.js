@@ -1,4 +1,5 @@
 import Job from "../models/JobSchema.js";
+import User from "../models/UserSchema.js";
 
 export const postJobs = async (req, res) => {
     try {
@@ -81,5 +82,38 @@ export const getJobs = async (req,res) => {
     } catch (error) {
         console.log("Error in getJobs controller", error.message);
         res.status(500).json({ success: false, message: "Failed to fetch jobs" });
+    }
+};
+
+export const adminCheckJobCount = async (req, res) => {
+    try {
+        const adminId = req.id;
+
+        const admin  = await User.findById(adminId);
+        if(!admin || admin.role !== "admin"){
+            return res.status(403).json({message: "You are not authorized to perform this action."});
+        }
+
+        const jobCount = await Job.find({created_by: adminId}).populate({
+            path: "company",
+            createdAt: -1
+        });
+
+        if(!jobCount){
+            return res.status(404).json({
+                message: "No jobs found.",
+                success: false
+            });
+        };
+
+        return res.status(200).json({
+            message: "Job count retrieved successfully.",
+            jobCount,
+            success: true
+        });
+    } catch (error) {
+        console.log("Error in adminCheckJobCount controller", error.message);
+        res.status(500).json({ error: "Failed to retrieve job count" , success: false});
+        
     }
 };
