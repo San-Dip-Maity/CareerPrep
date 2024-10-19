@@ -124,7 +124,7 @@ export default function Home() {
               sift="Full time"
               salary="20,000 INR - 25,000 INR"
               applicants="10+"
-              logo="companiesLogo/google.svg"
+              logo=""
             />
             <JobCard
               title="Senior UI/UX Designer"
@@ -133,7 +133,7 @@ export default function Home() {
               sift="Part time"
               salary="$30,000 - $55,000"
               applicants="9+"
-              logo="companiesLogo/microsoft.svg"
+              logo=""
             />
             <JobCard
               title="Marketing Officer"
@@ -142,7 +142,7 @@ export default function Home() {
               sift="Full time"
               salary="15,000 INR - 35,000 INR"
               applicants="30+"
-              logo="companiesLogo/ibm.svg"
+              logo=""
             />
           </div>
 
