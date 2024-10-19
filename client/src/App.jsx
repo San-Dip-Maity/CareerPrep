@@ -24,6 +24,7 @@ import Profile from "./pages/Profile";
 import { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { getUser } from "./redux/authSlice";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const Layout = () => {
   return (
@@ -59,19 +60,35 @@ const App = () => {
         },
         {
           path: "/profile",
-          element: <Profile />,
+          element: (
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/profile/:id",
-          element: <UserProfile />,
+          element: (
+            <ProtectedRoute>
+              <UserProfile />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/jobsearch",
-          element: <JobSearch />,
+          element: (
+            <ProtectedRoute>
+              <JobSearch />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/Employers",
-          element: <Employers />,
+          element: (
+            <ProtectedRoute>
+              <Employers />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/About",
@@ -83,19 +100,31 @@ const App = () => {
         },
         {
           path: "/mockInterview",
-          element: <MockInterview />,
+          element: (
+            <ProtectedRoute>
+              <MockInterview />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/mockInterview/dashboard",
-          element: <Dashboard />,
+          element: (
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/mockInterview/startInterview",
-          element: <StartInterview />,
+          element: (
+            <ProtectedRoute>
+              <StartInterview />
+            </ProtectedRoute>
+          ),
         },
         {
           path: "/login",
-          element: <LoginPage />, 
+          element: <LoginPage />,
         },
         {
           path: "/signup",
