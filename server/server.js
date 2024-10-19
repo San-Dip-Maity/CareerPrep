@@ -11,7 +11,7 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 const corsOptions = {
-  origin: process.env.REACT_APP_API_URL,
+  origin: process.env.REACT_APP_API_URL || "https://career-prep.vercel.app",
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
