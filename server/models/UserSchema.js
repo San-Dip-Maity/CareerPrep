@@ -5,14 +5,17 @@ const experienceSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
+    default: "Software Engineer",
   },
   company: {
     type: String,
     required: true,
+    default: "This is my first name",
   },
   period: {
     type: String,
     required: true,
+    default: "This is my first name✅",
   },
 });
 
@@ -37,6 +40,9 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true,
     maxLength: 50,
+  },
+  title: {
+    type: String,
   },
   email: {
     type: String,
@@ -66,6 +72,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["student", "recruiter"],
     default: "student",
+  },
+  about: { 
+    type: String 
+  },
+  location: { 
+    type: String,
+    default: "India"
   },
   profile: {
     bio: { type: String },

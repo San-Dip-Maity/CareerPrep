@@ -93,7 +93,7 @@ export const login = async (req, res) => {
         id: user._id,
         email: user.email,
         fullName: user.fullName,
-        role: user.role,  
+        role: user.role,
       },
     });
   } catch (error) {
@@ -120,21 +120,54 @@ export const logout = (req, res) => {
 
 export const getUser = async (req, res, next) => {
   try {
-    const user = req.user;
+    
+    const userId = req.user._id;
 
-    res.status(200).json({
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found.",
+        success: false,
+      });
+    }
+
+    // Return all the user's details
+    return res.status(200).json({
       success: true,
-      user,
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        mobileNumber: user.mobileNumber,
+        role: user.role,
+        about: user.about,
+        location: user.location,
+        profilePhoto: user.profile.profilePhoto,
+        bio: user.profile.bio,
+        skills: user.profile.skills,
+        applications: user.applications,
+        experiences: user.profile.experience,
+        educations: user.profile.education,
+        resume: user.profile.resume,
+        resumeOriginalName: user.profile.resumeOriginalName,
+      },
     });
   } catch (error) {
-    next(error); 
+    console.error("Error retrieving user profile:", error);
+    return res.status(500).json({
+      message: "Internal server error.",
+      success: false,
+    });
   }
 };
 
 
+
+
 export const updateProfile = async (req, res) => {
   try {
-    const { fullname, email, phoneNumber, bio, skills, education, experience } =
+    const { fullname, email, mobileNumber, bio, skills, education, experience } =
       req.body;
     const file = req.file;
 

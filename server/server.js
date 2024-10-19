@@ -4,12 +4,15 @@ import cors from "cors";
 import { connectDB } from "./lib/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
 const corsOptions = {
   origin: "http://localhost:5173",
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 };
 

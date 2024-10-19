@@ -16,7 +16,6 @@ const Header = () => {
   );
 
   const dispatch = useDispatch();
-  const navigateTo = useNavigate();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -29,7 +28,7 @@ const Header = () => {
       dispatch(clearAllUserErrors());
     }
     if (!isAuthenticated) {
-      navigateTo("/");
+      navigate("/");
     }
   }, [dispatch, error, loading, isAuthenticated]);
 
@@ -125,6 +124,18 @@ const Header = () => {
               >
                 Find Jobs
               </NavLink>
+              {isAuthenticated && (
+                  <>
+                    {" "}
+                    <Link
+                      to="/mockInterview"
+                      className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                      onClick={toggleMenu}
+                    >
+                      Mock Interview
+                    </Link>
+                  </>
+                )}
               {user && user.role === "recruiter" && (
                 <>
                   <NavLink
@@ -136,17 +147,6 @@ const Header = () => {
                     }
                   >
                     Employers
-                  </NavLink>
-
-                  <NavLink
-                    to="/mockInterview"
-                    className={({ isActive }) =>
-                      isActive
-                        ? "text-purple-600 dark:text-purple-400"
-                        : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
-                    }
-                  >
-                    Mock Interview
                   </NavLink>
                 </>
               )}
@@ -183,7 +183,7 @@ const Header = () => {
                 <Moon size={20} className="text-gray-800" />
               )}
             </button>
-            
+
             {isAuthenticated ? (
               <div className="relative">
                 <button
@@ -253,6 +253,18 @@ const Header = () => {
                 >
                   Find Jobs
                 </Link>
+                {isAuthenticated && (
+                  <>
+                    {" "}
+                    <Link
+                      to="/mockInterview"
+                      className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                      onClick={toggleMenu}
+                    >
+                      Mock Interview
+                    </Link>
+                  </>
+                )}
                 {user && user.role === "recruiter" && (
                   <>
                     <Link
@@ -264,13 +276,6 @@ const Header = () => {
                       }
                     >
                       Employers
-                    </Link>
-                    <Link
-                      to="/mockInterview"
-                      className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
-                      onClick={toggleMenu}
-                    >
-                      Mock Interview
                     </Link>
                   </>
                 )}

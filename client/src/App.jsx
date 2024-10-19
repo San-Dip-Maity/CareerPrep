@@ -23,6 +23,8 @@ import StartInterview from "./pages/interview/StartInterview";
 import UserProfile from "./pages/UserProfile";
 import Profile from "./pages/Profile";
 import {Toaster} from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { getUser } from "./redux/authSlice";
 
 
 const Layout = () => {
@@ -35,22 +37,16 @@ const Layout = () => {
   );
 };
 
-// ProtectedRoute component to restrict access to authenticated users
-const ProtectedRoute = ({ isAuth, children }) => {
-  if (isAuth === null) return null; // Still checking auth state
-  return isAuth ? children : <Navigate to="/login" />;
-};
 
 const App = () => {
-  const [isAuth, setAuth] = useState(null); // Authentication state
   const [loading, setLoading] = useState(true);
 
-  // Simulate authentication check
+  const dispatch = useDispatch();
+
+
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Check if the user is authenticated (can be from localStorage or API call)
-      const storedAuth = localStorage.getItem("isAuth"); // Example: stored auth state
-      setAuth(storedAuth === "true"); // Assuming the auth state is saved as a boolean string
+      dispatch(getUser());
       setLoading(false);
     }, 2000);
     return () => clearTimeout(timer);
@@ -68,25 +64,22 @@ const App = () => {
         {
           path: "/profile",
           element: (
-            <ProtectedRoute isAuth={isAuth}>
+            
               <Profile />
-            </ProtectedRoute>
           ),
         },
         {
           path: "/profile/:id",
           element: (
-            <ProtectedRoute isAuth={isAuth}>
               <UserProfile />
-            </ProtectedRoute>
           ),
         },
         {
           path: "/jobsearch",
           element: (
-            <ProtectedRoute isAuth={isAuth}>
+            
               <JobSearch />
-            </ProtectedRoute>
+           
           ),
         },
         {
@@ -104,30 +97,30 @@ const App = () => {
         {
           path: "/mockInterview",
           element: (
-            <ProtectedRoute isAuth={isAuth}>
+            
               <MockInterview />
-            </ProtectedRoute>
+            
           ),
         },
         {
           path: "/mockInterview/dashboard",
           element: (
-            <ProtectedRoute isAuth={isAuth}>
+           
               <Dashboard />
-            </ProtectedRoute>
+            
           ),
         },
         {
           path: "/mockInterview/startInterview",
           element: (
-            <ProtectedRoute isAuth={isAuth}>
+            
               <StartInterview />
-            </ProtectedRoute>
+            
           ),
         },
         {
           path: "/login",
-          element: <LoginPage setAuth={setAuth} />, // Pass setAuth to handle login
+          element: <LoginPage />, // Pass setAuth to handle login
         },
         {
           path: "/signup",

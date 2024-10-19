@@ -48,8 +48,11 @@ export default function SignupPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form submitted:", input);
+    
     if (input.password !== input.confirmPassword) {
       toast.error("Passwords do not match");
+      
       return;
     }
     const formData = new FormData();
@@ -57,6 +60,7 @@ export default function SignupPage() {
     formData.append("email", input.email);
     formData.append("mobileNumber", input.mobileNumber);
     formData.append("password", input.password);
+    formData.append("confirmPassword", input.confirmPassword);
     formData.append("role", input.role);
     if (input.file) {
       formData.append("file", input.file);
@@ -66,10 +70,11 @@ export default function SignupPage() {
 
   useEffect(() => {
     if (error) {
-      toast.error(error);
+      toast.error(error);      
       dispatch(clearAllUserErrors());
     }
-    if (isAuthenticated && !error) {
+    if (isAuthenticated) {
+      toast.success(message);
       navigate("/");
     }
   }, [dispatch, error, loading, isAuthenticated, message]);
@@ -277,25 +282,14 @@ export default function SignupPage() {
                 </button>
               </div>
             </div>
-            <div className="flex items-center">
-              {loading ? (
-                <button
-                  type="button"
-                  disabled
-                  className="w-full bg-purple-600 text-white py-2 rounded-md flex justify-center items-center"
-                >
-                  <Loader2 className="animate-spin h-5 w-5" />
-                  <span className="ml-2">Signing up...</span>
-                </button>
-              ) : (
+
                 <button
                   type="submit"
+                  
                   className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700"
                 >
                   Sign up
                 </button>
-              )}
-            </div>
           </motion.form>
         </div>
         <motion.div

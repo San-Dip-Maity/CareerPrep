@@ -4,14 +4,13 @@ import { Facebook, Linkedin, Eye, EyeOff, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { login, clearAllUserErrors } from "../redux/authSlice";
-import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigateTo = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -36,7 +35,8 @@ export default function LoginPage() {
       dispatch(clearAllUserErrors());
     }
     if (isAuthenticated) {
-      navigateTo("/");
+      toast.success("Logged in successfully");
+      navigate("/");
     }
   }, [dispatch, error, loading, isAuthenticated]);
 
@@ -96,7 +96,7 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {loading ? (
+              {!loading ? (
                 <button
                   disabled
                   className="w-full p-2 bg-purple-600 text-white flex items-center justify-center rounded-md"

@@ -134,6 +134,7 @@ export const getUser = () => async (dispatch) => {
       `${AUTH_API_END_POINT}getuser`,
       {
         withCredentials: true,
+        credentials: "include",
       }
     );
     dispatch(authSlice.actions.fetchUserSuccess(response.data.user));

@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { updateUser } from "../redux/userSlice";
 import { Camera, FileText, BarChart2, Upload } from "lucide-react";
 import {
   BarChart,
@@ -16,7 +15,7 @@ import {
 } from "recharts";
 
 const UserProfile = () => {
-  const user = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [showResume, setShowResume] = useState(false);
@@ -80,7 +79,7 @@ const UserProfile = () => {
             <div className="md:mb-[30rem] relative">
               <img
                 className="h-48 w-48 object-cover rounded-full border-4 border-white dark:border-gray-700 shadow-lg"
-                src={user.img}
+                src={user.profilePhoto}
                 alt="User avatar"
               />
               {isEditing && (
@@ -112,12 +111,12 @@ const UserProfile = () => {
                   <input
                     type="text"
                     name="name"
-                    value={user.name}
+                    value={user.fullName}
                     onChange={handleChange}
                     className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full sm:w-auto"
                   />
                 ) : (
-                  user.name
+                  user.fullName
                 )}
               </motion.h1>
               {isEditing ? (
@@ -163,12 +162,12 @@ const UserProfile = () => {
                   <input
                     type="text"
                     name="phone"
-                    value={user.phone}
+                    value={user.mobileNumber}
                     onChange={handleChange}
                     className="bg-gray-100 dark:bg-gray-700 dark:text-white p-1 rounded-md"
                   />
                 ) : (
-                  <p>{user.phone}</p>
+                  <p className="text-gray-600 dark:text-gray-300">{user.mobileNumber}</p>
                 )}
               </div>
 
@@ -201,7 +200,7 @@ const UserProfile = () => {
                   <input
                     type="text"
                     name="skills"
-                    value={user.skills.join(", ")}
+                    value={user.skills?.join(", ") || ""}
                     onChange={(e) =>
                       dispatch(
                         updateUser({
@@ -215,14 +214,14 @@ const UserProfile = () => {
                   />
                 ) : (
                   <div className="flex flex-wrap gap-2">
-                    {user.skills.map((skill, index) => (
+                    {user.skills?.map((skill, index) => (
                       <span
                         key={index}
                         className="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300"
                       >
                         {skill}
                       </span>
-                    ))}
+                    )) || <p className="text-gray-600 dark:text-gray-300">No skills available.</p>}
                   </div>
                 )}
               </div>
@@ -233,14 +232,14 @@ const UserProfile = () => {
                   Experience
                 </h2>
                 {isEditing ? (
-                  user.experience.map((job, index) => (
+                  user.experiences?.map((job, index) => (
                     <div key={index} className="mb-2 space-y-2">
                       <input
                         type="text"
                         name={`experience-${index}-title`}
-                        value={job.title}
+                        value={job.title || ""}
                         onChange={(e) => {
-                          const updatedExperience = [...user.experience];
+                          const updatedExperience = [...user.experiences];
                           updatedExperience[index].title = e.target.value;
                           dispatch(
                             updateUser({ experience: updatedExperience })
@@ -248,44 +247,19 @@ const UserProfile = () => {
                         }}
                         className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full"
                       />
-                      <input
-                        type="text"
-                        name={`experience-${index}-company`}
-                        value={job.company}
-                        onChange={(e) => {
-                          const updatedExperience = [...user.experience];
-                          updatedExperience[index].company = e.target.value;
-                          dispatch(
-                            updateUser({ experience: updatedExperience })
-                          );
-                        }}
-                        className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full"
-                      />
-                      <input
-                        type="text"
-                        name={`experience-${index}-period`}
-                        value={job.period}
-                        onChange={(e) => {
-                          const updatedExperience = [...user.experience];
-                          updatedExperience[index].period = e.target.value;
-                          dispatch(
-                            updateUser({ experience: updatedExperience })
-                          );
-                        }}
-                        className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full"
-                      />
+                      
                     </div>
-                  ))
+                  )) || <p>No experience available.</p>
                 ) : (
                   <ul className="list-disc ml-6 space-y-2 text-gray-600 dark:text-gray-300">
-                    {user.experience.map((job, index) => (
+                    {user.experiences?.map((job, index) => (
                       <li key={index}>
-                        <strong>{job.title}</strong> at {job.company}{" "}
+                        <strong>{experiences.title}</strong> at {job.company}{" "}
                         <span className="text-gray-500 dark:text-gray-400">
                           ({job.period})
                         </span>
                       </li>
-                    ))}
+                    )) || <p>No experience to display.</p>}
                   </ul>
                 )}
               </div>
@@ -296,12 +270,12 @@ const UserProfile = () => {
                   Education
                 </h2>
                 {isEditing ? (
-                  user.education.map((edu, index) => (
+                  user.education?.map((edu, index) => (
                     <div key={index} className="mb-2 space-y-2">
                       <input
                         type="text"
                         name={`education-${index}-degree`}
-                        value={edu.degree}
+                        value={edu.degree || ""}
                         onChange={(e) => {
                           const updatedEducation = [...user.education];
                           updatedEducation[index].degree = e.target.value;
@@ -309,43 +283,23 @@ const UserProfile = () => {
                         }}
                         className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full"
                       />
-                      <input
-                        type="text"
-                        name={`education-${index}-school`}
-                        value={edu.school}
-                        onChange={(e) => {
-                          const updatedEducation = [...user.education];
-                          updatedEducation[index].school = e.target.value;
-                          dispatch(updateUser({ education: updatedEducation }));
-                        }}
-                        className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full"
-                      />
-                      <input
-                        type="text"
-                        name={`education-${index}-year`}
-                        value={edu.year}
-                        onChange={(e) => {
-                          const updatedEducation = [...user.education];
-                          updatedEducation[index].year = e.target.value;
-                          dispatch(updateUser({ education: updatedEducation }));
-                        }}
-                        className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full"
-                      />
+                      {/* Other inputs here */}
                     </div>
-                  ))
+                  )) || <p>No education available.</p>
                 ) : (
                   <ul className="list-disc ml-6 space-y-2 text-gray-600 dark:text-gray-300">
-                    {user.education.map((edu, index) => (
+                    {user.education?.map((edu, index) => (
                       <li key={index}>
                         <strong>{edu.degree}</strong>, {edu.school}{" "}
                         <span className="text-gray-500 dark:text-gray-400">
                           ({edu.year})
                         </span>
                       </li>
-                    ))}
+                    )) || <p>No education to display.</p>}
                   </ul>
                 )}
               </div>
+
             </div>
 
             {/* Resume Buttons */}
