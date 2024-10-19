@@ -95,7 +95,7 @@ const App = () => {
         },
         {
           path: "/login",
-          element: <LoginPage />, // Pass setAuth to handle login
+          element: <LoginPage />, 
         },
         {
           path: "/signup",
