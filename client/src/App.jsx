@@ -46,7 +46,7 @@ const App = () => {
       setLoading(false);
     }, 2000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [loading, dispatch]);
 
   const router = createBrowserRouter([
     {

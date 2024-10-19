@@ -125,17 +125,17 @@ const Header = () => {
                 Find Jobs
               </NavLink>
               {isAuthenticated && (
-                  <>
-                    {" "}
-                    <Link
-                      to="/mockInterview"
-                      className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
-                      onClick={toggleMenu}
-                    >
-                      Mock Interview
-                    </Link>
-                  </>
-                )}
+                <>
+                  {" "}
+                  <Link
+                    to="/mockInterview"
+                    className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                    onClick={toggleMenu}
+                  >
+                    Mock Interview
+                  </Link>
+                </>
+              )}
               {user && user.role === "recruiter" && (
                 <>
                   <NavLink
@@ -213,12 +213,16 @@ const Header = () => {
               </div>
             ) : (
               <div className="flex items-center justify-center gap-3">
-                <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
-                  <Link to="/login">Login</Link>
-                </button>
-                <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
-                  <Link to="/signup">SignUp</Link>
-                </button>
+                <Link to="/login">
+                  <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
+                    Login
+                  </button>
+                </Link>
+                <Link to="/signup">
+                  <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600">
+                    SignUp
+                  </button>
+                </Link>
               </div>
             )}
           </div>
@@ -327,18 +331,22 @@ const Header = () => {
                   </>
                 ) : (
                   <div className="flex items-center justify-center gap-6">
-                    <button
-                      className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
-                      onClick={toggleMenu}
-                    >
-                      <Link to="/login">Login</Link>
-                    </button>
-                    <button
-                      className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
-                      onClick={toggleMenu}
-                    >
-                      <Link to="/signup">SignUp</Link>
-                    </button>
+                    <Link to="/login">
+                      <button
+                        className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
+                        onClick={toggleMenu}
+                      >
+                        Login
+                      </button>
+                    </Link>
+                    <Link to="/signup">
+                      <button
+                        className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
+                        onClick={toggleMenu}
+                      >
+                        SignUp
+                      </button>
+                    </Link>
                   </div>
                 )}
               </div>
