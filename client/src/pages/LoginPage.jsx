@@ -3,34 +3,28 @@ import { Link, useNavigate } from "react-router-dom";
 import { Facebook, Linkedin, Eye, EyeOff, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form"; // Import form hook
 import { login, clearAllUserErrors } from "../redux/authSlice";
-import { useForm } from "react-hook-form"; // Import useForm
 import toast from "react-hot-toast";
 
 export default function LoginPage() {
+  const { register, handleSubmit, formState: { errors } } = useForm(); // Initialize form hook
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
-  // Use useForm hook
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { loading, isAuthenticated, error } = useSelector((state) => state.user);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
-  const { loading, isAuthenticated, error } = useSelector(
-    (state) => state.user
-  );
 
-  const handleLogin = (data) => {
+  // Handle login form submission
+  const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("email", data.email);
     formData.append("password", data.password);
     dispatch(login(formData));
   };
 
+  // Handle authentication logic
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -40,7 +34,7 @@ export default function LoginPage() {
       toast.success("Logged in successfully");
       navigate("/");
     }
-  }, [dispatch, error, loading, isAuthenticated]);
+  }, [dispatch, error, isAuthenticated]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
@@ -59,8 +53,7 @@ export default function LoginPage() {
               Welcome back! Please enter your details.
             </p>
 
-            {/* Use handleSubmit to handle form submission */}
-            <form onSubmit={handleSubmit(handleLogin)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <label
                   htmlFor="email"
@@ -76,7 +69,7 @@ export default function LoginPage() {
                   placeholder="Enter email id / username"
                 />
                 {errors.email && (
-                  <p className="text-sm text-red-500">{errors.email.message}</p>
+                  <span className="text-red-500">{errors.email.message}</span>
                 )}
               </div>
 
@@ -90,9 +83,9 @@ export default function LoginPage() {
                 <div className="relative">
                   <input
                     id="password"
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     type={showPassword ? "text" : "password"}
                     {...register("password", { required: "Password is required" })}
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                     placeholder="Enter password"
                   />
                   <button
@@ -104,7 +97,7 @@ export default function LoginPage() {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-sm text-red-500">{errors.password.message}</p>
+                  <span className="text-red-500">{errors.password.message}</span>
                 )}
               </div>
 
@@ -113,8 +106,7 @@ export default function LoginPage() {
                   disabled
                   className="w-full p-2 bg-purple-600 text-white flex items-center justify-center rounded-md"
                 >
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Logging
-                  in...
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Logging in...
                 </button>
               ) : (
                 <button
@@ -128,10 +120,7 @@ export default function LoginPage() {
 
             <p className="text-sm text-gray-600 dark:text-gray-300 mt-6 text-center">
               Don't have an account?{" "}
-              <Link
-                className="text-purple-600 hover:underline dark:text-purple-400"
-                to="/signup"
-              >
+              <Link className="text-purple-600 hover:underline dark:text-purple-400" to="/signup">
                 Register here
               </Link>
             </p>
