@@ -85,6 +85,42 @@ export const getJobs = async (req,res) => {
     }
 };
 
+export const getJobById = async (req, res) => {
+    try {
+        const jobId = req.params.jobId;
+
+        const job = await Job.findById(jobId)
+        .populate({
+            path: "applications",
+            populate:{
+                path: "user",
+                select: "fullName email"
+            }
+        })
+        .populate("company","name location");
+
+        if(!job){
+            return res.status(404).json({
+                message: "Job not found.",
+                success: false
+            });
+        }
+
+        return res.status(200).json({
+            message: "Job fetched successfully.",
+            job,
+            success: true
+        });
+
+    } catch (error) {
+        console.log("Error in getJobById controller", error.message);
+        res.status(500).json({
+            message: "Server error. Please try again later.",
+            success: false
+        });
+    }
+}
+
 export const adminCheckJobCount = async (req, res) => {
     try {
         const adminId = req.id;
