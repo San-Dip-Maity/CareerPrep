@@ -21,7 +21,7 @@ app.use(cors(corsOptions));
 const PORT = process.env.PORT || 5000;
 
 app.get("/", (req,res)=>{
-  return res.json({message:"Hello"})
+  return res.send("AppName: CareerPrep")
 })
 app.use("/api/auth", authRoutes);
 app.use("/api/job", jobRoutes);
