@@ -57,7 +57,7 @@ export const signup = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.log(error);
+    console.log("Error in Signup controller", error.message);
     return res.status(500).json({
       message: "Something went wrong",
       success: false,
@@ -97,6 +97,7 @@ export const login = async (req, res) => {
       },
     });
     } catch (error) {
+      console.log("Error in Login controller", error.message);
       return res.status(500).json({
         message: "Server error. Please try again later.",
       });
@@ -208,7 +209,7 @@ export const updateProfile = async (req, res) => {
 
     const updatedUser = {
       _id: user._id,
-      fullname: user.fullname,
+      fullname: user.fullName,
       email: user.email,
       phoneNumber: user.phoneNumber,
       role: user.role,
