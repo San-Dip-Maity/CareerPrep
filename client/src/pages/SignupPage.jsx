@@ -1,37 +1,54 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Facebook, Linkedin, Eye, EyeOff, Loader2, Upload } from "lucide-react";
+import { Facebook, Linkedin, Eye, EyeOff, Upload } from "lucide-react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
+import { useForm } from "react-hook-form";
 import { signup, clearAllUserErrors } from "../redux/authSlice";
 import toast from "react-hot-toast";
 
 export default function SignupPage() {
-  const [input, setInput] = useState({
-    fullName: "",
-    email: "",
-    mobileNumber: "",
-    password: "",
-    confirmPassword: "",
-    role: "",
-    file: null,
-  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
-  const changeEventHandler = (e) => {
-    setInput({ ...input, [e.target.name]: e.target.value });
-  };
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    setValue,
+  } = useForm({
+    defaultValues: {
+      fullName: "",
+      email: "",
+      mobileNumber: "",
+      password: "",
+      confirmPassword: "",
+      role: "",
+      file: null,
+    },
+  });
 
-  const changeFileHandler = (e) => {
-    setInput({ ...input, file: e.target.files?.[0] });
-  };
+  const password = watch("password");
+
+  const { loading, isAuthenticated, error, message } = useSelector(
+    (state) => state.user
+  );
 
   const handleProfilePictureClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setValue("file", file);
+      setPreviewImage(URL.createObjectURL(file));
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -42,42 +59,28 @@ export default function SignupPage() {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
-  const { loading, isAuthenticated, error, message } = useSelector(
-    (state) => state.user
-  );
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Form submitted:", input);
-    
-    if (input.password !== input.confirmPassword) {
-      toast.error("Passwords do not match");
-      
-      return;
-    }
+  const onSubmit = (data) => {
     const formData = new FormData();
-    formData.append("fullName", input.fullName);
-    formData.append("email", input.email);
-    formData.append("mobileNumber", input.mobileNumber);
-    formData.append("password", input.password);
-    formData.append("confirmPassword", input.confirmPassword);
-    formData.append("role", input.role);
-    if (input.file) {
-      formData.append("file", input.file);
-    }
+    Object.keys(data).forEach((key) => {
+      if (key === "file" && data[key]) {
+        formData.append(key, data[key]);
+      } else if (key !== "file") {
+        formData.append(key, data[key]);
+      }
+    });
     dispatch(signup(formData));
   };
 
   useEffect(() => {
     if (error) {
-      toast.error(error);      
+      toast.error(error);
       dispatch(clearAllUserErrors());
     }
     if (isAuthenticated) {
       toast.success(message);
       navigate("/");
     }
-  }, [dispatch, error, loading, isAuthenticated, message]);
+  }, [dispatch, error, loading, isAuthenticated, message, navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
@@ -96,20 +99,12 @@ export default function SignupPage() {
           >
             Create your Account
           </motion.h1>
-          <motion.p
-            className="text-xl text-gray-600 dark:text-gray-300 mb-8"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-          >
-            Join us today! Fill in your details below.
-          </motion.p>
           <motion.form
             className="space-y-4"
+            onSubmit={handleSubmit(onSubmit)}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            onSubmit={handleSubmit}
           >
             <div className="flex flex-col items-center mb-4">
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -119,9 +114,9 @@ export default function SignupPage() {
                 className="w-32 h-32 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center cursor-pointer overflow-hidden"
                 onClick={handleProfilePictureClick}
               >
-                {input.file ? (
+                {previewImage ? (
                   <img
-                    src={URL.createObjectURL(input.file)}
+                    src={previewImage}
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />
@@ -134,63 +129,73 @@ export default function SignupPage() {
                 ref={fileInputRef}
                 className="hidden"
                 accept="image/*"
-                onChange={changeFileHandler}
+                onChange={handleFileChange}
               />
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                Click to upload a profile picture
-              </p>
             </div>
+
             <div>
-              <label
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                htmlFor="fullName"
-              >
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Full Name
               </label>
               <input
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                id="fullName"
-                name="fullName"
-                value={input.fullName || ""}
-                onChange={changeEventHandler}
-                placeholder="Enter your full name"
-                type="text"
+                {...register("fullName", {
+                  required: "Full name is required",
+                  minLength: {
+                    value: 2,
+                    message: "Name must be at least 2 characters long",
+                  },
+                })}
               />
+              {errors.fullName && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.fullName.message}
+                </p>
+              )}
             </div>
+
             <div>
-              <label
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                htmlFor="email"
-              >
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Email Address
               </label>
               <input
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                id="email"
-                name="email"
-                value={input.email || ""}
-                onChange={changeEventHandler}
-                placeholder="Enter your email address"
-                type="email"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Invalid email address",
+                  },
+                })}
               />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
+
             <div>
-              <label
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                htmlFor="mobileNumber"
-              >
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Mobile Number
               </label>
               <input
                 className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                id="mobileNumber"
-                name="mobileNumber"
-                value={input.mobileNumber || ""}
-                onChange={changeEventHandler}
-                placeholder="Enter your mobile number"
-                type="tel"
+                {...register("mobileNumber", {
+                  required: "Mobile number is required",
+                  pattern: {
+                    value: /^[0-9]{10}$/,
+                    message: "Please enter a valid 10-digit mobile number",
+                  },
+                })}
               />
+              {errors.mobileNumber && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.mobileNumber.message}
+                </p>
+              )}
             </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Choose Your Role
@@ -200,10 +205,8 @@ export default function SignupPage() {
                   <input
                     type="radio"
                     className="form-radio text-purple-600"
-                    name="role"
                     value="student"
-                    checked={input.role === "student"}
-                    onChange={changeEventHandler}
+                    {...register("role", { required: "Please select a role" })}
                   />
                   <span className="ml-2 dark:text-gray-300">Student</span>
                 </label>
@@ -211,31 +214,40 @@ export default function SignupPage() {
                   <input
                     type="radio"
                     className="form-radio text-purple-600"
-                    name="role"
                     value="recruiter"
-                    checked={input.role === "recruiter"}
-                    onChange={changeEventHandler}
+                    {...register("role", { required: "Please select a role" })}
                   />
                   <span className="ml-2 dark:text-gray-300">Recruiter</span>
                 </label>
               </div>
+              {errors.role && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.role.message}
+                </p>
+              )}
             </div>
+
             <div>
-              <label
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                htmlFor="password"
-              >
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Password
               </label>
               <div className="relative">
                 <input
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white pr-10"
-                  id="password"
-                  name="password"
-                  value={input.password || ""}
-                  onChange={changeEventHandler}
-                  placeholder="Create a password"
                   type={showPassword ? "text" : "password"}
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 8,
+                      message: "Password must be at least 8 characters long",
+                    },
+                    pattern: {
+                      value:
+                        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                      message:
+                        "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character",
+                    },
+                  })}
                 />
                 <button
                   type="button"
@@ -249,25 +261,26 @@ export default function SignupPage() {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
-            {/* Confirm Password field with eye button */}
             <div>
-              <label
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                htmlFor="confirmPassword"
-              >
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Confirm Password
               </label>
               <div className="relative">
                 <input
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white pr-10"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={input.confirmPassword || ""}
-                  onChange={changeEventHandler}
-                  placeholder="Confirm your password"
                   type={showConfirmPassword ? "text" : "password"}
+                  {...register("confirmPassword", {
+                    required: "Please confirm your password",
+                    validate: (value) =>
+                      value === password || "Passwords do not match",
+                  })}
                 />
                 <button
                   type="button"
@@ -281,15 +294,20 @@ export default function SignupPage() {
                   )}
                 </button>
               </div>
+              {errors.confirmPassword && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
             </div>
 
-                <button
-                  type="submit"
-                  
-                  className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700"
-                >
-                  Sign up
-                </button>
+            <button
+              type="submit"
+              // disabled={loading}
+              className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Sign up" : "Signing up..."}
+            </button>
           </motion.form>
         </div>
         <motion.div
