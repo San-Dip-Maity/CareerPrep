@@ -27,9 +27,6 @@ const Header = () => {
       toast.error(error);
       dispatch(clearAllUserErrors());
     }
-    if (!isAuthenticated) {
-      navigate("/");
-    }
   }, [dispatch, error, loading, isAuthenticated]);
 
   const isDarkMode = useSelector((state) => state.theme.isDarkMode);
