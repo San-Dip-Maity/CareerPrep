@@ -124,13 +124,17 @@ const Header = () => {
               {isAuthenticated && (
                 <>
                   {" "}
-                  <Link
+                  <NavLink
                     to="/mockInterview"
-                    className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "text-purple-600 dark:text-purple-400"
+                        : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                    }
                     onClick={toggleMenu}
                   >
                     Mock Interview
-                  </Link>
+                  </NavLink>
                 </>
               )}
               {user && user.role === "recruiter" && (
@@ -257,13 +261,17 @@ const Header = () => {
                 {isAuthenticated && (
                   <>
                     {" "}
-                    <Link
+                    <NavLink
                       to="/mockInterview"
-                      className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                      className={({ isActive }) =>
+                        isActive
+                          ? "text-purple-600 dark:text-purple-400"
+                          : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                      }
                       onClick={toggleMenu}
                     >
                       Mock Interview
-                    </Link>
+                    </NavLink>
                   </>
                 )}
                 {user && user.role === "recruiter" && (
