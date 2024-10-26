@@ -203,6 +203,7 @@ export default function SignupPage() {
                     message: "Name must be at least 2 characters long",
                   },
                 })}
+                placeholder="Enter Your Full Name"
               />
               {errors.fullName && (
                 <p className="mt-1 text-sm text-red-600">
@@ -224,6 +225,7 @@ export default function SignupPage() {
                     message: "Invalid email address",
                   },
                 })}
+                placeholder="Enter Your Email Address"
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-600">
@@ -245,6 +247,7 @@ export default function SignupPage() {
                     message: "Please enter a valid 10-digit mobile number",
                   },
                 })}
+                placeholder="EnterYour Mobile Number"
               />
               {errors.mobileNumber && (
                 <p className="mt-1 text-sm text-red-600">
@@ -305,6 +308,7 @@ export default function SignupPage() {
                         "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character",
                     },
                   })}
+                  placeholder="Enter Password"
                 />
                 <button
                   type="button"
@@ -338,6 +342,7 @@ export default function SignupPage() {
                     validate: (value) =>
                       value === password || "Passwords do not match",
                   })}
+                  placeholder="Confirm Password"
                 />
                 <button
                   type="button"
@@ -358,52 +363,66 @@ export default function SignupPage() {
               )}
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+              <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
                 Profile Details
               </h2>
 
-              {/* About & Bio */}
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    About
-                  </label>
-                  <textarea
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    rows="3"
-                    {...register("about")}
-                  />
-                </div>
+              <div className="space-y-6">
+                {/* About & Bio */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                      About
+                    </label>
+                    <textarea
+                      className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg 
+                     focus:ring-2 focus:ring-purple-500 focus:border-transparent
+                     text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
+                     transition-colors duration-200"
+                      rows="3"
+                      {...register("about")}
+                      placeholder="Tell us about yourself"
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Bio
-                  </label>
-                  <textarea
-                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    rows="3"
-                    {...register("bio")}
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                      Bio
+                    </label>
+                    <textarea
+                      className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg 
+                     focus:ring-2 focus:ring-purple-500 focus:border-transparent
+                     text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
+                     transition-colors duration-200"
+                      rows="3"
+                      {...register("bio")}
+                      placeholder="Tell us about your Hobbies"
+                    />
+                  </div>
                 </div>
 
                 {/* Skills Section */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Skills
                   </label>
-                  <div className="flex gap-2 mb-2">
+                  <div className="flex gap-2 mb-3">
                     <input
                       type="text"
                       value={currentSkill}
                       onChange={(e) => setCurrentSkill(e.target.value)}
-                      className="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      className="flex-1 p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg 
+                     focus:ring-2 focus:ring-purple-500 focus:border-transparent
+                     text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
+                     transition-colors duration-200"
                       placeholder="Add a skill"
                     />
                     <button
                       onClick={handleAddSkill}
                       type="button"
-                      className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                      className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg 
+                     transition-colors duration-200 font-medium"
                     >
                       Add
                     </button>
@@ -412,13 +431,15 @@ export default function SignupPage() {
                     {skillsList.map((skill, index) => (
                       <span
                         key={index}
-                        className="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full flex items-center gap-2"
+                        className="bg-purple-100 dark:bg-purple-900/50 text-purple-900 dark:text-purple-100 
+                       px-3 py-1.5 rounded-full flex items-center gap-2 transition-colors duration-200"
                       >
                         {skill}
                         <button
                           type="button"
                           onClick={() => handleRemoveSkill(skill)}
-                          className="text-purple-600 hover:text-purple-800"
+                          className="text-purple-700 dark:text-purple-300 hover:text-purple-900 dark:hover:text-purple-100
+                         transition-colors duration-200"
                         >
                           <X className="h-4 w-4" />
                         </button>
@@ -429,13 +450,14 @@ export default function SignupPage() {
 
                 {/* Experience Section */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Experience
                   </label>
                   {experiences.map((exp, index) => (
                     <div
                       key={index}
-                      className="space-y-2 mb-4 p-4 border border-gray-200 rounded-lg"
+                      className="space-y-3 mb-4 p-4 border border-gray-200 dark:border-gray-600 rounded-lg 
+                     bg-gray-50 dark:bg-gray-700/50 transition-colors duration-200"
                     >
                       <div className="flex justify-between">
                         <input
@@ -449,12 +471,16 @@ export default function SignupPage() {
                             )
                           }
                           placeholder="Job Title"
-                          className="w-full p-2 border border-gray-300 rounded-md"
+                          className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg 
+                         focus:ring-2 focus:ring-purple-500 focus:border-transparent
+                         text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
+                         transition-colors duration-200"
                         />
                         <button
                           type="button"
                           onClick={() => handleRemoveExperience(index)}
-                          className="ml-2 text-red-600 hover:text-red-800"
+                          className="ml-2 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300
+                         transition-colors duration-200"
                         >
                           <X className="h-5 w-5" />
                         </button>
@@ -470,7 +496,10 @@ export default function SignupPage() {
                           )
                         }
                         placeholder="Company"
-                        className="w-full p-2 border border-gray-300 rounded-md"
+                        className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg 
+                       focus:ring-2 focus:ring-purple-500 focus:border-transparent
+                       text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
+                       transition-colors duration-200"
                       />
                       <input
                         type="text"
@@ -483,14 +512,18 @@ export default function SignupPage() {
                           )
                         }
                         placeholder="Duration"
-                        className="w-full p-2 border border-gray-300 rounded-md"
+                        className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg 
+                       focus:ring-2 focus:ring-purple-500 focus:border-transparent
+                       text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
+                       transition-colors duration-200"
                       />
                     </div>
                   ))}
                   <button
                     type="button"
                     onClick={handleAddExperience}
-                    className="mt-2 flex items-center gap-2 text-purple-600 hover:text-purple-800"
+                    className="mt-2 flex items-center gap-2 text-purple-600 dark:text-purple-400 
+                   hover:text-purple-800 dark:hover:text-purple-300 transition-colors duration-200"
                   >
                     <Plus className="h-4 w-4" /> Add Experience
                   </button>
@@ -498,13 +531,14 @@ export default function SignupPage() {
 
                 {/* Education Section */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                     Education
                   </label>
                   {educations.map((edu, index) => (
                     <div
                       key={index}
-                      className="space-y-2 mb-4 p-4 border border-gray-200 rounded-lg"
+                      className="space-y-3 mb-4 p-4 border border-gray-200 dark:border-gray-600 rounded-lg 
+                     bg-gray-50 dark:bg-gray-700/50 transition-colors duration-200"
                     >
                       <div className="flex justify-between">
                         <input
@@ -518,12 +552,16 @@ export default function SignupPage() {
                             )
                           }
                           placeholder="Degree"
-                          className="w-full p-2 border border-gray-300 rounded-md"
+                          className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg 
+                         focus:ring-2 focus:ring-purple-500 focus:border-transparent
+                         text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
+                         transition-colors duration-200"
                         />
                         <button
                           type="button"
                           onClick={() => handleRemoveEducation(index)}
-                          className="ml-2 text-red-600 hover:text-red-800"
+                          className="ml-2 text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300
+                         transition-colors duration-200"
                         >
                           <X className="h-5 w-5" />
                         </button>
@@ -539,7 +577,10 @@ export default function SignupPage() {
                           )
                         }
                         placeholder="Institution"
-                        className="w-full p-2 border border-gray-300 rounded-md"
+                        className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg 
+                       focus:ring-2 focus:ring-purple-500 focus:border-transparent
+                       text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
+                       transition-colors duration-200"
                       />
                       <input
                         type="text"
@@ -548,14 +589,18 @@ export default function SignupPage() {
                           handleEducationChange(index, "year", e.target.value)
                         }
                         placeholder="Year"
-                        className="w-full p-2 border border-gray-300 rounded-md"
+                        className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg 
+                       focus:ring-2 focus:ring-purple-500 focus:border-transparent
+                       text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500
+                       transition-colors duration-200"
                       />
                     </div>
                   ))}
                   <button
                     type="button"
                     onClick={handleAddEducation}
-                    className="mt-2 flex items-center gap-2 text-purple-600 hover:text-purple-800"
+                    className="mt-2 flex items-center gap-2 text-purple-600 dark:text-purple-400 
+                   hover:text-purple-800 dark:hover:text-purple-300 transition-colors duration-200"
                   >
                     <Plus className="h-4 w-4" /> Add Education
                   </button>
