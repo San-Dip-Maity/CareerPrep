@@ -5,24 +5,37 @@ import generateTokenAndSetCookie from "../token/generateToken.js";
 
 export const signup = async (req, res) => {
   try {
-    const { fullName, email, mobileNumber, password, role } = req.body;
+    const {
+      fullName,
+      email,
+      mobileNumber,
+      password,
+      role,
+      about,
+      location = "India",
+      bio,
+      skills,
+      experience,
+      education,
+    } = req.body;
 
     if (!fullName || !email || !mobileNumber || !password || !role) {
       return res.status(400).json({
-        message: "Please fill in all fields",
+        message: "Please fill in all required fields",
         success: false,
       });
     }
 
+    // File upload for profile photo
     const file = req.file;
     if (!file) {
-      return res.status(400).json({ message: "File not uploaded" });
+      return res.status(400).json({ message: "Profile photo not uploaded" });
     }
 
     const fileUri = getDataUri(file);
     const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
-    // Check if user exists with the same email
+    // Check if user exists with the same email or mobile number
     const userByEmail = await User.findOne({ email });
     if (userByEmail) {
       return res.status(400).json({
@@ -31,7 +44,6 @@ export const signup = async (req, res) => {
       });
     }
 
-    // Check if user exists with the same mobile number
     const userByMobile = await User.findOne({ mobileNumber });
     if (userByMobile) {
       return res.status(400).json({
@@ -40,15 +52,26 @@ export const signup = async (req, res) => {
       });
     }
 
-    // Create new user
+    // Parse skills, experience, and education if they’re provided as strings
+    const skillsArray = skills ? skills.split(",") : [];
+    const experienceArray = experience ? JSON.parse(experience) : [];
+    const educationArray = education ? JSON.parse(education) : [];
+
+    // Create new user with all fields
     await User.create({
       fullName,
       email,
       mobileNumber,
       password,
       role,
+      about,
+      location,
       profile: {
+        bio,
+        skills: skillsArray,
         profilePhoto: cloudResponse.secure_url,
+        experience: experienceArray,
+        education: educationArray,
       },
     });
 
@@ -64,6 +87,7 @@ export const signup = async (req, res) => {
     });
   }
 };
+
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -118,13 +142,11 @@ export const logout = (req, res) => {
   }
 };
 
-export const getUser = async (req, res, next) => {
+export const getUser = async (req, res) => {
   try {
-    
-    const userId = req.user._id;
+    const userId = req.user._id; 
 
     const user = await User.findById(userId);
-
     if (!user) {
       return res.status(404).json({
         message: "User not found.",
@@ -146,9 +168,8 @@ export const getUser = async (req, res, next) => {
         profilePhoto: user.profile.profilePhoto,
         bio: user.profile.bio,
         skills: user.profile.skills,
-        applications: user.applications,
-        experiences: user.profile.experience,
-        educations: user.profile.education,
+        experiences: user.profile.experience, // Correct field
+        educations: user.profile.education, // Correct field
         resume: user.profile.resume,
         resumeOriginalName: user.profile.resumeOriginalName,
       },
@@ -161,6 +182,7 @@ export const getUser = async (req, res, next) => {
     });
   }
 };
+
 
 
 

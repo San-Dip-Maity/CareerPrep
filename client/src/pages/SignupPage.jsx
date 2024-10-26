@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Facebook, Linkedin, Eye, EyeOff, Upload } from "lucide-react";
+import { Facebook, Linkedin, Eye, EyeOff, Upload, X, Plus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
@@ -10,6 +10,14 @@ import toast from "react-hot-toast";
 export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [experiences, setExperiences] = useState([
+    { title: "", company: "", duration: "" },
+  ]);
+  const [educations, setEducations] = useState([
+    { degree: "", institution: "", year: "" },
+  ]);
+  const [skillsList, setSkillsList] = useState([]);
+  const [currentSkill, setCurrentSkill] = useState("");
   const [previewImage, setPreviewImage] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,6 +38,9 @@ export default function SignupPage() {
       confirmPassword: "",
       role: "",
       file: null,
+      about: "",
+      location: "India",
+      bio: "",
     },
   });
 
@@ -38,6 +49,46 @@ export default function SignupPage() {
   const { loading, isAuthenticated, error, message } = useSelector(
     (state) => state.user
   );
+
+  const handleAddSkill = (e) => {
+    e.preventDefault();
+    if (currentSkill.trim() && !skillsList.includes(currentSkill.trim())) {
+      setSkillsList([...skillsList, currentSkill.trim()]);
+      setCurrentSkill("");
+    }
+  };
+
+  const handleRemoveSkill = (skillToRemove) => {
+    setSkillsList(skillsList.filter((skill) => skill !== skillToRemove));
+  };
+
+  const handleAddExperience = () => {
+    setExperiences([...experiences, { title: "", company: "", duration: "" }]);
+  };
+
+  const handleRemoveExperience = (index) => {
+    setExperiences(experiences.filter((_, i) => i !== index));
+  };
+
+  const handleExperienceChange = (index, field, value) => {
+    const newExperiences = [...experiences];
+    newExperiences[index][field] = value;
+    setExperiences(newExperiences);
+  };
+
+  const handleAddEducation = () => {
+    setEducations([...educations, { degree: "", institution: "", year: "" }]);
+  };
+
+  const handleRemoveEducation = (index) => {
+    setEducations(educations.filter((_, i) => i !== index));
+  };
+
+  const handleEducationChange = (index, field, value) => {
+    const newEducations = [...educations];
+    newEducations[index][field] = value;
+    setEducations(newEducations);
+  };
 
   const handleProfilePictureClick = () => {
     fileInputRef.current.click();
@@ -68,6 +119,12 @@ export default function SignupPage() {
         formData.append(key, data[key]);
       }
     });
+
+    // Add additional fields
+    formData.append("skills", skillsList.join(","));
+    formData.append("experience", JSON.stringify(experiences));
+    formData.append("education", JSON.stringify(educations));
+
     dispatch(signup(formData));
   };
 
@@ -299,6 +356,211 @@ export default function SignupPage() {
                   {errors.confirmPassword.message}
                 </p>
               )}
+            </div>
+
+            <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-lg">
+              <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
+                Profile Details
+              </h2>
+
+              {/* About & Bio */}
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    About
+                  </label>
+                  <textarea
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    rows="3"
+                    {...register("about")}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Bio
+                  </label>
+                  <textarea
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                    rows="3"
+                    {...register("bio")}
+                  />
+                </div>
+
+                {/* Skills Section */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Skills
+                  </label>
+                  <div className="flex gap-2 mb-2">
+                    <input
+                      type="text"
+                      value={currentSkill}
+                      onChange={(e) => setCurrentSkill(e.target.value)}
+                      className="flex-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                      placeholder="Add a skill"
+                    />
+                    <button
+                      onClick={handleAddSkill}
+                      type="button"
+                      className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+                    >
+                      Add
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {skillsList.map((skill, index) => (
+                      <span
+                        key={index}
+                        className="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full flex items-center gap-2"
+                      >
+                        {skill}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveSkill(skill)}
+                          className="text-purple-600 hover:text-purple-800"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Experience Section */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Experience
+                  </label>
+                  {experiences.map((exp, index) => (
+                    <div
+                      key={index}
+                      className="space-y-2 mb-4 p-4 border border-gray-200 rounded-lg"
+                    >
+                      <div className="flex justify-between">
+                        <input
+                          type="text"
+                          value={exp.title}
+                          onChange={(e) =>
+                            handleExperienceChange(
+                              index,
+                              "title",
+                              e.target.value
+                            )
+                          }
+                          placeholder="Job Title"
+                          className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveExperience(index)}
+                          className="ml-2 text-red-600 hover:text-red-800"
+                        >
+                          <X className="h-5 w-5" />
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={exp.company}
+                        onChange={(e) =>
+                          handleExperienceChange(
+                            index,
+                            "company",
+                            e.target.value
+                          )
+                        }
+                        placeholder="Company"
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                      />
+                      <input
+                        type="text"
+                        value={exp.duration}
+                        onChange={(e) =>
+                          handleExperienceChange(
+                            index,
+                            "duration",
+                            e.target.value
+                          )
+                        }
+                        placeholder="Duration"
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={handleAddExperience}
+                    className="mt-2 flex items-center gap-2 text-purple-600 hover:text-purple-800"
+                  >
+                    <Plus className="h-4 w-4" /> Add Experience
+                  </button>
+                </div>
+
+                {/* Education Section */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Education
+                  </label>
+                  {educations.map((edu, index) => (
+                    <div
+                      key={index}
+                      className="space-y-2 mb-4 p-4 border border-gray-200 rounded-lg"
+                    >
+                      <div className="flex justify-between">
+                        <input
+                          type="text"
+                          value={edu.degree}
+                          onChange={(e) =>
+                            handleEducationChange(
+                              index,
+                              "degree",
+                              e.target.value
+                            )
+                          }
+                          placeholder="Degree"
+                          className="w-full p-2 border border-gray-300 rounded-md"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveEducation(index)}
+                          className="ml-2 text-red-600 hover:text-red-800"
+                        >
+                          <X className="h-5 w-5" />
+                        </button>
+                      </div>
+                      <input
+                        type="text"
+                        value={edu.institution}
+                        onChange={(e) =>
+                          handleEducationChange(
+                            index,
+                            "institution",
+                            e.target.value
+                          )
+                        }
+                        placeholder="Institution"
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                      />
+                      <input
+                        type="text"
+                        value={edu.year}
+                        onChange={(e) =>
+                          handleEducationChange(index, "year", e.target.value)
+                        }
+                        placeholder="Year"
+                        className="w-full p-2 border border-gray-300 rounded-md"
+                      />
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={handleAddEducation}
+                    className="mt-2 flex items-center gap-2 text-purple-600 hover:text-purple-800"
+                  >
+                    <Plus className="h-4 w-4" /> Add Education
+                  </button>
+                </div>
+              </div>
             </div>
 
             <button

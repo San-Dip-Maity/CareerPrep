@@ -4,33 +4,30 @@ import bcrypt from "bcryptjs";
 const experienceSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
-    default: "Software Engineer",
+    
   },
   company: {
     type: String,
-    required: true,
-    default: "This is my first name",
+   
   },
   period: {
     type: String,
-    required: true,
-    default: "This is my first name✅",
+    
   },
 });
 
 const educationSchema = new mongoose.Schema({
   degree: {
     type: String,
-    required: true,
+  
   },
   school: {
     type: String,
-    required: true,
+   
   },
   year: {
     type: String,
-    required: true,
+   
   },
 });
 
