@@ -192,8 +192,7 @@ export const updateProfile = async (req, res) => {
     const { fullname, email, mobileNumber, bio, skills, education, experience } =
       req.body;
     const file = req.file;
-
-    let userId = req.id;
+    let userId = req.user._id;
 
     let user = await User.findById(userId);
     if (!user) {
@@ -220,7 +219,7 @@ export const updateProfile = async (req, res) => {
 
     if (fullname) user.fullName = fullname;
     if (email) user.email = email;
-    if (phoneNumber) user.phoneNumber = phoneNumber;
+    if (mobileNumber) user.mobileNumber = mobileNumber;
     if (bio) user.profile.bio = bio;
     if (skills) user.profile.skills = skillsArray;
 

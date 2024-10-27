@@ -1,8 +1,18 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { Camera, FileText, BarChart2, Upload, MapPinHouse, Mail, Phone, UserRound } from "lucide-react";
+import {
+  Camera,
+  FileText,
+  BarChart2,
+  Upload,
+  MapPinHouse,
+  Mail,
+  Phone,
+  UserRound,
+  TentTree,
+} from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -14,6 +24,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import Profile from "./Profile";
+import { updateProfile } from "../redux/authSlice";
 
 const UserProfile = () => {
   const { user, isAuthenticated } = useSelector((state) => state.user);
@@ -25,24 +36,30 @@ const UserProfile = () => {
   const fileInputRef = useRef(null);
   const imageInputRef = useRef(null);
 
+  useEffect(() => {
+    // Effect to handle side effects when user changes
+  }, [user]);
+
   const handleEdit = () => setIsEditing(true);
   const handleSave = () => setIsEditing(false);
   const handleChange = (e) => {
     const { name, value } = e.target;
-    dispatch(updateUser({ [name]: value }));
+    dispatch(updateProfile({ [name]: value }));
   };
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
-    if (file && file.type === "application/pdf") {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setResumePdf(e.target.result);
-        dispatch(updateUser({ resumePdf: e.target.result }));
-      };
-      reader.readAsDataURL(file);
-    } else {
-      alert("Please upload a PDF file.");
+    if (file) {
+      if (file.type === "application/pdf" && file.size <= 5 * 1024 * 1024) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setResumePdf(e.target.result);
+          dispatch(updateProfile({ resumePdf: e.target.result }));
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert("Please upload a valid PDF file under 5MB.");
+      }
     }
   };
 
@@ -51,7 +68,7 @@ const UserProfile = () => {
     if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        dispatch(updateUser({ img: e.target.result }));
+        dispatch(updateProfile({ img: e.target.result }));
       };
       reader.readAsDataURL(file);
     } else {
@@ -105,7 +122,7 @@ const UserProfile = () => {
                 />
               </div>
               <div className="p-8 w-full">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
                   <motion.h1
                     className=" text-gray-900 dark:text-white mb-2 sm:mb-0"
                     initial={{ opacity: 0 }}
@@ -122,11 +139,9 @@ const UserProfile = () => {
                       />
                     ) : (
                       <p className="text-3xl font-bold tracking-wider text-gray-600 dark:text-gray-300 uppercase flex items-center justify-center gap-2">
-                        <UserRound size={26} strokeWidth={3}/>
+                        <UserRound size={26} strokeWidth={3} />
                         {user.fullName}
-                        
                       </p>
-                     
                     )}
                   </motion.h1>
                   {isEditing ? (
@@ -152,22 +167,29 @@ const UserProfile = () => {
                     {isEditing ? (
                       <input
                         type="text"
-                        name="title"
-                        value={user.title}
+                        name="bio"
+                        value={user.bio}
                         onChange={handleChange}
                         className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full"
                       />
                     ) : (
-                      <p className="text-xl text-gray-600 dark:text-gray-300">
-                        {user.title}
+                      <p className="text-base text-gray-600 dark:text-gray-300 flex items-center gap-2">
+                        <TentTree size={18} />
+                        {user.bio}
                       </p>
                     )}
                   </div>
 
                   {/* Location, Email, Phone */}
                   <div className="flex flex-col sm:flex-row sm:space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                    <p className="flex items-center justify-center gap-1"><MapPinHouse size={18} /><strong>{user.location}</strong></p>
-                    <p className="flex items-center justify-center gap-1"><Mail size={18}/><strong>{user.email}</strong></p>
+                    <p className="flex items-center justify-center gap-1">
+                      <MapPinHouse size={18} />
+                      <strong>{user.location}</strong>
+                    </p>
+                    <p className="flex items-center justify-center gap-1">
+                      <Mail size={18} />
+                      <strong>{user.email}</strong>
+                    </p>
                     {isEditing ? (
                       <input
                         type="text"

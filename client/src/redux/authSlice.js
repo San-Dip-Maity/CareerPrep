@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { AUTH_API_END_POINT } from "../utils/constUtils";
 
-
 const authSlice = createSlice({
   name: "user",
   initialState: {
@@ -13,7 +12,7 @@ const authSlice = createSlice({
     message: null,
   },
   reducers: {
-    signupRequest(state, action) {
+    signupRequest(state) {
       state.loading = true;
       state.isAuthenticated = false;
       state.user = {};
@@ -27,7 +26,6 @@ const authSlice = createSlice({
       state.error = null;
       state.message = action.payload.message;
     },
-
     signupFailed(state, action) {
       state.loading = false;
       state.isAuthenticated = false;
@@ -35,7 +33,7 @@ const authSlice = createSlice({
       state.error = action.payload;
       state.message = null;
     },
-    loginRequest(state, action) {
+    loginRequest(state) {
       state.loading = true;
       state.isAuthenticated = false;
       state.user = {};
@@ -56,7 +54,7 @@ const authSlice = createSlice({
       state.error = action.payload;
       state.message = null;
     },
-    fetchUserRequest(state, action) {
+    fetchUserRequest(state) {
       state.loading = true;
       state.isAuthenticated = false;
       state.user = {};
@@ -74,7 +72,7 @@ const authSlice = createSlice({
       state.user = {};
       state.error = action.payload;
     },
-    logoutSuccess(state, action) {
+    logoutSuccess(state) {
       state.isAuthenticated = false;
       state.user = {};
       state.error = null;
@@ -84,9 +82,22 @@ const authSlice = createSlice({
       state.user = state.user;
       state.error = action.payload;
     },
-    clearAllErrors(state, action) {
+    updateProfileRequest(state) {
+      state.loading = true;
       state.error = null;
-      state.user = state.user;
+    },
+    updateProfileSuccess(state, action) {
+      state.loading = false;
+      state.user = action.payload.user;
+      state.error = null;
+      state.message = action.payload.message;
+    },
+    updateProfileFailed(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    clearAllErrors(state) {
+      state.error = null;
     },
   },
 });
@@ -94,14 +105,10 @@ const authSlice = createSlice({
 export const signup = (data) => async (dispatch) => {
   dispatch(authSlice.actions.signupRequest());
   try {
-    const response = await axios.post(
-      `${AUTH_API_END_POINT}signup`,
-      data,
-      {
-        withCredentials: true,
-        headers: { "Content-Type": "multipart/form-data" },
-      }
-    );
+    const response = await axios.post(`${AUTH_API_END_POINT}signup`, data, {
+      withCredentials: true,
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     dispatch(authSlice.actions.signupSuccess(response.data));
     dispatch(authSlice.actions.clearAllErrors());
   } catch (error) {
@@ -112,14 +119,10 @@ export const signup = (data) => async (dispatch) => {
 export const login = (data) => async (dispatch) => {
   dispatch(authSlice.actions.loginRequest());
   try {
-    const response = await axios.post(
-      `${AUTH_API_END_POINT}login`,
-      data,
-      {
-        withCredentials: true,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    const response = await axios.post(`${AUTH_API_END_POINT}login`, data, {
+      withCredentials: true,
+      headers: { "Content-Type": "application/json" },
+    });
     dispatch(authSlice.actions.loginSuccess(response.data));
     dispatch(authSlice.actions.clearAllErrors());
   } catch (error) {
@@ -130,31 +133,39 @@ export const login = (data) => async (dispatch) => {
 export const getUser = () => async (dispatch) => {
   dispatch(authSlice.actions.fetchUserRequest());
   try {
-    const response = await axios.get(
-      `${AUTH_API_END_POINT}getuser`,
-      {
-        withCredentials: true,
-        credentials: "include",
-      }
-    );
+    const response = await axios.get(`${AUTH_API_END_POINT}getuser`, {
+      withCredentials: true,
+      credentials: "include",
+    });
     dispatch(authSlice.actions.fetchUserSuccess(response.data.user));
     dispatch(authSlice.actions.clearAllErrors());
   } catch (error) {
     dispatch(authSlice.actions.fetchUserFailed(error.response.data.message));
   }
 };
+
 export const logout = () => async (dispatch) => {
   try {
-    const response = await axios.get(
-      `${AUTH_API_END_POINT}logout`,
-      {
-        withCredentials: true,
-      }
-    );
+    await axios.get(`${AUTH_API_END_POINT}logout`, {
+      withCredentials: true,
+    });
     dispatch(authSlice.actions.logoutSuccess());
     dispatch(authSlice.actions.clearAllErrors());
   } catch (error) {
     dispatch(authSlice.actions.logoutFailed(error.response.data.message));
+  }
+};
+
+export const updateProfile = (data) => async (dispatch) => {
+  dispatch(authSlice.actions.updateProfileRequest());
+  try {
+    const response = await axios.put(`${AUTH_API_END_POINT}updateprofile`, data, {
+      withCredentials: true,
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    dispatch(authSlice.actions.updateProfileSuccess(response.data));
+  } catch (error) {
+    dispatch(authSlice.actions.updateProfileFailed(error.response.data.message));
   }
 };
 
