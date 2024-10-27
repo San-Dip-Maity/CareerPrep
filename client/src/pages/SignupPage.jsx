@@ -503,7 +503,7 @@ export default function SignupPage() {
                       />
                       <input
                         type="text"
-                        value={exp.duration}
+                        value={exp.period}
                         onChange={(e) =>
                           handleExperienceChange(
                             index,
@@ -568,11 +568,11 @@ export default function SignupPage() {
                       </div>
                       <input
                         type="text"
-                        value={edu.institution}
+                        value={edu.school}
                         onChange={(e) =>
                           handleEducationChange(
                             index,
-                            "institution",
+                            "school",
                             e.target.value
                           )
                         }

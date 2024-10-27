@@ -264,6 +264,32 @@ const UserProfile = () => {
                             }}
                             className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full"
                           />
+                          <input
+                            type="text"
+                            name={`experience-${index}-company`}
+                            value={job.company || ""}
+                            onChange={(e) => {
+                              const updatedExperience = [...user.experiences];
+                              updatedExperience[index].company = e.target.value;
+                              dispatch(
+                                updateUser({ experience: updatedExperience })
+                              );
+                            }}
+                            className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full"
+                          />
+                          <input
+                            type="text"
+                            name={`experience-${index}-period`}
+                            value={job.period || ""}
+                            onChange={(e) => {
+                              const updatedExperience = [...user.experiences];
+                              updatedExperience[index].period = e.target.value;
+                              dispatch(
+                                updateUser({ experience: updatedExperience })
+                              );
+                            }}
+                            className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full"
+                          />
                         </div>
                       )) || <p>No experience available.</p>
                     ) : (
@@ -290,14 +316,14 @@ const UserProfile = () => {
                       Education
                     </h2>
                     {isEditing ? (
-                      user.education?.map((edu, index) => (
+                      user.educations?.map((edu, index) => (
                         <div key={index} className="mb-2 space-y-2">
                           <input
                             type="text"
                             name={`education-${index}-degree`}
                             value={edu.degree || ""}
                             onChange={(e) => {
-                              const updatedEducation = [...user.education];
+                              const updatedEducation = [...user.educations];
                               updatedEducation[index].degree = e.target.value;
                               dispatch(
                                 updateUser({ education: updatedEducation })
@@ -305,7 +331,32 @@ const UserProfile = () => {
                             }}
                             className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full"
                           />
-                          {/* Other inputs here */}
+                          <input
+                            type="text"
+                            name={`education-${index}-school`}
+                            value={edu.school || ""}
+                            onChange={(e) => {
+                              const updatedEducation = [...user.educations];
+                              updatedEducation[index].school = e.target.value;
+                              dispatch(
+                                updateUser({ education: updatedEducation })
+                              );
+                            }}
+                            className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full"
+                          />
+                          <input
+                            type="text"
+                            name={`education-${index}-year`}
+                            value={edu.year || ""}
+                            onChange={(e) => {
+                              const updatedEducation = [...user.educations];
+                              updatedEducation[index].year = e.target.value;
+                              dispatch(
+                                updateUser({ education: updatedEducation })
+                              );
+                            }}
+                            className="bg-gray-100 dark:bg-gray-700 dark:text-white p-2 rounded-md w-full"
+                          />
                         </div>
                       )) || <p>No education available.</p>
                     ) : (
