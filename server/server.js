@@ -4,6 +4,7 @@ import cors from "cors";
 import { connectDB } from "./lib/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
+import companyRoutes from "./routes/companyRoute.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -23,6 +24,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use("/api/auth", authRoutes);
 app.use("/api/job", jobRoutes);
+app.use("/api/company", companyRoutes); // admin r jonno
 
 app.get("/", (req,res)=>{
   return res.send("AppName: CareerPrep")
