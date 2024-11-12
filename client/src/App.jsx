@@ -25,6 +25,7 @@ import { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { getUser } from "./redux/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CompanyCreate from "./components/Admin/CompanyCreate";
 
 const Layout = () => {
   return (
@@ -85,7 +86,7 @@ const App = () => {
         {
           path: "/Employers",
           element: (
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['recruiter']}>
               <Employers />
             </ProtectedRoute>
           ),
@@ -101,7 +102,7 @@ const App = () => {
         {
           path: "/mockInterview",
           element: (
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['student']}>
               <MockInterview />
             </ProtectedRoute>
           ),
@@ -109,7 +110,7 @@ const App = () => {
         {
           path: "/mockInterview/dashboard",
           element: (
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['student']}>
               <Dashboard />
             </ProtectedRoute>
           ),
@@ -117,7 +118,7 @@ const App = () => {
         {
           path: "/mockInterview/startInterview",
           element: (
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={['student']}>
               <StartInterview />
             </ProtectedRoute>
           ),
@@ -129,6 +130,14 @@ const App = () => {
         {
           path: "/signup",
           element: <SignupPage />,
+        },
+        {
+          path:"/create-company",
+          element: (
+            <ProtectedRoute allowedRoles={['recruiter']}>
+              <CompanyCreate />
+            </ProtectedRoute>
+          )
         },
         {
           path: "*",

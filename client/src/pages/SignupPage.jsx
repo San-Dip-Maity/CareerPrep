@@ -570,11 +570,7 @@ export default function SignupPage() {
                         type="text"
                         value={edu.school}
                         onChange={(e) =>
-                          handleEducationChange(
-                            index,
-                            "school",
-                            e.target.value
-                          )
+                          handleEducationChange(index, "school", e.target.value)
                         }
                         placeholder="Institution"
                         className="w-full p-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg 

@@ -121,7 +121,7 @@ const Header = () => {
               >
                 Find Jobs
               </NavLink>
-              {isAuthenticated && (
+              {isAuthenticated && user && user.role === "student" && (
                 <>
                   {" "}
                   <NavLink
@@ -148,6 +148,16 @@ const Header = () => {
                     }
                   >
                     Employers
+                  </NavLink>
+                  <NavLink
+                    to="/create-company"
+                    className={({ isActive }) =>
+                      isActive
+                        ? "text-purple-600 dark:text-purple-400"
+                        : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                    }
+                  >
+                    create Company
                   </NavLink>
                 </>
               )}

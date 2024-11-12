@@ -1,388 +1,244 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import toast from "react-hot-toast";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Loader2 } from 'lucide-react';
+import { proxy } from '../utils/constUtils';
 
 const JobPostingForm = () => {
     const [formData, setFormData] = useState({
-        jobTitle: '',
-        tags: '',
-        jobRole: '',
-        minSalary: '',
-        maxSalary: '',
-        vacancies: '',
-        jobLevel: '',
-        country: '',
-        city: '',
-        jobDescription: '',
-        companyLogo: null,
+        title: '',
+        description: '',
+        requirements: '',
+        salary: '',
+        location: '',
         jobType: '',
-        industry: '',
         experience: '',
-        education: '',
-        skills: '',
-        applicationDeadline: '',
-        workAuthorization: '',
-        companyWebsite: '',
-        benefits: '',
-        contactEmail: ''
-      });
-    
-      const [countries, setCountries] = useState([]);
-      const [cities, setCities] = useState([]);
-      const [isLoadingCities, setIsLoadingCities] = useState(false);
-    
-      useEffect(() => {
-        axios.get('https://restcountries.com/v3.1/all')
-          .then(response => {
-            const countryNames = response.data.map(country => country.name.common).sort();
-            setCountries(countryNames);
-          })
-          .catch(error => {
-            console.error('Error fetching countries:', error);
-          });
-      }, []);
-    
-      const handleInputChange = (e) => {
+        position: '',
+        companyId: ''
+    });
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const { companies } = useSelector(store => store.company);
+
+    const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prevData => ({
           ...prevData,
           [name]: value
         }));
-    
-        if (name === 'country') {
-          setIsLoadingCities(true);
-          axios.post('https://countriesnow.space/api/v0.1/countries/cities', {
-            country: value
-          })
-            .then(response => {
-              setCities(response.data.data);
-              setFormData(prevData => ({ ...prevData, city: '' }));
-            })
-            .catch(error => {
-              console.error('Error fetching cities:', error);
-            })
-            .finally(() => {
-              setIsLoadingCities(false);
-            });
-        }
-      };
-    
-      const handleFileChange = (e) => {
+    };
+
+    const handleSelectChange = (value) => {
+        const selectedCompany = companies.find(company => company.name.toLowerCase() === value);
         setFormData(prevData => ({
           ...prevData,
-          companyLogo: e.target.files[0]
+          companyId: selectedCompany?._id || ''
         }));
-      };
-    
-      const handleSubmit = (e) => {
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
-      };
+        const updatedData = {
+            ...formData,
+            requirements: formData.requirements.split(','),
+            salary: Number(formData.salary)
+        };
+        try {
+            setLoading(true);
+            const res = await axios.post(`${proxy}/job/create`, updatedData, {
+                headers: { 'Content-Type': 'application/json' },
+                withCredentials: true
+            });
+            if (res.data.success) {
+                toast.success(res.data.message);
+                navigate("/admin/jobs");
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || "An error occurred.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="max-w-4xl mx-auto my-8 p-6 bg-white dark:bg-gray-800 rounded-md"
-    >
-      <h1 className="text-3xl font-bold mb-6 dark:text-white">Post a job</h1>
-      <p className="text-gray-600 dark:text-gray-300 mb-8">
-        Find the best talent for your company
-      </p>
-
-      <form onSubmit={handleSubmit}>
+    return (
         <motion.div 
-          className="space-y-6"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ staggerChildren: 0.1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-4xl mx-auto my-8 p-6 bg-white dark:bg-gray-800 rounded-md"
         >
-          <div>
-            <label htmlFor="jobTitle" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Job Title
-            </label>
-            <input 
-              type="text" 
-              id="jobTitle"
-              name="jobTitle"
-              value={formData.jobTitle}
-              onChange={handleInputChange}
-              placeholder="Add job title, role vacancies etc" 
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            />
-          </div>
+            <h1 className="text-3xl font-bold mb-6 dark:text-white">Post a job</h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="tags" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Tags
-              </label>
-              <input 
-                type="text" 
-                id="tags"
-                name="tags"
-                value={formData.tags}
-                onChange={handleInputChange}
-                placeholder="Job keyword, tags etc.." 
-                className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-              />
-            </div>
-            <div>
-              <label htmlFor="jobRole" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Job Role
-              </label>
-              <select 
-                id="jobRole"
-                name="jobRole"
-                value={formData.jobRole}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-              >
-                <option value="">Select...</option>
-                <option value="fulltime">Full Time</option>
-                <option value="parttime">Part Time</option>
-                <option value="contract">Contract</option>
-              </select>
-            </div>
-          </div>
+            <form onSubmit={handleSubmit}>
+                <motion.div 
+                    className="space-y-6"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ staggerChildren: 0.1 }}
+                >
+                    <div>
+                        <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Job Title
+                        </label>
+                        <input 
+                            type="text" 
+                            id="title"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleInputChange}
+                            placeholder="Add job title"
+                            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                        />
+                    </div>
 
-          {/* Country Selection */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label htmlFor="country" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Country
-              </label>
-              <select 
-                id="country"
-                name="country"
-                value={formData.country}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-              >
-                <option value="">Select...</option>
-                {countries.map((country, index) => (
-                  <option key={index} value={country}>{country}</option>
-                ))}
-              </select>
-            </div>
+                    <div>
+                        <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Job Description
+                        </label>
+                        <textarea 
+                            id="description"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleInputChange}
+                            rows="6" 
+                            placeholder="Add job description" 
+                            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                        ></textarea>
+                    </div>
 
-            {/* City Selection */}
-            <div>
-              <label htmlFor="city" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                City
-              </label>
-              <select 
-                id="city"
-                name="city"
-                value={formData.city}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-                disabled={!cities.length || isLoadingCities}
-              >
-                <option value="">{isLoadingCities ? 'Loading cities...' : 'Select...'}</option>
-                {cities.map((city, index) => (
-                  <option key={index} value={city}>{city}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div>
-            <label htmlFor="jobDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Job Description
-            </label>
-            <textarea 
-              id="jobDescription"
-              name="jobDescription"
-              value={formData.jobDescription}
-              onChange={handleInputChange}
-              rows="6" 
-              placeholder="Add your description..." 
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            ></textarea>
-          </div>
+                    <div>
+                        <label htmlFor="requirements" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Requirements
+                        </label>
+                        <input 
+                            type="text" 
+                            id="requirements"
+                            name="requirements"
+                            value={formData.requirements}
+                            onChange={handleInputChange}
+                            placeholder="List requirements separated by commas"
+                            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                        />
+                    </div>
 
-          <div>
-            <label htmlFor="jobType" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Job Type
-            </label>
-            <select 
-              id="jobType"
-              name="jobType"
-              value={formData.jobType}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            >
-              <option value="">Select...</option>
-              <option value="remote">Remote</option>
-              <option value="onsite">On-site</option>
-              <option value="hybrid">Hybrid</option>
-            </select>
-          </div>
+                    <div>
+                        <label htmlFor="salary" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Salary
+                        </label>
+                        <input 
+                            type="number" 
+                            id="salary"
+                            name="salary"
+                            value={formData.salary}
+                            onChange={handleInputChange}
+                            placeholder="Enter salary"
+                            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                        />
+                    </div>
 
-          <div>
-            <label htmlFor="industry" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Industry
-            </label>
-            <input 
-              type="text" 
-              id="industry"
-              name="industry"
-              value={formData.industry}
-              onChange={handleInputChange}
-              placeholder="Industry" 
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            />
-          </div>
+                    <div>
+                        <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Location
+                        </label>
+                        <input 
+                            id="location"
+                            name="location"
+                            value={formData.location}
+                            onChange={handleInputChange}
+                            placeholder="Location"
+                            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                        >
+                        </input>
+                    </div>
 
-          <div>
-            <label htmlFor="experience" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Experience Required (Years)
-            </label>
-            <input 
-              type="number" 
-              id="experience"
-              name="experience"
-              value={formData.experience}
-              onChange={handleInputChange}
-              placeholder="Years of experience" 
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            />
-          </div>
+                    <div>
+                        <label htmlFor="jobType" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Job Type
+                        </label>
+                        <select 
+                            id="jobType"
+                            name="jobType"
+                            value={formData.jobType}
+                            onChange={handleInputChange}
+                            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                        >
+                            <option value="">Select job type</option>
+                            <option value="remote">Remote</option>
+                            <option value="onsite">On-site</option>
+                            <option value="hybrid">Hybrid</option>
+                        </select>
+                    </div>
 
-          <div>
-            <label htmlFor="education" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Education Level
-            </label>
-            <input 
-              type="text" 
-              id="education"
-              name="education"
-              value={formData.education}
-              onChange={handleInputChange}
-              placeholder="Minimum education required" 
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            />
-          </div>
+                    <div>
+                        <label htmlFor="experience" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Experience
+                        </label>
+                        <input 
+                            type="number" 
+                            id="experience"
+                            name="experience"
+                            value={formData.experience}
+                            onChange={handleInputChange}
+                            placeholder="Years of experience"
+                            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                        />
+                    </div>
 
-          <div>
-            <label htmlFor="skills" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Skills Required
-            </label>
-            <input 
-              type="text" 
-              id="skills"
-              name="skills"
-              value={formData.skills}
-              onChange={handleInputChange}
-              placeholder="List required skills" 
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            />
-          </div>
+                    <div>
+                        <label htmlFor="position" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                            Position
+                        </label>
+                        <input 
+                            type="text" 
+                            id="position"
+                            name="position"
+                            value={formData.position}
+                            onChange={handleInputChange}
+                            placeholder="Job position"
+                            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                        />
+                    </div>
 
-          <div>
-            <label htmlFor="applicationDeadline" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Application Deadline
-            </label>
-            <input 
-              type="date" 
-              id="applicationDeadline"
-              name="applicationDeadline"
-              value={formData.applicationDeadline}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            />
-          </div>
+                    {companies.length > 0 ? (
+                        <select 
+                            onChange={(e) => handleSelectChange(e.target.value.toLowerCase())}
+                            className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                        >
+                            <option value="">Select a Company</option>
+                            {companies.map(company => (
+                                <option key={company._id} value={company.name.toLowerCase()}>
+                                    {company.name}
+                                </option>
+                            ))}
+                        </select>
+                    ) : (
+                        <p className='text-xs text-red-600 font-bold text-center my-3'>
+                            *Please register a company first before posting a job.
+                        </p>
+                    )}
 
-          <div>
-            <label htmlFor="workAuthorization" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Work Authorization Required
-            </label>
-            <input 
-              type="text" 
-              id="workAuthorization"
-              name="workAuthorization"
-              value={formData.workAuthorization}
-              onChange={handleInputChange}
-              placeholder="Work authorization requirements" 
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="companyWebsite" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Company Website (Optional)
-            </label>
-            <input 
-              type="url" 
-              id="companyWebsite"
-              name="companyWebsite"
-              value={formData.companyWebsite}
-              onChange={handleInputChange}
-              placeholder="https://example.com" 
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="benefits" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Benefits
-            </label>
-            <textarea 
-              id="benefits"
-              name="benefits"
-              value={formData.benefits}
-              onChange={handleInputChange}
-              rows="3" 
-              placeholder="List any additional benefits..." 
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            ></textarea>
-          </div>
-
-          <div>
-            <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Contact Email
-            </label>
-            <input 
-              type="email" 
-              id="contactEmail"
-              name="contactEmail"
-              value={formData.contactEmail}
-              onChange={handleInputChange}
-              placeholder="Contact email for job application" 
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="companyLogo" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Company Logo
-            </label>
-            <input 
-              type="file" 
-              id="companyLogo"
-              name="companyLogo"
-              onChange={handleFileChange}
-              accept="image/*"
-              className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            />
-          </div>
-
-
-          {/* Other form fields go here */}
-          
-          <motion.button
-            type="submit"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition duration-300"
-          >
-            Post Job
-          </motion.button>
+                    {/* Submit button */}
+                    {loading ? (
+                        <button className="w-full my-4 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition duration-300">
+                            <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait
+                        </button>
+                    ) : (
+                        <motion.button
+                            type="submit"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition duration-300"
+                        >
+                            Post Job
+                        </motion.button>
+                    )}
+                </motion.div>
+            </form>
         </motion.div>
-      </form>
-    </motion.div>
-  );
+    );
 };
 
 export default JobPostingForm;
