@@ -26,6 +26,7 @@ import { useDispatch } from "react-redux";
 import { getUser } from "./redux/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CompanyCreate from "./components/Admin/CompanyCreate";
+import Companies from "./components/Admin/Companies";
 
 const Layout = () => {
   return (
@@ -72,6 +73,22 @@ const App = () => {
           element: (
             <ProtectedRoute>
               <UserProfile />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/company",
+          element: (
+            <ProtectedRoute allowedRoles={['recruiter']}>
+              <CompanyCreate />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/company/:id",
+          element: (
+            <ProtectedRoute allowedRoles={['recruiter']}>
+              <Companies />
             </ProtectedRoute>
           ),
         },
@@ -130,14 +147,6 @@ const App = () => {
         {
           path: "/signup",
           element: <SignupPage />,
-        },
-        {
-          path:"/create-company",
-          element: (
-            <ProtectedRoute allowedRoles={['recruiter']}>
-              <CompanyCreate />
-            </ProtectedRoute>
-          )
         },
         {
           path: "*",

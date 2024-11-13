@@ -34,7 +34,7 @@ const CompanyCreate = () => {
 
     const registerNewCompany = async () => {
         try {
-            const res = await axios.post(`${proxy}/company/register`, 
+            const res = await axios.post(`${proxy}company/register`, 
                 { companyName },
                 {
                     headers: {
@@ -47,12 +47,11 @@ const CompanyCreate = () => {
             if (res?.data?.success) {
                 dispatch(setSingleCompany(res.data.company));
                 toast.success(res.data.message);
-                const companyId = res?.data?.company?._id;
-                navigate(`/admin/companies/${companyId}`);
+                navigate(`/company/:id`);
             }
         } catch (error) {
             console.log(error);
-            toast.error('Failed to create company');
+            toast.error(error.response?.data?.message || "An error occurred.");
         }
     };
 

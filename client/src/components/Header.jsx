@@ -21,6 +21,7 @@ const Header = () => {
   const handleLogout = () => {
     dispatch(logout());
     toast.success("Logged out successfully.");
+    navigate("/");
   };
   useEffect(() => {
     if (error) {
@@ -77,6 +78,17 @@ const Header = () => {
     }
     setIsUserMenuOpen(false);
   };
+
+  const showCompanies = () => {
+    if (user && user.role === "recruiter") {
+      navigate(`/company/${user.id}`);
+    } else {
+      toast.error("Only admins can view companies.");
+    }
+    
+  };
+
+
 
   return (
     <>
@@ -150,14 +162,15 @@ const Header = () => {
                     Employers
                   </NavLink>
                   <NavLink
-                    to="/create-company"
+                    to={`/company/${user.id}`}
+                    onClick={showCompanies}
                     className={({ isActive }) =>
                       isActive
                         ? "text-purple-600 dark:text-purple-400"
                         : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
                     }
                   >
-                    create Company
+                    Company
                   </NavLink>
                 </>
               )}
@@ -268,7 +281,7 @@ const Header = () => {
                 >
                   Find Jobs
                 </Link>
-                {isAuthenticated && (
+                {isAuthenticated && user && user.role === "student" && (
                   <>
                     {" "}
                     <NavLink
@@ -296,6 +309,18 @@ const Header = () => {
                     >
                       Employers
                     </Link>
+                    <Link
+                      to={`/company/${user.id}`}
+                      onClick={showCompanies}
+                      className={({ isActive }) =>
+                        isActive
+                          ? "text-purple-600 dark:text-purple-400"
+                          : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                      }
+                    >
+                      Company
+                    </Link>
+                    
                   </>
                 )}
                 <Link
