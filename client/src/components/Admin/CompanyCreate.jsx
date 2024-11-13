@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setSingleCompany } from "../../redux/companySlice";
 import { proxy } from "../../utils/constUtils";
 
@@ -11,6 +11,8 @@ const CompanyCreate = () => {
   const navigate = useNavigate();
   const [companyName, setCompanyName] = useState("");
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.user);
+
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -48,7 +50,7 @@ const CompanyCreate = () => {
       if (res?.data?.success) {
         dispatch(setSingleCompany(res.data.company));
         toast.success(res.data.message);
-        navigate(`/company/:id`);
+        navigate(`/company/${user.id}`);
       }
     } catch (error) {
       console.log(error);

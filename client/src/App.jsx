@@ -27,6 +27,7 @@ import { getUser } from "./redux/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CompanyCreate from "./components/Admin/CompanyCreate";
 import Companies from "./components/Admin/Companies";
+import CompanyEdit from "./components/Admin/CompanyEdit";
 
 const Layout = () => {
   return (
@@ -91,6 +92,14 @@ const App = () => {
               <Companies />
             </ProtectedRoute>
           ),
+        },
+        {
+          path: "/company/edit/:id", 
+          element :(
+            <ProtectedRoute allowedRoles={['recruiter']}>
+              <CompanyEdit />
+            </ProtectedRoute>
+          )
         },
         {
           path: "/jobsearch",

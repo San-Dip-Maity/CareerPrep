@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { setCompanies, setSearchCompanyByText } from "../../redux/companySlice";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import CompanyCard from "./CompanyCard";
 import { useNavigate } from "react-router-dom";
 import { proxy } from "../../utils/constUtils";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -32,32 +33,48 @@ const Companies = () => {
   const [loading, setLoading] = useState(true);
   const [companiesList, setCompaniesList] = useState([]);
   const { user } = useSelector((state) => state.user);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const fetchCompanies = async () => {
+    try {
+      const response = await axios.get(`${proxy}company/${user.id}`);
+      const data = response.data;
+      dispatch(setCompanies(data.companies));
+      setCompaniesList(data.companies);
+    } catch (error) {
+      console.error(
+        "Error fetching companies:",
+        error.response ? error.response.data : error.message
+      );
+      toast.error("Failed to fetch companies");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchCompanies = async () => {
-      try {
-        console.log("Fetching companies for user ID:", user.id);
-
-        const response = await axios.get(`${proxy}company/${user.id}`);
-        const data = response.data;
-        console.log("Fetched companies:", data.companies);
-
-        dispatch(setCompanies(data.companies));
-        setCompaniesList(data.companies);
-      } catch (error) {
-        console.error(
-          "Error fetching companies:",
-          error.response ? error.response.data : error.message
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
     if (user) {
       fetchCompanies();
     }
   }, [dispatch, user]);
+
+  const handleEdit = (company) => {
+    navigate(`/company/edit/${company._id}`);
+  };
+
+  const handleDelete = async (company) => {
+      setDeleteLoading(true);
+      try {
+        await axios.delete(`${proxy}company/${company._id}`);
+        toast.success("Company deleted successfully");
+        fetchCompanies(); 
+      } catch (error) {
+        console.error("Error deleting company:", error);
+        toast.error("Failed to delete company");
+      } finally {
+        setDeleteLoading(false);
+      }
+  };
 
   const filteredCompanies = (Array.isArray(companiesList) ? companiesList : []).filter(
     (company) =>
@@ -66,11 +83,9 @@ const Companies = () => {
       company.location?.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const handleClick = () => {
+  const handleNewCompany = () => {
     navigate("/company");
   };
-
-  console.log(companiesList);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
@@ -82,7 +97,7 @@ const Companies = () => {
       >
         <motion.div
           variants={itemVariants}
-          className="flex flex-col md:flex-row md:items-center justify-between mb-8"
+          className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4"
         >
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
@@ -93,12 +108,12 @@ const Companies = () => {
             </p>
           </div>
 
-          <div className="mt-4 md:mt-0 relative">
+          <div className="relative">
             <input
               type="text"
               placeholder="Search companies..."
               value={searchText}
-              onChange={(e) => dispatch(setSearchCompanyByText(e.target.value))} // Dispatch action to update search text
+              onChange={(e) => dispatch(setSearchCompanyByText(e.target.value))}
               className="w-full md:w-64 px-4 py-2 pl-10 rounded-lg border bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white text-gray-900 placeholder-gray-400 dark:placeholder-gray-500 focus:border-blue-600 dark:focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200"
             />
             <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
@@ -107,7 +122,7 @@ const Companies = () => {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={handleClick}
+            onClick={handleNewCompany}
             className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-200"
           >
             New Company
@@ -116,13 +131,24 @@ const Companies = () => {
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
           </div>
         ) : (
           <motion.div variants={containerVariants} className="grid gap-6">
             {filteredCompanies.map((company) => (
-              <CompanyCard key={company._id} company={company} />
+              <CompanyCard
+                key={company._id}
+                company={company}
+                onEdit={() => handleEdit(company)}
+                onDelete={() => handleDelete(company)}
+                disabled={deleteLoading}
+              />
             ))}
+            {filteredCompanies.length === 0 && (
+              <p className="text-center text-gray-500 dark:text-gray-400">
+                No companies found
+              </p>
+            )}
           </motion.div>
         )}
       </motion.div>

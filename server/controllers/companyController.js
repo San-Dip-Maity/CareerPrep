@@ -142,3 +142,49 @@ export const updateCompany = async (req, res) => {
     });
   }
 };
+
+// Delete company
+export const deleteCompany = async (req, res) => {
+  try {
+    const companyId = req.params.id; 
+
+    if (!mongoose.Types.ObjectId.isValid(companyId)) {
+      return res.status(400).json({
+        message: "Invalid Company ID format.",
+        success: false,
+      });
+    }
+
+    const company = await Company.findById(companyId);
+
+    
+    if (!company) {
+      return res.status(404).json({
+        message: "Company not found.",
+        success: false,
+      });
+    }
+
+  //  console.log(company.userId);
+  //   if (company.userId.toString() !== req.user.id) {
+  //     return res.status(403).json({
+  //       message: "You don't have permission to delete this company.",
+  //       success: false,
+  //     });
+  //   }
+
+    await Company.findByIdAndDelete(companyId);
+
+    return res.status(200).json({
+      message: "Company deleted successfully.",
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Server error, please try again.",
+      success: false,
+    });
+  }
+};
+
