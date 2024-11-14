@@ -85,10 +85,8 @@ const Header = () => {
     } else {
       toast.error("Only admins can view companies.");
     }
-    
+    setIsMenuOpen(false);
   };
-
-
 
   return (
     <>
@@ -299,8 +297,9 @@ const Header = () => {
                 )}
                 {user && user.role === "recruiter" && (
                   <>
-                    <Link
+                    <NavLink
                       to="/employers"
+                      onClick={toggleMenu}
                       className={({ isActive }) =>
                         isActive
                           ? "text-purple-600 dark:text-purple-400"
@@ -308,8 +307,8 @@ const Header = () => {
                       }
                     >
                       Employers
-                    </Link>
-                    <Link
+                    </NavLink>
+                    <NavLink
                       to={`/company/${user.id}`}
                       onClick={showCompanies}
                       className={({ isActive }) =>
@@ -319,17 +318,26 @@ const Header = () => {
                       }
                     >
                       Company
-                    </Link>
-                    
+                    </NavLink>
                   </>
                 )}
-                <Link
+                <NavLink
                   to="/about"
                   className="text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
                   onClick={toggleMenu}
                 >
                   About Us
-                </Link>
+                </NavLink>
+                <NavLink
+                to="/contact"
+                className={({ isActive }) =>
+                  isActive
+                    ? "text-purple-600 dark:text-purple-400"
+                    : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                }
+              >
+                Contact Us
+              </NavLink>
                 <button
                   onClick={() => {
                     dispatch(toggleTheme());
@@ -340,12 +348,7 @@ const Header = () => {
                   {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                   <span>{isDarkMode ? "Light Mode" : "Dark Mode"}</span>
                 </button>
-                <button
-                  className="text-purple-600 dark:text-purple-400 border border-purple-600 dark:border-purple-400 px-4 py-2 rounded hover:bg-purple-600 hover:text-white dark:hover:bg-purple-500"
-                  onClick={toggleMenu}
-                >
-                  Contact Us
-                </button>
+                
                 {isAuthenticated ? (
                   <>
                     <button
