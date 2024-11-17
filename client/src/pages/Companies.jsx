@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import { setCompanies, setSearchCompanyByText } from "../../redux/companySlice";
+import { setCompanies, setSearchCompanyByText } from "../redux/companySlice";
 import { Search, Loader2 } from "lucide-react";
-import CompanyCard from "./CompanyCard";
+import CompanyCard from "../components/Admin/CompanyCard";
 import { useNavigate } from "react-router-dom";
-import { proxy } from "../../utils/constUtils";
+import { proxy } from "../utils/constUtils";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 

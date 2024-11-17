@@ -225,13 +225,13 @@ const JobPostingForm = () => {
 
                     {/* Submit button */}
                     {loading ? (
-                        <button className="w-full my-4 bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition duration-300">
+                        <button className="w-full my-4 flex items-center justify-center bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition duration-300">
                             <Loader2 className='mr-2 h-4 w-4 animate-spin' /> Please wait
                         </button>
                     ) : (
                         <motion.button
                             type="submit"
-                            whileHover={{ scale: 1.05 }}
+                            whileHover={{ scale: 1.01 }}
                             whileTap={{ scale: 0.95 }}
                             className="w-full bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition duration-300"
                         >

@@ -77,7 +77,11 @@ const JobDetails = () => {
           </h2>
           <div className="flex items-center text-gray-600 dark:text-gray-300 mt-2">
             <ListCollapseIcon size={18} className="mr-4" />
-            <p>{job.requirements || "No requirements available"}</p>
+            {job.requirements.map((requirement, index) => (
+              <div key={index} className="p-3 bg-gray-100 dark:bg-gray-700 rounded shadow m-1">
+                {requirement}
+              </div>
+            ))}
           </div>
         </div>
         <div className="flex justify-center">

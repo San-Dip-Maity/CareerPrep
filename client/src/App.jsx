@@ -26,7 +26,7 @@ import { useDispatch } from "react-redux";
 import { getUser } from "./redux/authSlice";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CompanyCreate from "./components/Admin/CompanyCreate";
-import Companies from "./components/Admin/Companies";
+import Companies from "./pages/Companies";
 import CompanyEdit from "./components/Admin/CompanyEdit";
 import JobDetails from "./components/JobDetails";
 
