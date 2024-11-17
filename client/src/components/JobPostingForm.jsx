@@ -48,13 +48,14 @@ const JobPostingForm = () => {
         };
         try {
             setLoading(true);
-            const res = await axios.post(`${proxy}/job/create`, updatedData, {
+            console.log(updatedData);
+            const res = await axios.post(`${proxy}job/create`, updatedData, {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true
             });
             if (res.data.success) {
                 toast.success(res.data.message);
-                navigate("/admin/jobs");
+                navigate("/jobsearch");
             }
         } catch (error) {
             toast.error(error.response?.data?.message || "An error occurred.");
@@ -166,9 +167,11 @@ const JobPostingForm = () => {
                             className="w-full p-2 border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
                         >
                             <option value="">Select job type</option>
-                            <option value="remote">Remote</option>
-                            <option value="onsite">On-site</option>
-                            <option value="hybrid">Hybrid</option>
+                            <option value="full-time">Full-time</option>
+                            <option value="part-time">Part-time</option>
+                            <option value="contract">Contract</option>
+                            <option value="internship">Iternship</option>
+                            <option value="freelance">Freelance</option>
                         </select>
                     </div>
 

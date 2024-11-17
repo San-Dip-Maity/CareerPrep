@@ -4,52 +4,68 @@ import User from "../models/UserSchema.js";
 export const postJobs = async (req, res) => {
     try {
         const { title, description, requirements, salary, location, jobType, experience, position, companyId } = req.body;
-        const userId = req.id;
+        const userId = req.user?.id;
 
         if (!title || !description || !requirements || !salary || !location || !jobType || !experience || !position || !companyId) {
             return res.status(400).json({ message: 'Please fill in all fields' });
-        };
+        }
+
+        
+        if (typeof salary !== 'number' || salary <= 0) {
+            return res.status(400).json({ message: 'Salary should be a positive number' });
+        }
 
         const job = await Job.create({
             title,
             description,
-            requirements: requirements.split(','),
-            salary: Number(salary),
+            requirements,
+            salary,
             location,
             jobType,
-            experience: experience,
+            experience,
             position,
-            company: companyId,
-            created_by: userId
+            company:companyId,
+            userId,
         });
+
         res.status(201).json({
             message: "New job created successfully.",
             job,
             success: true
         });
     } catch (error) {
-        console.log("Error in postJobs controller", error.message);
+        console.error("Error in postJobs controller:", error.message); // Structured error logging
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
 
-export const getJobs = async (req,res) => {
+
+export const getJobs = async (req, res) => {
     try {
-        const {title,location, experience,sort = "popular"} = req.query;
+        const { title, location, experience, sort = "popular" } = req.query;
+
+        // Ensure experience is a valid number or undefined
+        let experienceFilter = {};
+        if (experience && !isNaN(parseInt(experience))) {
+            experienceFilter = { experience: parseInt(experience) };
+        }
+
         const query = {
-            $or:[
-                {title: {$regex: title, $options: "i"}},
-                {location: {$regex: location, $options: "i"}},
-                {experience: {$get: parseInt(experience)}}
-            ]
+            $or: [
+                { title: { $regex: title, $options: "i" } },
+                { location: { $regex: location, $options: "i" } },
+                experienceFilter,  // Add experience filter only if it's valid
+            ],
         };
 
-        const jobs = await Job.find(query).populate({
-            path: "company",
-        }).sort({createdAt: -1});
+        const jobs = await Job.find(query)
+            .populate({
+                path: "company",
+            })
+            .sort({ createdAt: -1 });
 
-        if(!jobs){
-            return res.status(404).json({message: "No jobs found."});
+        if (!jobs || jobs.length === 0) {
+            return res.status(404).json({ message: "No jobs found." });
         }
 
         switch (sort) {
@@ -74,10 +90,11 @@ export const getJobs = async (req,res) => {
             default:
                 break;
         }
+
         return res.status(200).json({
             message: "Jobs fetched successfully.",
             jobs,
-            success: true
+            success: true,
         });
     } catch (error) {
         console.log("Error in getJobs controller", error.message);
@@ -85,19 +102,15 @@ export const getJobs = async (req,res) => {
     }
 };
 
+
 export const getJobById = async (req, res) => {
     try {
-        const jobId = req.params.jobId;
+        const jobId = req.params.id;
 
         const job = await Job.findById(jobId)
-        .populate({
-            path: "applications",
-            populate:{
-                path: "user",
-                select: "fullName email"
-            }
-        })
-        .populate("company","name location");
+            .populate({
+                path: "company",
+            });
 
         if(!job){
             return res.status(404).json({

@@ -28,6 +28,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import CompanyCreate from "./components/Admin/CompanyCreate";
 import Companies from "./components/Admin/Companies";
 import CompanyEdit from "./components/Admin/CompanyEdit";
+import JobDetails from "./components/JobDetails";
 
 const Layout = () => {
   return (
@@ -106,6 +107,14 @@ const App = () => {
           element: (
             <ProtectedRoute>
               <JobSearch />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/jobsearch/jobDetails/:id",
+          element: (
+            <ProtectedRoute>
+              <JobDetails />
             </ProtectedRoute>
           ),
         },
