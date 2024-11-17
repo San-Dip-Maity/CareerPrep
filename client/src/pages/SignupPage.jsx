@@ -11,10 +11,10 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [experiences, setExperiences] = useState([
-    { title: "", company: "", duration: "" },
+    { title: "", company: "", period: "" },
   ]);
   const [educations, setEducations] = useState([
-    { degree: "", institution: "", year: "" },
+    { degree: "", school: "", year: "" },
   ]);
   const [skillsList, setSkillsList] = useState([]);
   const [currentSkill, setCurrentSkill] = useState("");

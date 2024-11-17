@@ -121,7 +121,7 @@ const JobSearch = () => {
                 id="job-title"
                 type="text"
                 value={searchText}
-                onChange={(e) => dispatch(setSearchJobByText(e.target.value))} // Dispatch action on change
+                onChange={(e) => dispatch(setSearchJobByText(e.target.value))} 
                 placeholder="Enter Job Title Or Location"
                 className="w-full pl-10 pr-4 py-2 rounded-md border-gray-300 dark:border-gray-600 focus:border-purple-500 focus:ring focus:ring-purple-200 dark:bg-gray-700 dark:text-white"
               />

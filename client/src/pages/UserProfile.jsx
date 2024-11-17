@@ -383,7 +383,7 @@ const UserProfile = () => {
                       )) || <p>No education available.</p>
                     ) : (
                       <ul className="list-disc ml-6 space-y-2 text-gray-600 dark:text-gray-300">
-                        {user.education?.map((edu, index) => (
+                        {user.educations?.map((edu, index) => (
                           <li key={index}>
                             <strong>{edu.degree}</strong>, {edu.school}{" "}
                             <span className="text-gray-500 dark:text-gray-400">
