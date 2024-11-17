@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Search, Loader2, MapPin, Clock } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { setSearchJobByText } from "../redux/jobSlice"; 
+import { setSearchJobByText } from "../redux/jobSlice";
 import JobCard from "../components/JobCard";
 import JobSearchFilters from "../components/JobSearchFilters";
 import axios from "axios";
@@ -20,17 +20,21 @@ const containerVariants = {
   },
 };
 
-
-
 const JobSearch = () => {
   const dispatch = useDispatch();
-  const searchText = useSelector((state) => state.job.searchJobByText); // Redux state for search text
+  const searchText = useSelector((state) => state.job.searchJobByText);
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
   const [experience, setExperience] = useState("");
   const [sortOption, setSortOption] = useState("popular");
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [filters, setFilters] = useState({
+    salaryMin: "",
+    salaryMax: "",
+    jobType: [],
+    experienceLevel: [],
+  });
 
   // Fetch jobs from backend
   const fetchJobs = async () => {
@@ -62,15 +66,28 @@ const JobSearch = () => {
     fetchJobs();
   }, [sortOption]);
 
-  
+  const applyFilters = () => {
+    return jobs.filter((job) => {
+      const matchesSalary =
+        (!filters.salaryMin || job.salary >= filters.salaryMin) &&
+        (!filters.salaryMax || job.salary <= filters.salaryMax);
+      const matchesJobType =
+        !filters.jobType.length || filters.jobType.includes(job.jobType);
+      const matchesExperience =
+        !filters.experienceLevel.length ||
+        filters.experienceLevel.includes(job.experienceLevel);
+      const matchesSearch =
+        job.title.toLowerCase().includes(searchText.toLowerCase()) ||
+        job.company.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        job.location.toLowerCase().includes(searchText.toLowerCase());
 
-  // Filter jobs based on the search text
-  const filteredJobs = jobs.filter(
-    (job) =>
-      job.title.toLowerCase().includes(searchText.toLowerCase()) ||
-      job.company.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      job.location.toLowerCase().includes(searchText.toLowerCase())
-  );
+      return (
+        matchesSalary && matchesJobType && matchesExperience && matchesSearch
+      );
+    });
+  };
+
+  const filteredJobs = applyFilters();
 
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
@@ -96,50 +113,16 @@ const JobSearch = () => {
         <div className="flex flex-wrap gap-4">
           <div className="flex-1 min-w-[250px]">
             <label className="sr-only" htmlFor="job-title">
-              Enter Job title
+              Enter Job Title Or Location
             </label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
               <input
                 id="job-title"
                 type="text"
-                value={jobTitle}
-                onChange={(e) => setJobTitle(e.target.value)}
-                placeholder="Enter Job title"
-                className="w-full pl-10 pr-4 py-2 rounded-md border-gray-300 dark:border-gray-600 focus:border-purple-500 focus:ring focus:ring-purple-200 dark:bg-gray-700 dark:text-white"
-              />
-            </div>
-          </div>
-
-          <div className="flex-1 min-w-[250px]">
-            <label className="sr-only" htmlFor="location">
-              Enter location
-            </label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
-              <input
-                id="location"
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="Enter location"
-                className="w-full pl-10 pr-4 py-2 rounded-md border-gray-300 dark:border-gray-600 focus:border-purple-500 focus:ring focus:ring-purple-200 dark:bg-gray-700 dark:text-white"
-              />
-            </div>
-          </div>
-
-          <div className="flex-1 min-w-[250px]">
-            <label className="sr-only" htmlFor="experience">
-              Years of experience
-            </label>
-            <div className="relative">
-              <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
-              <input
-                id="experience"
-                type="number"
-                value={experience}
-                onChange={(e) => setExperience(e.target.value)}
-                placeholder="Years of experience"
+                value={searchText}
+                onChange={(e) => dispatch(setSearchJobByText(e.target.value))} // Dispatch action on change
+                placeholder="Enter Job Title Or Location"
                 className="w-full pl-10 pr-4 py-2 rounded-md border-gray-300 dark:border-gray-600 focus:border-purple-500 focus:ring focus:ring-purple-200 dark:bg-gray-700 dark:text-white"
               />
             </div>
@@ -154,11 +137,7 @@ const JobSearch = () => {
         className="flex flex-col md:flex-row gap-8"
       >
         <div className="w-full md:w-1/4">
-          <JobSearchFilters
-            setExperience={setExperience}
-            setSortOption={setSortOption}
-            handleSearch={fetchJobs}
-          />
+          <JobSearchFilters filters={filters} setFilters={setFilters} />
         </div>
 
         <div className="w-full md:w-3/4">
@@ -185,7 +164,10 @@ const JobSearch = () => {
               <Loader2 className="h-12 w-12 animate-spin text-purple-600" />
             </div>
           ) : (
-            <motion.div variants={containerVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <motion.div
+              variants={containerVariants}
+              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
               {filteredJobs.length > 0 ? (
                 filteredJobs.map((job) => (
                   <JobCard
