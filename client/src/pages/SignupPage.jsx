@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Facebook, Linkedin, Eye, EyeOff, Upload, X, Plus } from "lucide-react";
+import { Facebook, Linkedin, Eye, EyeOff, Upload, X, Plus, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
