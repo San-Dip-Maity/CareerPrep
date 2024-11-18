@@ -46,7 +46,7 @@ const Companies = () => {
         "Error fetching companies:",
         error.response ? error.response.data : error.message
       );
-      toast.error("Failed to fetch companies");
+      toast.error(error.response?.data?.message || "Failed to fetch companies");
     } finally {
       setLoading(false);
     }

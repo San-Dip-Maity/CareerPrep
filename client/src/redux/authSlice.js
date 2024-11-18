@@ -55,9 +55,7 @@ const authSlice = createSlice({
       state.message = null;
     },
     fetchUserRequest(state) {
-      state.loading = true;
-      state.isAuthenticated = false;
-      state.user = {};
+      // state.loading = true;
       state.error = null;
     },
     fetchUserSuccess(state, action) {
@@ -72,15 +70,23 @@ const authSlice = createSlice({
       state.user = {};
       state.error = action.payload;
     },
+    logoutRequest(state) {
+      state.loading = true;
+      state.error = null;
+    },
     logoutSuccess(state) {
       state.isAuthenticated = false;
       state.user = {};
       state.error = null;
+      state.message = null;
+      state.loading = false;
     },
     logoutFailed(state, action) {
       state.isAuthenticated = state.isAuthenticated;
       state.user = state.user;
       state.error = action.payload;
+      state.message = null;
+      state.loading = false;
     },
     updateProfileRequest(state) {
       state.loading = true;
@@ -112,6 +118,8 @@ export const signup = (data) => async (dispatch) => {
     dispatch(authSlice.actions.signupSuccess(response.data));
     dispatch(authSlice.actions.clearAllErrors());
   } catch (error) {
+    const errorMessage = error.response?.data?.message || "Failed to sign up";
+    console.log(errorMessage);
     dispatch(authSlice.actions.signupFailed(error.response.data.message));
   }
 };
@@ -145,6 +153,7 @@ export const getUser = () => async (dispatch) => {
 };
 
 export const logout = () => async (dispatch) => {
+  dispatch(authSlice.actions.logoutRequest());
   try {
     await axios.get(`${AUTH_API_END_POINT}logout`, {
       withCredentials: true,

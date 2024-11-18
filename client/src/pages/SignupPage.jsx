@@ -63,7 +63,7 @@ export default function SignupPage() {
   };
 
   const handleAddExperience = () => {
-    setExperiences([...experiences, { title: "", company: "", duration: "" }]);
+    setExperiences([...experiences, { title: "", company: "", period: "" }]);
   };
 
   const handleRemoveExperience = (index) => {
@@ -77,7 +77,7 @@ export default function SignupPage() {
   };
 
   const handleAddEducation = () => {
-    setEducations([...educations, { degree: "", institution: "", year: "" }]);
+    setEducations([...educations, { degree: "", school: "", year: "" }]);
   };
 
   const handleRemoveEducation = (index) => {
@@ -125,6 +125,7 @@ export default function SignupPage() {
     formData.append("experience", JSON.stringify(experiences));
     formData.append("education", JSON.stringify(educations));
 
+    console.log(data);
     dispatch(signup(formData));
   };
 
@@ -507,7 +508,7 @@ export default function SignupPage() {
                         onChange={(e) =>
                           handleExperienceChange(
                             index,
-                            "duration",
+                            "period",
                             e.target.value
                           )
                         }
@@ -604,13 +605,22 @@ export default function SignupPage() {
               </div>
             </div>
 
-            <button
-              type="submit"
-              // disabled={loading}
-              className="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Sign up" : "Signing up..."}
-            </button>
+            {loading ? (
+                <button
+                  disabled
+                  className="w-full p-2 bg-purple-600 text-white flex items-center justify-center rounded-md"
+                >
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Signing Up...
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="w-full p-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors dark:bg-purple-700 dark:hover:bg-purple-800"
+                >
+                  Sign Up
+                </button>
+              )}
+            
           </motion.form>
         </div>
         <motion.div

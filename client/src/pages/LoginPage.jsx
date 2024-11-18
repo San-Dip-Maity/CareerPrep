@@ -34,7 +34,7 @@ export default function LoginPage() {
       toast.success("Logged in successfully");
       navigate("/");
     }
-  }, [dispatch, error, isAuthenticated]);
+  }, [dispatch, error, isAuthenticated, loading]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
@@ -101,7 +101,7 @@ export default function LoginPage() {
                 )}
               </div>
 
-              {!loading ? (
+              {loading ? (
                 <button
                   disabled
                   className="w-full p-2 bg-purple-600 text-white flex items-center justify-center rounded-md"
