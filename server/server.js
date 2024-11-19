@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use("/api/auth", authRoutes);
 app.use("/api/job", jobRoutes);
-app.use("/api/company", companyRoutes); // admin r jonno
+app.use("/api/company", companyRoutes); 
 
 app.get("/", (req,res)=>{
   return res.send("AppName: CareerPrep")

@@ -90,6 +90,11 @@ const userSchema = new mongoose.Schema({
     experience: [experienceSchema],
     education: [educationSchema],
   },
+  company: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Company",
+},
+
 });
 
 // Hash password before saving data to the database

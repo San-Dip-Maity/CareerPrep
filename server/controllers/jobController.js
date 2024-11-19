@@ -1,3 +1,4 @@
+import Company from "../models/CompanySchema.js";
 import Job from "../models/JobSchema.js";
 import User from "../models/UserSchema.js";
 
@@ -52,10 +53,10 @@ export const getJobs = async (req, res) => {
 
         const query = {
             $or: [
-                { title: { $regex: title, $options: "i" } },
-                { location: { $regex: location, $options: "i" } },
-                experienceFilter,  // Add experience filter only if it's valid
-            ],
+                title ? { title: { $regex: title, $options: "i" } } : null,
+                location ? { location: { $regex: location, $options: "i" } } : null,
+                experienceFilter.experience ? experienceFilter : null,
+            ].filter(Boolean), // Remove null entries
         };
 
         const jobs = await Job.find(query)
@@ -68,6 +69,7 @@ export const getJobs = async (req, res) => {
             return res.status(404).json({ message: "No jobs found." });
         }
 
+        // Sorting logic
         switch (sort) {
             case "popular":
                 jobs.sort((a, b) => b.views - a.views);
@@ -101,6 +103,7 @@ export const getJobs = async (req, res) => {
         res.status(500).json({ success: false, message: "Failed to fetch jobs" });
     }
 };
+
 
 
 export const getJobById = async (req, res) => {
@@ -137,33 +140,48 @@ export const getJobById = async (req, res) => {
 
 export const adminCheckJobCount = async (req, res) => {
     try {
-        const adminId = req.id;
+        const adminId = req.user.id;
 
-        const admin  = await User.findById(adminId);
-        if(!admin || admin.role !== "admin"){
-            return res.status(403).json({message: "You are not authorized to perform this action."});
+        // Verify the admin's role
+        const admin = await User.findById(adminId);
+        if (!admin || admin.role !== "recruiter") {
+            return res.status(403).json({
+                message: "You are not authorized to perform this action.",
+                success: false,
+            });
         }
 
-        const jobCount = await Job.find({created_by: adminId}).populate({
-            path: "company",
-            createdAt: -1
-        });
-
-        if(!jobCount){
+        const companies = await Company.find({ userId: adminId });
+        if (!companies || companies.length === 0) {
             return res.status(404).json({
-                message: "No jobs found.",
-                success: false
+                message: "No companies found for this admin.",
+                success: false,
             });
-        };
+        }
+
+        const companyIds = companies.map(company => company._id);
+        const jobs = await Job.find({ company: { $in: companyIds } }).populate("company");
+
+        if (jobs.length === 0) {
+            return res.status(404).json({
+                message: "No jobs found for your companies.",
+                success: false,
+            });
+        }
 
         return res.status(200).json({
             message: "Job count retrieved successfully.",
-            jobCount,
-            success: true
+            jobCount: jobs.length,
+            jobs,
+            success: true,
         });
     } catch (error) {
-        console.log("Error in adminCheckJobCount controller", error.message);
-        res.status(500).json({ error: "Failed to retrieve job count" , success: false});
-        
+        console.error("Error in adminCheckJobCount controller:", error.message);
+        return res.status(500).json({
+            message: "Failed to retrieve job count.",
+            error: error.message,
+            success: false,
+        });
     }
 };
+
