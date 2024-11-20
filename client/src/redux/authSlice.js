@@ -117,6 +117,7 @@ export const signup = (data) => async (dispatch) => {
     });
     dispatch(authSlice.actions.signupSuccess(response.data));
     dispatch(authSlice.actions.clearAllErrors());
+    window.location.reload();
   } catch (error) {
     const errorMessage = error.response?.data?.message || "Failed to sign up";
     console.log(errorMessage);
@@ -133,6 +134,7 @@ export const login = (data) => async (dispatch) => {
     });
     dispatch(authSlice.actions.loginSuccess(response.data));
     dispatch(authSlice.actions.clearAllErrors());
+    window.location.reload();
   } catch (error) {
     dispatch(authSlice.actions.loginFailed(error.response.data.message));
   }
@@ -160,6 +162,7 @@ export const logout = () => async (dispatch) => {
     });
     dispatch(authSlice.actions.logoutSuccess());
     dispatch(authSlice.actions.clearAllErrors());
+    window.location.reload();
   } catch (error) {
     dispatch(authSlice.actions.logoutFailed(error.response.data.message));
   }

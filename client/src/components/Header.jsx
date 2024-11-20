@@ -212,7 +212,15 @@ const Header = () => {
                   onClick={toggleUserMenu}
                   className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white"
                 >
-                  <User size={20} />
+                  {user.profilePhoto ? (
+                    <img
+                      src={user.profilePhoto}
+                      alt="Profile"
+                      className="w-full h-full rounded-full object-cover hover:shadow-xl border-solid border-2 border-purple-600"
+                    />
+                  ) : (
+                    <User size={20} />
+                  )}
                 </button>
                 {isUserMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1">
@@ -329,15 +337,15 @@ const Header = () => {
                   About Us
                 </NavLink>
                 <NavLink
-                to="/contact"
-                className={({ isActive }) =>
-                  isActive
-                    ? "text-purple-600 dark:text-purple-400"
-                    : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
-                }
-              >
-                Contact Us
-              </NavLink>
+                  to="/contact"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "text-purple-600 dark:text-purple-400"
+                      : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                  }
+                >
+                  Contact Us
+                </NavLink>
                 <button
                   onClick={() => {
                     dispatch(toggleTheme());
@@ -348,7 +356,7 @@ const Header = () => {
                   {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                   <span>{isDarkMode ? "Light Mode" : "Dark Mode"}</span>
                 </button>
-                
+
                 {isAuthenticated ? (
                   <>
                     <button
