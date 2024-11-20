@@ -22,18 +22,14 @@ const JobSearchFilters = ({ filters, setFilters }) => {
             type="number"
             placeholder="Min"
             value={filters.salaryMin || ""}
-            onChange={(e) =>
-              handleFilterChange("salaryMin", e.target.value)
-            }
+            onChange={(e) => handleFilterChange("salaryMin", e.target.value)}
             className="w-1/2 p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           />
           <input
             type="number"
             placeholder="Max"
             value={filters.salaryMax || ""}
-            onChange={(e) =>
-              handleFilterChange("salaryMax", e.target.value)
-            }
+            onChange={(e) => handleFilterChange("salaryMax", e.target.value)}
             className="w-1/2 p-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           />
         </div>
@@ -42,7 +38,13 @@ const JobSearchFilters = ({ filters, setFilters }) => {
       <div className="mb-4">
         <h3 className="font-semibold mb-2 dark:text-white">Job Type</h3>
         <div className="space-y-2">
-          {["Full-Time", "Part-Time", "Internship", "Contract"].map((type) => (
+          {[
+            "full-time",
+            "part-time",
+            "internship",
+            "contract",
+            "freelance",
+          ].map((type) => (
             <label key={type} className="flex items-center dark:text-gray-300">
               <input
                 type="checkbox"
@@ -67,23 +69,37 @@ const JobSearchFilters = ({ filters, setFilters }) => {
       <div className="mb-4">
         <h3 className="font-semibold mb-2 dark:text-white">Experience Level</h3>
         <div className="space-y-2">
-          {["Entry-Level", "Junior", "Mid-Level", "Senior"].map((level) => (
-            <label key={level} className="flex items-center dark:text-gray-300">
+          {[
+            { label: "Entry-Level", min: 0, max: 1 },
+            { label: "Junior", min: 2, max: 3 },
+            { label: "Mid-Level", min: 4, max: 5 },
+            { label: "Senior", min: 6, max: Infinity },
+          ].map(({ label, min, max }) => (
+            <label key={label} className="flex items-center dark:text-gray-300">
               <input
                 type="checkbox"
                 className="mr-2"
-                checked={filters.experienceLevel?.includes(level)}
+                checked={filters.experience?.some(
+                  (range) => range.label === label
+                )}
                 onChange={(e) => {
-                  const selectedLevels = filters.experienceLevel || [];
-                  handleFilterChange(
-                    "experienceLevel",
-                    e.target.checked
-                      ? [...selectedLevels, level]
-                      : selectedLevels.filter((l) => l !== level)
-                  );
+                  const selectedLevels = filters.experience || [];
+                  if (e.target.checked) {
+                    // Add the range to the filter
+                    handleFilterChange("experience", [
+                      ...selectedLevels,
+                      { label, min, max },
+                    ]);
+                  } else {
+                    // Remove the range from the filter
+                    handleFilterChange(
+                      "experience",
+                      selectedLevels.filter((range) => range.label !== label)
+                    );
+                  }
                 }}
               />
-              <span>{level}</span>
+              <span>{label}</span>
             </label>
           ))}
         </div>
