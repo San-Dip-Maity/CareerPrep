@@ -147,14 +147,14 @@ const UserProfile = () => {
                   {isEditing ? (
                     <button
                       onClick={handleSave}
-                      className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition-colors duration-300 shadow-md"
+                      className="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 transition-colors duration-300 shadow-md absolute right-4 top-4"
                     >
                       Save
                     </button>
                   ) : (
                     <button
                       onClick={handleEdit}
-                      className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors duration-300 shadow-md"
+                      className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 transition-colors duration-300 shadow-md absolute right-4 top-4"
                     >
                       Edit
                     </button>
@@ -181,12 +181,12 @@ const UserProfile = () => {
                   </div>
 
                   {/* Location, Email, Phone */}
-                  <div className="flex flex-col sm:flex-row sm:space-x-4 text-sm text-gray-500 dark:text-gray-400">
-                    <p className="flex items-center justify-center gap-1">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                    <p className="flex items-center gap-1 ">
                       <MapPinHouse size={18} />
                       <strong>{user.location}</strong>
                     </p>
-                    <p className="flex items-center justify-center gap-1">
+                    <p className="flex items-center gap-1">
                       <Mail size={18} />
                       <strong>{user.email}</strong>
                     </p>

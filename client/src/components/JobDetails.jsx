@@ -6,14 +6,20 @@ import {
   Clock,
   ListCollapseIcon,
   ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { proxy } from "../utils/constUtils";
 
 const JobDetails = () => {
   const [job, setJob] = useState(null);
   const { id } = useParams();
+  const navigate = useNavigate();
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
 
   useEffect(() => {
     const fetchJobDetails = async () => {
@@ -36,6 +42,12 @@ const JobDetails = () => {
       transition={{ duration: 0.5 }}
       className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 max-w-3xl mx-auto my-10"
     >
+      <button
+        onClick={handleGoBack}
+        className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-full"
+      >
+        <ArrowLeft size={24} />
+      </button>
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
@@ -75,10 +87,13 @@ const JobDetails = () => {
           <h2 className="text-xl font-bold text-gray-800 dark:text-white">
             Job Requirements
           </h2>
-          <div className="flex items-center text-gray-600 dark:text-gray-300 mt-2">
+          <div className="flex items-center text-gray-600 dark:text-gray-300 mt-2 overflow-x-scroll">
             <ListCollapseIcon size={18} className="mr-4" />
             {job.requirements.map((requirement, index) => (
-              <div key={index} className="p-3 bg-gray-100 dark:bg-gray-700 rounded shadow m-1">
+              <div
+                key={index}
+                className="p-3 bg-gray-100 dark:bg-gray-700 rounded shadow m-1"
+              >
                 {requirement}
               </div>
             ))}

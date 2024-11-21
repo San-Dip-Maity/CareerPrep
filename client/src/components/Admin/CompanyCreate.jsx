@@ -6,12 +6,17 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { setSingleCompany } from "../../redux/companySlice";
 import { proxy } from "../../utils/constUtils";
+import { ArrowLeft } from "lucide-react";
 
 const CompanyCreate = () => {
   const navigate = useNavigate();
   const [companyName, setCompanyName] = useState("");
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
+
+  const handleGoBack = () => {
+    navigate(-1);
+  };
 
 
   const containerVariants = {
@@ -67,6 +72,12 @@ const CompanyCreate = () => {
         className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8"
       >
         <motion.div variants={itemVariants} className="my-10">
+        <button
+        onClick={handleGoBack}
+        className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white transition-colors hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded-full -ml-2 "
+      >
+        <ArrowLeft size={24} />
+      </button>
           <h1 className="font-bold text-2xl md:text-3xl text-gray-900 dark:text-white">
             Your Company Name
           </h1>

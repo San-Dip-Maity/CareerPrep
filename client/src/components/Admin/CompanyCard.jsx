@@ -107,7 +107,7 @@ const CompanyCard = ({ company, onEdit, onDelete }) => {
     <>
       <motion.div
         variants={itemVariants}
-        className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200"
+        className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 overflow-hidden"
       >
         <div className="flex justify-between items-start">
           <div className="flex items-start space-x-4 flex-1">

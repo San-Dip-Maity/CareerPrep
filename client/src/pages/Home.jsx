@@ -35,7 +35,7 @@ export default function Home() {
     navigate(
       `/jobsearch?title=${encodeURIComponent(
         jobTitle
-      )}&location=${encodeURIComponent(location)}`
+      )}&location=${encodeURIComponent(jobTitle)}`
     );
   };
 
