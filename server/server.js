@@ -5,12 +5,14 @@ import { connectDB } from "./lib/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import companyRoutes from "./routes/companyRoute.js";
+import savevedJobsRoutes from "./routes/savedJobsRoutes.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
 app.use(cookieParser());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
   origin: process.env.REACT_APP_API_URL,
   methods: ["GET", "POST", "PUT", "DELETE"],
@@ -25,9 +27,10 @@ const PORT = process.env.PORT || 5000;
 app.use("/api/auth", authRoutes);
 app.use("/api/job", jobRoutes);
 app.use("/api/company", companyRoutes); 
+app.use("/api/saved-jobs", savevedJobsRoutes); 
 
 app.get("/", (req,res)=>{
-  return res.send("AppName: CareerPrep")
+  return res.json({appName: "CareerPrep"})
 })
 
 app.listen(PORT, () => {

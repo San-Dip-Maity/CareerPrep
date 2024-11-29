@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Menu, X, Sun, Moon, User, LogOut } from "lucide-react";
+import { Menu, X, Sun, Moon, User, LogOut, Save } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme, setTheme, detectSystemTheme } from "../redux/themeSlice";
@@ -86,6 +86,15 @@ const Header = () => {
       toast.error("Only admins can view companies.");
     }
     setIsMenuOpen(false);
+  };
+
+  const handaleSavedJobs = () => {
+    if (user && user.id) {
+      navigate(`/savedJobs/${user.id}`);
+    } else {
+      navigate("/savedJobs");
+    }
+    setIsUserMenuOpen(false);
   };
 
   return (
@@ -194,7 +203,17 @@ const Header = () => {
               </NavLink>
             </div>
           </div>
+
           <div className="hidden md:flex items-center space-x-4">
+            {isAuthenticated && user && (
+              <Link
+                to={`/savedjobs/${user.id}`}
+                onClick={handaleSavedJobs}
+                className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+              >
+                <Save color="#a9a7a7" size={22} />
+              </Link>
+            )}
             <button
               onClick={() => dispatch(toggleTheme())}
               className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -359,6 +378,12 @@ const Header = () => {
 
                 {isAuthenticated ? (
                   <>
+                    <button
+                    onClick={handaleSavedJobs}
+                    className="flex items-center text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400">
+                      <Save size={16} className="mr-2" />
+                      Saved Jobs
+                    </button>
                     <button
                       onClick={() => {
                         handleViewProfile();

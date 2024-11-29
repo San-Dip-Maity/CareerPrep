@@ -29,6 +29,7 @@ import CompanyCreate from "./components/Admin/CompanyCreate";
 import Companies from "./pages/Companies";
 import CompanyEdit from "./components/Admin/CompanyEdit";
 import JobDetails from "./components/JobDetails";
+import SavedJobs from "./pages/SavedJobs";
 
 const Layout = () => {
   return (
@@ -115,6 +116,14 @@ const App = () => {
           element: (
             <ProtectedRoute>
               <JobDetails />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/savedJobs/:id",
+          element: (
+            <ProtectedRoute >
+              <SavedJobs />
             </ProtectedRoute>
           ),
         },
