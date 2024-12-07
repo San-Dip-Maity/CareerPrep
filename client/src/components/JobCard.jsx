@@ -1,6 +1,16 @@
 import React from "react";
-import { MapPin, Building, Clock, ListCollapseIcon } from "lucide-react";
+import {
+  MapPin,
+  Building,
+  Clock,
+  ListCollapseIcon,
+  Bookmark,
+} from "lucide-react";
 import { Link } from "react-router-dom";
+import { proxy } from "../utils/constUtils";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const JobCard = ({
   title,
@@ -10,14 +20,45 @@ const JobCard = ({
   salary,
   experience,
   description,
-  id
+  id,
 }) => {
+
+  const { user } = useSelector((state) => state.user);
+
+  const handleSaveJob = async (jobId) => {
+    try {
+      await axios.post(`${proxy}saved-jobs/savejob`, { jobId },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      toast.success("Job saved successfully");
+    } catch (error) {
+      console.error("Error saving job:", error);
+      toast.error(error.response?.data?.message || "Error saving job");
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 hover:shadow-lg transition-shadow duration-300">
       <div className="space-y-2">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-white truncate">
-          {title}
-        </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-white truncate">
+            {title}
+          </h2>
+          <div
+          onClick={() => handleSaveJob(id)}
+          className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+            <Bookmark
+              strokeWidth={2}
+              size={22}
+              className="text-gray-600 dark:text-gray-300"
+            />
+          </div>
+        </div>
         <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
           <div className="flex items-center">
             <Building size={16} className="mr-1" />
@@ -50,17 +91,17 @@ const JobCard = ({
 
       <div className="mt-4">
         <div className="flex justify-center gap-4">
-          <Link 
-          to={`/jobsearch/jobDetails/${title}`}
-          className="w-full bg-purple-600 text-white rounded-lg px-4 py-2 text-center text-sm font-medium hover:bg-purple-700 transition-colors">
-          <button >
-            Apply Now
-          </button>
+          <Link
+            to={`/jobsearch/jobDetails/${title}`}
+            className="w-full bg-purple-600 text-white rounded-lg px-4 py-2 text-center text-sm font-medium hover:bg-purple-700 transition-colors"
+          >
+            <button>Apply Now</button>
           </Link>
-          <Link to={`/jobsearch/jobDetails/${id}`} className="w-full text-center text-purple-600 bg-none border-2 border-purple-600 rounded-lg px-4 py-2 text-sm font-medium hover:bg-purple-700 hover:text-white transition-colors">
-            <button >
-              More Details
-            </button>
+          <Link
+            to={`/jobsearch/jobDetails/${id}`}
+            className="w-full text-center text-purple-600 bg-none border-2 border-purple-600 rounded-lg px-4 py-2 text-sm font-medium hover:bg-purple-700 hover:text-white transition-colors"
+          >
+            <button>More Details</button>
           </Link>
         </div>
       </div>

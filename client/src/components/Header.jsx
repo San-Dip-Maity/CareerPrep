@@ -211,7 +211,7 @@ const Header = () => {
                 onClick={handaleSavedJobs}
                 className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
               >
-                <Save color="#a9a7a7" size={22} />
+                <Save size={22} className="text-gray-600 dark:text-gray-300" />
               </Link>
             )}
             <button

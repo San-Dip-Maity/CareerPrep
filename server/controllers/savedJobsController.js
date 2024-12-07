@@ -22,14 +22,18 @@ export const saveJob = async (req, res) => {
     });
   }
 };
-
 export const getSavedJobs = async (req, res) => {
   try {
-    const {userId} = req.params;
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required", success: false });
+    }
+
     const savedJobs = await SavedJob.find({ userId }).populate("jobId");
 
-    if (savedJobs.length === 0) {
-      return res.status(404).json({ message: "No saved jobs found" });
+    if (!savedJobs || savedJobs.length === 0) {
+      return res.status(404).json({ message: "No saved jobs found", success: false });
     }
 
     res.status(200).json({
@@ -37,12 +41,15 @@ export const getSavedJobs = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Error retrieving saved jobs", error: error.message });
+    console.error("Error in getSavedJobs:", error);
+    res.status(500).json({
+      message: "Error retrieving saved jobs",
+      error: error.message || "An unexpected error occurred",
+      success: false,
+    });
   }
 };
+
 
 export const deleteSavedJob = async (req, res) => {
   try {
