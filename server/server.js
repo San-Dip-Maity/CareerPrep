@@ -6,6 +6,7 @@ import authRoutes from "./routes/authRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import companyRoutes from "./routes/companyRoute.js";
 import savevedJobsRoutes from "./routes/savedJobsRoutes.js";
+import applicationRoutes from "./routes/applicationRoutes.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -27,7 +28,8 @@ const PORT = process.env.PORT || 5000;
 app.use("/api/auth", authRoutes);
 app.use("/api/job", jobRoutes);
 app.use("/api/company", companyRoutes); 
-app.use("/api/saved-jobs", savevedJobsRoutes); 
+app.use("/api/saved-jobs", savevedJobsRoutes);
+app.use("/api/applications", applicationRoutes);
 
 app.get("/", (req,res)=>{
   return res.json({appName: "CareerPrep"})

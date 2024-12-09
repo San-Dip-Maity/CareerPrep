@@ -121,7 +121,7 @@ const SavedJobs = () => {
                         {savedJob.jobId.location}
                       </p>
                       <p className="text-gray-500 dark:text-gray-400">
-                        Salary: {savedJob.jobId.salary}
+                        Salary: {savedJob.jobId.salary ? `${(savedJob.jobId.salary / 1000).toFixed(1)}K` : 'Not specified'}
                       </p>
                       <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 mt-2 overflow-hidden">
                         {savedJob.jobId.requirements.map(
