@@ -10,7 +10,7 @@ export const createApplication = async (req, res) => {
         await application.save();
         res.status(201).json({ message: "Application created successfully", application });
     } catch (error) {
-        res.status(500).json({ error: "Failed to create application", details: error.message });
+        res.status(500).json({ error: "Failed to create application", message: error.message });
     }
 };
 
@@ -22,7 +22,7 @@ export const getApplicationsByJob = async (req, res) => {
         const applications = await Application.find({ job: jobId }).populate("applicant", "name email").populate("job", "title");
         res.status(200).json({ applications });
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch applications", details: error.message });
+        res.status(500).json({ error: "Failed to fetch applications", message: error.message });
     }
 };
 
@@ -58,6 +58,6 @@ export const updateApplicationStatus = async (req, res) => {
         }
         res.status(200).json({ message: "Application status updated successfully", updatedApplication });
     } catch (error) {
-        res.status(500).json({ error: "Failed to update application status", details: error.message });
+        res.status(500).json({ error: "Failed to update application status", message: error.message });
     }
 };
