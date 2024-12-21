@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   MapPin,
   Building,
   Clock,
   ListCollapseIcon,
   Bookmark,
+  BookmarkCheck
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { proxy } from "../utils/constUtils";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+
 
 const JobCard = ({
   title,
@@ -22,23 +24,62 @@ const JobCard = ({
   description,
   id,
 }) => {
-
+  const [isSaved, setIsSaved] = useState(false);
   const { user } = useSelector((state) => state.user);
 
-  const handleSaveJob = async (jobId) => {
+  useEffect(() => {
+    const checkIfSaved = async () => {
+      try {
+        const response = await axios.get(
+          `${proxy}saved-jobs/getSavedJobs/${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+            withCredentials: true,
+          }
+        );
+        const savedJobs = response.data.savedJobs;
+        setIsSaved(savedJobs.some(job => job.jobId._id === id));
+      } catch (error) {
+        console.error("Error checking saved status:", error);
+      }
+    };
+
+    if (user) {
+      checkIfSaved();
+    }
+  }, [id, user]);
+
+  const handleSaveToggle = async (jobId) => {
     try {
-      await axios.post(`${proxy}saved-jobs/savejob`, { jobId },
-        {
+      if (isSaved) {
+        // Unsave the job
+        await axios.delete(`${proxy}saved-jobs/deleteSavedJobs/${jobId}`, {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
           withCredentials: true,
-        }
-      );
-      toast.success("Job saved successfully");
+        });
+        setIsSaved(false);
+        toast.success("Job removed from saved list");
+      } else {
+        // Save the job
+        await axios.post(`${proxy}saved-jobs/savejob`, 
+          { jobId },
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+            withCredentials: true,
+          }
+        );
+        setIsSaved(true);
+        toast.success("Job saved successfully");
+      }
     } catch (error) {
-      console.error("Error saving job:", error);
-      toast.error(error.response?.data?.message || "Error saving job");
+      console.error("Error toggling job save:", error);
+      toast.error(error.response?.data?.message || "Error updating saved job");
     }
   };
 
@@ -50,13 +91,22 @@ const JobCard = ({
             {title}
           </h2>
           <div
-          onClick={() => handleSaveJob(id)}
-          className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
-            <Bookmark
-              strokeWidth={2}
-              size={22}
-              className="text-gray-600 dark:text-gray-300"
-            />
+            onClick={() => handleSaveToggle(id)}
+            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+          >
+            {isSaved ? (
+              <BookmarkCheck
+                strokeWidth={2}
+                size={22}
+                className="text-purple-600 dark:text-purple-400"
+              />
+            ) : (
+              <Bookmark
+                strokeWidth={2}
+                size={22}
+                className="text-gray-600 dark:text-gray-300"
+              />
+            )}
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
