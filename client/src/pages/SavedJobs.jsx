@@ -24,7 +24,7 @@ const SavedJobs = () => {
             },
             withCredentials: true,
           }
-        ); 
+        );
         console.log(response.data);
         setSavedJobs(
           Array.isArray(response.data.savedJobs) ? response.data.savedJobs : []
@@ -58,14 +58,12 @@ const SavedJobs = () => {
 
   const handleDeleteSavedJob = async (jobId) => {
     try {
-      await axios.delete(`${proxy}saved-jobs/deleteSavedJobs/${jobId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-          withCredentials: true,
-        }
-      );
+      await axios.delete(`${proxy}saved-jobs/deleteSavedJobs/${jobId}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+        withCredentials: true,
+      });
       toast.success("Job removed from saved list");
       setSavedJobs(savedJobs.filter((job) => job.jobId._id !== jobId));
     } catch (error) {
@@ -121,14 +119,18 @@ const SavedJobs = () => {
                         {savedJob.jobId.location}
                       </p>
                       <p className="text-gray-500 dark:text-gray-400">
-                        Salary: {savedJob.jobId.salary ? `${(savedJob.jobId.salary / 1000).toFixed(1)}K` : 'Not specified'}
+                        Salary:{" "}
+                        {savedJob.jobId.salary
+                          ? `${(savedJob.jobId.salary / 1000).toFixed(1)}K`
+                          : "Not specified"}
                       </p>
                       <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 mt-2 overflow-hidden">
                         {savedJob.jobId.requirements.map(
                           (requirement, index) => (
                             <span
                               key={index}
-                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 overflow-hidden"
+                              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200  overflow-hidden truncate"
+                              title={requirement}
                             >
                               {requirement}
                             </span>
@@ -141,15 +143,11 @@ const SavedJobs = () => {
                         to={`/jobsearch/jobDetails/${savedJob.jobId._id}`}
                         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                       >
-                        <button
-                          onClick={() => handleSaveJob(savedJob.jobId._id)}
-                        >
-                          Details
-                        </button>
+                        <button>Details</button>
                       </Link>
                       <button
                         onClick={() => handleDeleteSavedJob(savedJob.jobId._id)}
-                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                        className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
                       >
                         Remove
                       </button>
