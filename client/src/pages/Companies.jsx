@@ -28,7 +28,6 @@ const itemVariants = {
 const Companies = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const companies = useSelector((state) => state.company.companies);
   const searchText = useSelector((state) => state.company.searchCompanyByText);
   const [loading, setLoading] = useState(true);
   const [companiesList, setCompaniesList] = useState([]);
