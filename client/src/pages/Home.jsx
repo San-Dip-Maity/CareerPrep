@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import JobCard from "../components/JobCard";
 import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import { proxy } from "../utils/constUtils";
 
 
 
@@ -28,7 +29,25 @@ const CompanyLogo = ({ name }) => (
 export default function Home() {
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
-  const navigate = useNavigate(); // Initialize useNavigate
+  const [jobs, setJobs] = useState([]); // State to store job data
+  const navigate = useNavigate();
+
+  // Fetch jobs from the API
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch(`${proxy}job/get`); // Replace with your API endpoint
+        const data = await response.json();
+        setJobs(data.jobs); 
+      } catch (error) {
+        console.error("Error fetching job data:", error);
+      }
+    };
+
+    fetchJobs();
+  }, []);
+
+  
 
   const handleSearch = () => {
     // Navigate to the JobSearch page with query parameters
@@ -117,33 +136,19 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            <JobCard
-              title="Technical Support Specialist"
-              company="Google Inc."
-              location="New Delhi, India"
-              sift="Full time"
-              salary="20,000 INR - 25,000 INR"
-              applicants="10+"
-              logo=""
-            />
-            <JobCard
-              title="Senior UI/UX Designer"
-              company="Microsoft"
-              location="Boston, USA"
-              sift="Part time"
-              salary="$30,000 - $55,000"
-              applicants="9+"
-              logo=""
-            />
-            <JobCard
-              title="Marketing Officer"
-              company="IBM Co"
-              location="Bangalore, India"
-              sift="Full time"
-              salary="15,000 INR - 35,000 INR"
-              applicants="30+"
-              logo=""
-            />
+          {jobs.slice(0, 3).map((job, index) => (
+              <JobCard
+              key={index}
+              id={job._id}
+              title={job.title}
+              company={job.company.name}
+              location={job.location}
+              jobType={job.jobType}
+              salary={(job.salary)}
+              experience={job.experience}
+              description={job.description}
+              />
+            ))}
           </div>
 
           <div className="text-center mt-8">

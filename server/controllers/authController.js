@@ -88,7 +88,6 @@ export const signup = async (req, res) => {
   }
 };
 
-
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -120,14 +119,13 @@ export const login = async (req, res) => {
         role: user.role,
       },
     });
-    } catch (error) {
-      console.log("Error in Login controller", error.message);
-      return res.status(500).json({
-        message: "Server error. Please try again later.",
-      });
-    }
-  };
-
+  } catch (error) {
+    console.log("Error in Login controller", error.message);
+    return res.status(500).json({
+      message: "Server error. Please try again later.",
+    });
+  }
+};
 
 export const logout = (req, res) => {
   try {
@@ -144,7 +142,7 @@ export const logout = (req, res) => {
 
 export const getUser = async (req, res) => {
   try {
-    const userId = req.user._id; 
+    const userId = req.user._id;
 
     const user = await User.findById(userId);
     if (!user) {
@@ -183,14 +181,17 @@ export const getUser = async (req, res) => {
   }
 };
 
-
-
-
-
 export const updateProfile = async (req, res) => {
   try {
-    const { fullname, email, mobileNumber, bio, skills, education, experience } =
-      req.body;
+    const {
+      fullname,
+      email,
+      mobileNumber,
+      bio,
+      skills,
+      education,
+      experience,
+    } = req.body;
     const file = req.file;
     let userId = req.user._id;
 
@@ -244,6 +245,29 @@ export const updateProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating profile:", error);
+    return res.status(500).json({
+      message: "Internal server error.",
+      success: false,
+    });
+  }
+};
+
+export const getUserById = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found.",
+        success: false,
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    console.error("Error retrieving user profile:", error);
     return res.status(500).json({
       message: "Internal server error.",
       success: false,

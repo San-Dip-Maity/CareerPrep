@@ -179,6 +179,16 @@ const Header = () => {
                   >
                     Company
                   </NavLink>
+                  <NavLink
+                    to={`/applications`}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "text-purple-600 dark:text-purple-400"
+                        : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
+                    }
+                  >
+                    Applications
+                  </NavLink>
                 </>
               )}
               <NavLink

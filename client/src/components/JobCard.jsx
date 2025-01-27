@@ -83,6 +83,30 @@ const JobCard = ({
     }
   };
 
+  const handleApply = async () => {
+    try {
+      await axios.post(
+        `${proxy}applications/apply`,
+        {
+          jobId: id,
+          userId: user.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      toast.success("Application submitted successfully!");
+    } catch (error) {
+      console.error("Error applying for job:", error);
+      toast.error(
+        error.response?.data?.message || "Error submitting application"
+      );
+    }
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 hover:shadow-lg transition-shadow duration-300">
       <div className="space-y-2">
@@ -141,12 +165,12 @@ const JobCard = ({
 
       <div className="mt-4">
         <div className="flex justify-center gap-4">
-          <Link
-            to={`/jobsearch/jobDetails/${title}`}
+        <button
+            onClick={handleApply}
             className="w-full bg-purple-600 text-white rounded-lg px-4 py-2 text-center text-sm font-medium hover:bg-purple-700 transition-colors"
           >
-            <button>Apply Now</button>
-          </Link>
+            Apply Now
+          </button>
           <Link
             to={`/jobsearch/jobDetails/${id}`}
             className="w-full text-center text-purple-600 bg-none border-2 border-purple-600 rounded-lg px-4 py-2 text-sm font-medium hover:bg-purple-700 hover:text-white transition-colors"

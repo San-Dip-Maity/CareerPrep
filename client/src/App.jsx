@@ -30,6 +30,7 @@ import Companies from "./pages/Companies";
 import CompanyEdit from "./components/Admin/CompanyEdit";
 import JobDetails from "./components/JobDetails";
 import SavedJobs from "./pages/SavedJobs";
+import Applications from "./components/Admin/Applications";
 
 const Layout = () => {
   return (
@@ -132,6 +133,14 @@ const App = () => {
           element: (
             <ProtectedRoute allowedRoles={['recruiter']}>
               <Employers />
+            </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/applications",
+          element: (
+            <ProtectedRoute allowedRoles={['recruiter']}>
+              <Applications />
             </ProtectedRoute>
           ),
         },

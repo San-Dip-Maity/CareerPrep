@@ -201,4 +201,3 @@ export const deleteCompany = async (req, res) => {
     });
   }
 };
-
