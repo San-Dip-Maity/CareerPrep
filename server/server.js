@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { connectDB } from "./lib/db.js";
+import mockInterviewRoute from "./routes/mockInterviewRoute.js"
 import authRoutes from "./routes/authRoutes.js";
 import jobRoutes from "./routes/jobRoutes.js";
 import companyRoutes from "./routes/companyRoute.js";
@@ -30,6 +31,7 @@ app.use("/api/job", jobRoutes);
 app.use("/api/company", companyRoutes); 
 app.use("/api/saved-jobs", savevedJobsRoutes);
 app.use("/api/applications", applicationRoutes);
+app.use("/api",mockInterviewRoute)
 
 app.get("/", (req,res)=>{
   return res.json({appName: "CareerPrep"})
