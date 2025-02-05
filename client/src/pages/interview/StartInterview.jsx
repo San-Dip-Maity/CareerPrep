@@ -6,18 +6,24 @@ const StartInterview = () => {
   const [isWebcamEnabled, setIsWebcamEnabled] = useState(false);
   const [countdown, setCountdown] = useState(5);
   const [error, setError] = useState(null);
+  const [questions, setQuestions] = useState("");
+  const [response, setResponse] = useState(" ");
+  const [feedback, setFeedback] = useState(" ");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isWebcamEnabled && countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
+    }else if(countdown === 0){
+      fetchQuestion();
     }
   }, [isWebcamEnabled, countdown]);
 
   const handleEnableWebcam = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
+      .then(() => {
         // Successfully accessed webcam and microphone
         setIsWebcamEnabled(true);
       })
@@ -27,6 +33,39 @@ const StartInterview = () => {
         setError("Failed to access webcam or microphone. Please check permissions.");
       });
   };
+
+  const fetchQuestion = async () => {
+    try {
+      const res = await fetch("/api/generate-question",{
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ role: "Full Stack Developer" }),
+      });
+      const data = await res.json();
+      setQuestions(data);
+    } catch (error) {
+      console.error("Error fetching AI question:", err);
+    }
+  };
+
+  const submitResponse = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/mock-interview", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ question: questions, userResponse:response }),
+      });
+    } catch (error) {
+      console.log("Error analyzing response:", error);
+    }
+    setLoading(false);
+  };
+  
 
   const WebCamEnabled = () => (
     <motion.div
@@ -54,11 +93,38 @@ const StartInterview = () => {
       <button
         className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
         onClick={() => {
-          /* Handle start interview logic */
+          fetchQuestion()
         }}
       >
         I'm Ready
       </button>
+
+      {questions && (
+        <div className="mt-4 p-4 bg-gray-200 dark:bg-gray-700 rounded-kg">
+          <h3 className="font-semibold">AI Interview Question:</h3>
+          <p className="text-gray-800 dark:text-gray-300"></p>
+          <textarea
+          className="w-full p-2 border rounded-md mt-2"
+          rows="3"
+          placeholder="Type your response here..."
+          value={response}
+          onChange={(e) => setResponse(e.target.value)}
+          >
+          </textarea>
+          <button
+          className="mt-4 px-4 py-2 g-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          onClick={submitResponse}
+          >
+            Submit Answer
+          </button>
+          {feedback && (
+            <div className="mt-4 p-4 bg-green-100 text-green-800 rounded-lg">
+              <h3 className="font-semibold">AI Feedback</h3>
+              <p>{feedback}</p>
+            </div>
+          )}
+        </div>
+        )}
     </motion.div>
   );
 
