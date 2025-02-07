@@ -174,7 +174,7 @@ const JobSearch = () => {
                     key={job._id}
                     id={job._id}
                     title={job.title}
-                    company={job.company.name}
+                    company={job.company?.name}
                     location={job.location}
                     jobType={job.jobType}
                     salary={formatSalary(job.salary)}

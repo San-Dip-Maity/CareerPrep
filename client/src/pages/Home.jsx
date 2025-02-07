@@ -141,7 +141,7 @@ export default function Home() {
               key={index}
               id={job._id}
               title={job.title}
-              company={job.company.name}
+              company={job.company?.name}
               location={job.location}
               jobType={job.jobType}
               salary={(job.salary)}
