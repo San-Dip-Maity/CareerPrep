@@ -11,14 +11,42 @@ import {
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { proxy } from "../utils/constUtils";
+import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
 
 const JobDetails = () => {
   const [job, setJob] = useState(null);
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.user);
+
 
   const handleGoBack = () => {
     navigate(-1);
+  };
+
+  const handleApply = async () => {
+    try {
+      await axios.post(
+        `${proxy}applications/apply`,
+        {
+          jobId: id,
+          userId: user.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      toast.success("Application submitted successfully!");
+    } catch (error) {
+      console.error("Error applying for job:", error);
+      toast.error(
+        error.response?.data?.message || "Error submitting application"
+      );
+    }
   };
 
   useEffect(() => {
@@ -101,6 +129,7 @@ const JobDetails = () => {
         </div>
         <div className="flex justify-center">
           <motion.button
+            onClick={handleApply}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="flex items-center bg-purple-600 text-white rounded-lg px-6 py-3 text-sm font-medium hover:bg-purple-700 transition-colors"

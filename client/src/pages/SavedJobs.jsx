@@ -13,59 +13,44 @@ const SavedJobs = () => {
 
   const fetchSavedJobs = async () => {
     try {
-      if (user) {
-        console.log("Fetching saved jobs...");
-        console.log(user.id);
-        const response = await axios.get(
-          `${proxy}saved-jobs/getSavedJobs/${user.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-            withCredentials: true,
-          }
-        );
-        console.log(response.data);
-        setSavedJobs(
-          Array.isArray(response.data.savedJobs) ? response.data.savedJobs : []
-        );
-        setLoading(false);
-      } else {
-        console.log("User not logged in");
-      }
+      if (!user) return;
+      setLoading(true);
+      
+      console.log("Fetching saved jobs...");
+      const response = await axios.get(
+        `${proxy}saved-jobs/getSavedJobs/${user.id}`,
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+          withCredentials: true,
+        }
+      );
+      
+      console.log(response.data);
+      setSavedJobs(response.data.savedJobs || []);
+      
     } catch (error) {
       console.error("Error fetching saved jobs:", error);
       toast.error(error.response?.data?.message || "Error fetching saved jobs");
       setSavedJobs([]);
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchSavedJobs();
-  }, []);
-
-  const handleSaveJob = async (jobId) => {
-    try {
-      await axios.post(`${proxy}saved-jobs/savejob`, { jobId });
-      toast.success("Job saved successfully");
+    if (user?.id) {
       fetchSavedJobs();
-    } catch (error) {
-      console.error("Error saving job:", error);
-      toast.error(error.response?.data?.message || "Error saving job");
     }
-  };
+  }, [user?.id]);
 
   const handleDeleteSavedJob = async (jobId) => {
     try {
       await axios.delete(`${proxy}saved-jobs/deleteSavedJobs/${jobId}`, {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
+        headers: { Authorization: `Bearer ${user.token}` },
         withCredentials: true,
       });
       toast.success("Job removed from saved list");
-      setSavedJobs(savedJobs.filter((job) => job.jobId._id !== jobId));
+      fetchSavedJobs();
     } catch (error) {
       console.error("Error deleting saved job:", error);
       toast.error(error.response?.data?.message || "Error removing saved job");
@@ -96,71 +81,59 @@ const SavedJobs = () => {
             </div>
           ) : savedJobs.length === 0 ? (
             <div className="p-8 text-center bg-white dark:bg-gray-800 shadow-md rounded-lg">
-              <p className="text-gray-600 dark:text-gray-300">
-                No saved jobs found.
-              </p>
+              <p className="text-gray-600 dark:text-gray-300">No saved jobs found.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-              {Array.isArray(savedJobs) && savedJobs.length > 0 ? (
-                savedJobs.map((savedJob) => (
-                  <motion.div
-                    key={savedJob.jobId._id}
-                    className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 flex flex-col justify-between"
-                  >
-                    <div>
-                      <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
-                        {savedJob.jobId.title}
-                      </h2>
-                      <p className="text-gray-600 dark:text-gray-300">
-                        Experience: {savedJob.jobId.experience}
-                      </p>
-                      <p className="text-gray-500 dark:text-gray-400">
-                        {savedJob.jobId.location}
-                      </p>
-                      <p className="text-gray-500 dark:text-gray-400">
-                        Salary:{" "}
-                        {savedJob.jobId.salary
-                          ? `${(savedJob.jobId.salary / 1000).toFixed(1)}K`
-                          : "Not specified"}
-                      </p>
-                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 mt-2 overflow-hidden">
-                        {savedJob.jobId.requirements.map(
-                          (requirement, index) => (
-                            <span
-                              key={index}
-                              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200  overflow-hidden truncate"
-                              title={requirement}
-                            >
-                              {requirement}
-                            </span>
-                          )
-                        )}
-                      </div>
+              {savedJobs.map((savedJob) => (
+                <motion.div
+                  key={savedJob.jobId._id}
+                  className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 flex flex-col justify-between"
+                >
+                  <div>
+                    <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">
+                      {savedJob.jobId.title}
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-300">
+                      Experience: {savedJob.jobId.experience}
+                    </p>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      {savedJob.jobId.location}
+                    </p>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      Salary:{" "}
+                      {savedJob.jobId.salary
+                        ? `₹${(savedJob.jobId.salary / 1000).toFixed(1)}K`
+                        : "Not specified"}
+                    </p>
+                    <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 mt-2 overflow-hidden">
+                      {savedJob.jobId.requirements.map((requirement, index) => (
+                        <span
+                          key={index}
+                          className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 overflow-hidden truncate"
+                          title={requirement}
+                        >
+                          {requirement}
+                        </span>
+                      ))}
                     </div>
-                    <div className="mt-4 flex justify-end gap-2">
-                      <Link
-                        to={`/jobsearch/jobDetails/${savedJob.jobId._id}`}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                      >
-                        <button>Details</button>
-                      </Link>
-                      <button
-                        onClick={() => handleDeleteSavedJob(savedJob.jobId._id)}
-                        className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </motion.div>
-                ))
-              ) : (
-                <div className="p-8 text-center bg-white dark:bg-gray-800 shadow-md rounded-lg">
-                  <p className="text-gray-600 dark:text-gray-300">
-                    No saved jobs found.
-                  </p>
-                </div>
-              )}
+                  </div>
+                  <div className="mt-4 flex justify-end gap-2">
+                    <Link
+                      to={`/jobsearch/jobDetails/${savedJob.jobId._id}`}
+                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      <button>Details</button>
+                    </Link>
+                    <button
+                      onClick={() => handleDeleteSavedJob(savedJob.jobId._id)}
+                      className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           )}
         </motion.section>
