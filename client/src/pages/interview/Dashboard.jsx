@@ -74,6 +74,10 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-center px-4 py-8">
+      <InterviewFormPopup
+        isOpen={isPopupOpen}
+        onClose={() => setIsPopupOpen(false)}
+      />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -98,10 +102,6 @@ const Dashboard = () => {
             </motion.button>
           </div>
 
-          <InterviewFormPopup
-            isOpen={isPopupOpen}
-            onClose={() => setIsPopupOpen(false)}
-          />
 
           <h2 className="text-xl font-semibold mb-4 dark:text-white">
             Previous Mock Interviews
