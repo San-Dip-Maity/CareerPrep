@@ -35,15 +35,20 @@ const StartInterview = () => {
 
   const fetchQuestion = async () => {
     try {
-      const res = await fetch("/api/generate-question", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/generate-question`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ role: "Full Stack Developer" }),
       });
+      if(!res.ok){
+        throw new Error(`HTTP error! Status: ${res.status}`);
+      }
       const data = await res.json();
-      setQuestions(data.question); // Assuming API response has a 'question' field
+      console.log("Generated Question:", data.question);
+      
+      setQuestions(data.question || "No Question received"); // Assuming API response has a 'question' field
     } catch (err) {
       console.error("Error fetching AI question:", err);
     }
