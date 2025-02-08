@@ -2,21 +2,27 @@ import React from "react";
 import { motion } from "framer-motion";
 
 const TeamMember = ({ name, role, image }) => (
+  <div className="relative group w-64 mx-auto">
+  {/* Image Card */}
   <motion.div
-    className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
+    className="h-72 w-64 bg-cover bg-center rounded-xl shadow-lg overflow-hidden"
+    style={{ backgroundImage: `url(${image})` }}
     whileHover={{ scale: 1.05 }}
     transition={{ duration: 0.3 }}
+  ></motion.div>
+
+  {/* Name and Role Card */}
+  <motion.div
+    className="absolute top-0 h-72 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+    whileHover={{ scale: 1 }}
+    transition={{ duration: 0.3 }}
   >
-    <img
-      src={image}
-      alt={name}
-      className="w-32 h-32 rounded-full mx-auto mb-4"
-    />
-    <h3 className="text-xl font-semibold text-center dark:text-white">
+    <h3 className="text-xl font-semibold dark:text-white text-center">
       {name}
     </h3>
     <p className="text-gray-600 dark:text-gray-300 text-center">{role}</p>
   </motion.div>
+</div>
 );
 
 export default function About() {
