@@ -134,7 +134,6 @@ export const login = (data) => async (dispatch) => {
     });
     dispatch(authSlice.actions.loginSuccess(response.data));
     dispatch(authSlice.actions.clearAllErrors());
-    window.location.reload();
   } catch (error) {
     dispatch(authSlice.actions.loginFailed(error.response.data.message));
   }

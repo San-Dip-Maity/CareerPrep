@@ -21,20 +21,16 @@ const StartInterview = () => {
     }
   }, [isWebcamEnabled, countdown]);
 
-  const handleEnableWebcam = async() => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({video: true, audio:{ echoCancellation: true, noiseSuppression: true }});
-       stream.getAudioTracks().forEach(track => {
-        track.enabled = true;
-       })
-      if(videoRef.current){
-        videoRef.current.srcObject = stream;
-      }
-      setIsWebcamEnabled(true);
-    } catch (error) {
-      console.log("Error accessing media devices:", error);
-      setError("Failed to acess webcam or microphone.Please check permissions");
-    } 
+  const handleEnableWebcam = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then(() => {
+        setIsWebcamEnabled(true);
+      })
+      .catch((err) => {
+        console.error("Error accessing media devices:", err);
+        setError("Failed to access webcam or microphone. Please check permissions.");
+      });
   };
 
   const fetchQuestion = async () => {
@@ -90,7 +86,9 @@ const StartInterview = () => {
               className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
             >
               <div className="bg-white dark:bg-gray-700 rounded-lg shadow-sm p-4 mb-4">
-                <h2 className="font-semibold mb-2 dark:text-white">Job Role/Position:</h2>
+                <h2 className="font-semibold mb-2 dark:text-white">
+                  Job Role/Position:
+                </h2>
                 <p className="dark:text-gray-300">Full Stack Developer</p>
 
                 <h2 className="font-semibold mt-4 mb-2 dark:text-white">
@@ -105,39 +103,39 @@ const StartInterview = () => {
               </div>
 
               <motion.div className="relative w-full max-w-md">
-  {/* Default state (visible when not hovered) */}
-  <motion.div
-    initial={{ opacity: 1, scale: 1 }}
-    whileHover={{ opacity: 0, scale: 0.9 }}
-    transition={{ duration: 0.3 }}
-    className="absolute inset-0 flex items-center justify-center bg-white rounded-lg p-4 shadow-lg cursor-pointer border border-gray-300"
-  >
-    <p className="text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-400 text-transparent bg-clip-text shadow-lg">
-      Click here for more information
-    </p>
-  </motion.div>
+                {/* Default state (visible when not hovered) */}
+                <motion.div
+                  initial={{ opacity: 1, scale: 1 }}
+                  whileHover={{ opacity: 0, scale: 0.9 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0 flex items-center justify-center bg-white rounded-lg p-4 shadow-lg cursor-pointer border border-gray-300"
+                >
+                  <p className="text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-400 text-transparent bg-clip-text shadow-lg">
+                    Click here for more information
+                  </p>
+                </motion.div>
 
-  {/* Actual Information Card (appears on hover) */}
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
-    whileHover={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.3 }}
-    className="bg-amber-100 dark:bg-amber-200 rounded-lg p-4 shadow-lg border border-gray-300"
-  >
-    <h3 className="font-semibold mb-2 dark:text-gray-800">Information</h3>
-    <p className="text-sm dark:text-gray-800">
-      Enable Video Web Cam and Microphone to Start your AI Generated Mock Interview. It
-      Has 5 questions, and at the end, you will get a report based on your answers.{" "}
-      <span className="font-bold">
-        NOTE: We never record your video. You can disable webcam access at any time.
-      </span>
-    </p>
-  </motion.div>
-</motion.div>
-
-
-
-
+                {/* Actual Information Card (appears on hover) */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileHover={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-amber-100 dark:bg-amber-200 rounded-lg p-4 shadow-lg border border-gray-300"
+                >
+                  <h3 className="font-semibold mb-2 dark:text-gray-800">
+                    Information
+                  </h3>
+                  <p className="text-sm dark:text-gray-800">
+                    Enable Video Web Cam and Microphone to Start your AI
+                    Generated Mock Interview. It Has 5 questions, and at the
+                    end, you will get a report based on your answers.{" "}
+                    <span className="font-bold">
+                      NOTE: We never record your video. You can disable webcam
+                      access at any time.
+                    </span>
+                  </p>
+                </motion.div>
+              </motion.div>
             </motion.div>
 
             <motion.div
@@ -154,17 +152,19 @@ const StartInterview = () => {
             </motion.div>
           </div>
         ) : (
-          <motion.div
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md text-center mx-auto"
-          >
+          <motion.div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-md text-center mx-auto">
             <div className="space-y-4 mb-6">
               <div className="flex items-center justify-center space-x-2">
                 <Camera className="text-green-500" size={24} />
-                <span className="text-gray-700 dark:text-gray-300">Camera Ready</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  Camera Ready
+                </span>
               </div>
               <div className="flex items-center justify-center space-x-2">
                 <Mic className="text-green-500" size={24} />
-                <span className="text-gray-700 dark:text-gray-300">Microphone Ready</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  Microphone Ready
+                </span>
               </div>
             </div>
             <div className="text-4xl font-bold text-purple-600 mb-6">
@@ -172,12 +172,11 @@ const StartInterview = () => {
             </div>
             <div className="flex justify-between">
               <button
-              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-              onClick={() => setIsWebcamEnabled(false)}
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                onClick={() => setIsWebcamEnabled(false)}
               >
                 Back
               </button>
-              {/* <video ref={videoRef} autoPlay playsInline className="w-full rounded-lg shadow-lg" /> */}
             <button
               className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
               onClick={fetchQuestion}
@@ -214,11 +213,7 @@ const StartInterview = () => {
           </motion.div>
         )}
 
-        {error && (
-          <div className="text-red-500 mt-4 text-center">
-            {error}
-          </div>
-        )}
+        {error && <div className="text-red-500 mt-4 text-center">{error}</div>}
       </div>
     </div>
   );
