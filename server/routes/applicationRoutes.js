@@ -9,6 +9,6 @@ router.get('/job/:jobId', protectRoute, getApplicationsByJob);
 router.get('/applicant', protectRoute, getApplicationsByApplicant);
 router.get('/allapplicant', protectRoute, getAllApplicants);
 router.get('/applicant/:userId', protectRoute, getApplicationsByUserid);
-router.patch('/:applicationId/status', protectRoute, updateApplicationStatus);
+router.put('/:applicationId/status', protectRoute, updateApplicationStatus);
 
 export default router;
