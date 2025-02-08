@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Camera, Mic, AlertCircle, Laptop } from "lucide-react";
 
@@ -9,8 +9,8 @@ const StartInterview = () => {
   const [questions, setQuestions] = useState("");
   const [response, setResponse] = useState("");
   const [feedback, setFeedback] = useState("");
-  const [isHovered, setIsHovered] = useState(false);
   const [loading, setLoading] = useState(false);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     if (isWebcamEnabled && countdown > 0) {
@@ -21,16 +21,20 @@ const StartInterview = () => {
     }
   }, [isWebcamEnabled, countdown]);
 
-  const handleEnableWebcam = () => {
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then(() => {
-        setIsWebcamEnabled(true);
-      })
-      .catch((err) => {
-        console.error("Error accessing media devices:", err);
-        setError("Failed to access webcam or microphone. Please check permissions.");
-      });
+  const handleEnableWebcam = async() => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({video: true, audio:{ echoCancellation: true, noiseSuppression: true }});
+       stream.getAudioTracks().forEach(track => {
+        track.enabled = true;
+       })
+      if(videoRef.current){
+        videoRef.current.srcObject = stream;
+      }
+      setIsWebcamEnabled(true);
+    } catch (error) {
+      console.log("Error accessing media devices:", error);
+      setError("Failed to acess webcam or microphone.Please check permissions");
+    } 
   };
 
   const fetchQuestion = async () => {
@@ -173,6 +177,7 @@ const StartInterview = () => {
               >
                 Back
               </button>
+              {/* <video ref={videoRef} autoPlay playsInline className="w-full rounded-lg shadow-lg" /> */}
             <button
               className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
               onClick={fetchQuestion}
