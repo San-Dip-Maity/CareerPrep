@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { Camera, Mic, AlertCircle, Laptop } from "lucide-react";
 
@@ -9,8 +9,8 @@ const StartInterview = () => {
   const [questions, setQuestions] = useState("");
   const [response, setResponse] = useState("");
   const [feedback, setFeedback] = useState("");
-  const [isHovered, setIsHovered] = useState(false);
   const [loading, setLoading] = useState(false);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     if (isWebcamEnabled && countdown > 0) {
@@ -29,9 +29,7 @@ const StartInterview = () => {
       })
       .catch((err) => {
         console.error("Error accessing media devices:", err);
-        setError(
-          "Failed to access webcam or microphone. Please check permissions."
-        );
+        setError("Failed to access webcam or microphone. Please check permissions.");
       });
   };
 
@@ -179,13 +177,13 @@ const StartInterview = () => {
               >
                 Back
               </button>
-              <button
-                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-                onClick={fetchQuestion}
-              >
-                I'm Ready
-              </button>
-            </div>
+            <button
+              className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+              onClick={fetchQuestion}
+            >
+              I'm Ready
+            </button>
+          </div>
 
             {questions && (
               <div className="mt-4 p-4 bg-gray-200 dark:bg-gray-700 rounded-lg">
