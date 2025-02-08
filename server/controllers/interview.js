@@ -1,14 +1,14 @@
-import { getMockInterviewFeedback } from "../service/aiService.js";
+import { getAIInterviewQuestion } from "../service/aiService.js";
 
-export const interview = async (req,res) =>{
+export const generateQuestion = async (req,res) =>{
 
     try {
-        const {question, userResponse} = req.body;
-        if(!question || !userResponse){
-            return res.status(400).json({error: "Question and response are required."})
+        const {role} = req.body;
+        if (!role) {
+            return res.status(400).json({ error: "Role is required." });
         }
-        const feedback = await getMockInterviewFeedback(question,userResponse);
-        res.json({feedback})
+        const question = await getAIInterviewQuestion(role);
+        res.json({question})
     } catch (error) {
        res.status(500).json({error: "Internal Server Error"});
     }
