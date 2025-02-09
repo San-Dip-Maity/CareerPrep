@@ -8,8 +8,8 @@ import { motion } from "framer-motion";
 
 const StartInterview = () => {
   const [webcamEnabled, setWebcamEnabled] = useState(false);
-  const [questions, setQuestions] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [questions, setQuestions] = useState(null); 
+  const [loading, setLoading] = useState(true); 
 
   const { mockId } = useParams();
 
