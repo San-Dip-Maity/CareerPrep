@@ -1,8 +1,9 @@
 import express from "express";
-import { getAIInterviewQuestions } from "../controllers/interview.js";
+import { getAIInterviewQuestions, getMockInterviews } from "../controllers/interview.js";
 
 const router = express.Router();
 
 router.post("/generate-question", getAIInterviewQuestions);
+router.get("/get-questions/:mockId", getMockInterviews);
 
 export default router;
