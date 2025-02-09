@@ -169,7 +169,7 @@ const App = () => {
           ),
         },
         {
-          path: "/mockInterview/startInterview",
+          path: "/mockInterview/startInterview/:mockId",
           element: (
             <ProtectedRoute allowedRoles={['student']}>
               <StartInterview />

@@ -4,6 +4,8 @@ import { X } from "lucide-react";
 import axios from "axios";
 import { proxy } from "../../utils/constUtils";
 import { Loader2 } from "lucide-react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 
 const InterviewFormPopup = ({ isOpen, onClose }) => {
@@ -16,6 +18,9 @@ const InterviewFormPopup = ({ isOpen, onClose }) => {
   const [interviewQuestion, setInterviewQuestion] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { user } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  
 
   if (!isOpen) return null;
 
@@ -31,12 +36,14 @@ const InterviewFormPopup = ({ isOpen, onClose }) => {
     setLoading(true);
 
     try {
+      console.log("User:", user.email);
       const response = await axios.post(
         `${proxy}interview/generate-question`,
         {
           jobRole: formData.jobRole,
           jobDescription: formData.jobDescription,
           experience: formData.experience,
+          userEmail: user.email,
         },
         {
           headers: {
@@ -45,9 +52,9 @@ const InterviewFormPopup = ({ isOpen, onClose }) => {
           withCredentials: true,
         }
       );
-      console.log(response.data.questions);
-      
+      console.log("Response:", response.data);      
       setInterviewQuestion(response.data.questions);
+      navigate(`/mockInterview/startInterview/${response.data.mockInterview.mockId}`);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to generate interview question. Please try again.");
       console.error("Error:", err);
@@ -55,6 +62,8 @@ const InterviewFormPopup = ({ isOpen, onClose }) => {
       setLoading(false);
     }
   };
+
+
 
   return (
     <motion.div
@@ -116,13 +125,6 @@ const InterviewFormPopup = ({ isOpen, onClose }) => {
         </form>
 
         {error && <p className="mt-4 text-red-500">{error}</p>}
-
-        {interviewQuestion && (
-          <div className="mt-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-md">
-            <h3 className="text-md font-semibold">Generated Question:</h3>
-            <p className="text-gray-800 dark:text-gray-200 mt-2">{interviewQuestion}</p>
-          </div>
-        )}
       </motion.div>
     </motion.div>
   );
