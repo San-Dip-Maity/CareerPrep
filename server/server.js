@@ -31,7 +31,7 @@ app.use("/api/job", jobRoutes);
 app.use("/api/company", companyRoutes); 
 app.use("/api/saved-jobs", savevedJobsRoutes);
 app.use("/api/applications", applicationRoutes);
-app.use("/api",mockInterviewRoute)
+app.use("/api/interview",mockInterviewRoute)
 
 app.get("/", (req,res)=>{
   return res.json({appName: "CareerPrep"})
