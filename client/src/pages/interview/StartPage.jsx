@@ -42,7 +42,10 @@ const StartPage = () => {
          setActiveQuestionIndex={setActiveQuestionIndex}
           />
 
-        <RecordAnswerQuestion />
+        <RecordAnswerQuestion
+         questions={questions}
+         activeQuestionIndex={activeQuestionIndex}
+         />
     </div>
     </div>
   )
