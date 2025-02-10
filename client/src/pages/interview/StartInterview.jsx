@@ -3,13 +3,14 @@ import { Lightbulb, WebcamIcon } from "lucide-react";
 import Webcam from "react-webcam";
 import { proxy } from "../../utils/constUtils";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const StartInterview = () => {
   const [webcamEnabled, setWebcamEnabled] = useState(false);
   const [questions, setQuestions] = useState(null); 
   const [loading, setLoading] = useState(true); 
+  const navigate = useNavigate();
 
   const { mockId } = useParams();
 
@@ -106,7 +107,9 @@ const StartInterview = () => {
       )}
 
       <div>
-        <button  className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-300">Start Interview</button>
+        <button
+        onClick={() => navigate(`/mockInterview/startPage/${mockId}`)} 
+          className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-300">Start Interview</button>
       </div>
     </div>
   );
