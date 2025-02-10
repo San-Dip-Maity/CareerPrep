@@ -91,3 +91,54 @@ export const getMockInterviews = async (req, res) => {
         res.status(500).json({ error: "Failed to fetch mock interviews" });
     }
 }
+
+export const getAIInterviewFeedback = async (req, res) => {
+    try {  
+        const { question, userAnswer } = req.body;
+        
+        if (!question || !userAnswer) {
+            console.error("Missing required fields: ", { question, userAnswer });
+            return res.status(400).json({ error: "Both 'question' and 'userAnswer' are required." });
+        }
+
+        const feedbackPrompt = "Question:" + question +
+            ", User Answer:" + userAnswer + " Depends on question and user answer for given interview question" +
+            " please give use rating for answer and feedback as area of improvement if any " +
+            " in just 3 to 5 lines to improve it in JSON format with rating field and feedback field";
+
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
+        const generationConfig = {
+            temperature: 1,
+            topP: 0.95,
+            topK: 40,
+            maxOutputTokens: 8192,
+            responseMimeType: "text/plain",
+        };
+
+        const chatSession = model.startChat({ generationConfig });
+        const result = await chatSession.sendMessage(feedbackPrompt);
+        let responseText = result.response.text();
+
+        const jsonMatch = responseText.match(/\{.*\}/s);
+        if (!jsonMatch) {
+            console.error("Invalid JSON structure from AI:", responseText);
+            return res.status(500).json({ error: "AI response does not contain a valid JSON object." });
+        }
+
+        let parsedResponse;
+        try {
+            parsedResponse = JSON.parse(jsonMatch[0]);
+        } catch (jsonError) {
+            console.error("JSON Parsing Error:", jsonError);
+            return res.status(500).json({ error: "Invalid JSON response from AI" });
+        }
+
+        res.json({ feedback: parsedResponse });
+
+    } catch (error) {
+        console.error("Error fetching AI feedback:", error);
+        res.status(500).json({ error: "Failed to generate AI feedback." });
+    }
+};
+
