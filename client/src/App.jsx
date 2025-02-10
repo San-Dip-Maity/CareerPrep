@@ -31,6 +31,7 @@ import CompanyEdit from "./components/Admin/CompanyEdit";
 import JobDetails from "./components/JobDetails";
 import SavedJobs from "./pages/SavedJobs";
 import Applications from "./components/Admin/Applications";
+import StartPage from "./pages/interview/StartPage";
 
 const Layout = () => {
   return (
@@ -174,6 +175,14 @@ const App = () => {
             <ProtectedRoute allowedRoles={['student']}>
               <StartInterview />
             </ProtectedRoute>
+          ),
+        },
+        {
+          path: "/mockInterview/startPage/:mockId",
+          element: (
+            <ProtectedRoute allowedRoles={['student']}>
+              <StartPage />
+            </ProtectedRoute> 
           ),
         },
         {
