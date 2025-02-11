@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import QuestionSection from '../../components/QuestionSection';
 import axios from 'axios';
 import { proxy } from '../../utils/constUtils';
@@ -10,6 +10,8 @@ const StartPage = () => {
      const [questions, setQuestions] = useState([]);
      const [loading, setLoading] = useState(true);
      const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
+
+     const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -46,6 +48,14 @@ const StartPage = () => {
          questions={questions}
          activeQuestionIndex={activeQuestionIndex}
          />
+    </div>
+    <div className='flex justify-end mr-5 gap-6'>
+      {activeQuestionIndex > 0 && 
+      <button onClick={() => setActiveQuestionIndex(activeQuestionIndex-1)} className=' my-10 bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-30'>Previous Question</button>}
+      {activeQuestionIndex != questions?.length-1 && 
+      <button onClick={() => setActiveQuestionIndex(activeQuestionIndex+1)} className=' my-10 bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-30'>Next Question</button>}
+      {activeQuestionIndex == questions?.length-1 && 
+      <button onClick={() => navigate(`/mockInterview/${mockId}/feedback`)} className=' my-10 bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-30'>End Interview</button>}
     </div>
     </div>
   )

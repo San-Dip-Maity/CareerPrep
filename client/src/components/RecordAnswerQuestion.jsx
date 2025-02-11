@@ -95,13 +95,6 @@ const RecordAnswerQuestion = ({questions,activeQuestionIndex}) => {
         <h2 className='text-white-600 flex gap-2 items-center'>
             <Mic />Start Recording
             </h2>}</button>
-        <button
-                    className='px-6 py-3 mb-5 rounded-lg font-semibold text-white transition-all duration-300
-                    bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500'
-                    onClick={() => console.log(userAnswer)}
-                >
-                    Show User Answer
-                </button>
     </div>
   )
 }
