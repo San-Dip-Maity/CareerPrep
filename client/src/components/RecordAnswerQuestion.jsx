@@ -51,7 +51,7 @@ const RecordAnswerQuestion = ({questions,activeQuestionIndex}) => {
             },
             { withCredentials: true }
             );
-            console.log("Feedback:", response.data.feedback);
+            console.log("Feedback:", response.data);
             setFeedback(response.data.feedback);
             toast.success("Answer Saved Successfully");
           }
