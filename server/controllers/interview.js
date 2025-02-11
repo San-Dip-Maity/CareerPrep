@@ -127,8 +127,8 @@ export const getAIInterviewFeedback = async (req, res) => {
           "rating": 7,
           "feedback": "Your answer is good, but you can improve by adding examples."
         }`;
-        
 
+        
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
         const generationConfig = {
