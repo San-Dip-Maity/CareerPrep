@@ -30,8 +30,11 @@ const RecordAnswerQuestion = ({questions,activeQuestionIndex}) => {
 
       const SaveUserAnswers= async () => {
         if(isRecording){
+          setLoadingFeedback(true);
           stopSpeechToText()
-          if(userAnswer?.length<10){
+          if(userAnswer?.length<10)
+            {
+              setLoadingFeedback(false);
             toast.error("Eror while saving your answer,Please record again");
             return ;
           }
@@ -51,10 +54,14 @@ const RecordAnswerQuestion = ({questions,activeQuestionIndex}) => {
             console.log("Feedback:", response.data.feedback);
             setFeedback(response.data.feedback);
             toast.success("Answer Saved Successfully");
-          } catch (error) {
+          }
+           catch (error)
+           {
             console.error("Error fetching AI feedback:", error.message);
             toast.error("Failed to get feedback. Try again.");
-          } finally{
+          } 
+          finally
+          {
             setLoadingFeedback(false);
           }
         }else{
@@ -77,7 +84,7 @@ const RecordAnswerQuestion = ({questions,activeQuestionIndex}) => {
          />
     </div>
     
-    <button className=' my-10 bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-30'
+    <button disabled={loadingFeedback} className=' my-10 bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-30'
     onClick={SaveUserAnswers}
     >
         {isRecording?
