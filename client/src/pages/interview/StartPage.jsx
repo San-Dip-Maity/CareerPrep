@@ -22,8 +22,8 @@ const StartPage = () => {
               `${proxy}interview/get-questions/${mockId}`,
               { withCredentials: true }
             );
-            console.log("Received Questions:", response.data.questions);
-            setQuestions(response.data.questions);
+            console.log("Received Questions:", response.data.jsonMockResp);
+            setQuestions(response.data.jsonMockResp);
           } catch (error) {
             console.error("Error fetching questions:", error);
           } finally {

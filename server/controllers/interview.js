@@ -74,19 +74,14 @@ export const getAIInterviewQuestions = async (req, res) => {
 export const getMockInterviews = async (req, res) => {
     try {
         const mockId = req.params.mockId;
-        const mockInterviews = await MockInterview.findOne({ mockId });
+        const mockInterviews = await MockInterview.find({ mockId });
 
         if (!mockInterviews) {
             return res.status(404).json({ error: "No mock interviews found" });
         }
 
-        const questions = mockInterviews.jsonMockResp;
-
-        console.log("Mock Interview Questions:", questions);
-        res.json({ questions });
-
-        // console.log("Mock Interviews:", mockInterviews);
-        // res.json(mockInterviews[0]);
+        console.log("Mock Interviews:", mockInterviews);
+        res.json(mockInterviews[0]);
     } catch (error) {
         console.error("Error fetching mock interviews:", error);
         res.status(500).json({ error: "Failed to fetch mock interviews" });

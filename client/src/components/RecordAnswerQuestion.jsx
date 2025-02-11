@@ -79,7 +79,7 @@ const RecordAnswerQuestion = ({questions,activeQuestionIndex}) => {
         style={{
             height:300,
             width:"100%",
-            zIndex:10,
+            zIndex:0,
         }}
          />
     </div>
