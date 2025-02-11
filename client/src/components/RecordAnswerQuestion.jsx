@@ -42,7 +42,9 @@ const RecordAnswerQuestion = ({questions,activeQuestionIndex}) => {
               `${proxy}interview/generate-feedback`,
               {
                 question: questions[activeQuestionIndex]?.question,
-                userAnswer: userAnswer
+                userAnswer: userAnswer,
+                correctAns: questions[activeQuestionIndex]?.answer,
+                mockIdRef: questions[activeQuestionIndex]?.mockId,
             },
             { withCredentials: true }
             );
@@ -50,7 +52,7 @@ const RecordAnswerQuestion = ({questions,activeQuestionIndex}) => {
             setFeedback(response.data.feedback);
             toast.success("Answer Saved Successfully");
           } catch (error) {
-            console.error("Error fetching AI feedback:", error);
+            console.error("Error fetching AI feedback:", error.message);
             toast.error("Failed to get feedback. Try again.");
           } finally{
             setLoadingFeedback(false);

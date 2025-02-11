@@ -2,6 +2,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 import { MockInterview } from "../models/MockInterviewSchema.js";
 import { v4 as uuidv4 } from "uuid";
+import UserAnswer from "../models/UserAnswer.js";
 
 dotenv.config();
 
@@ -94,17 +95,39 @@ export const getMockInterviews = async (req, res) => {
 
 export const getAIInterviewFeedback = async (req, res) => {
     try {  
-        const { question, userAnswer } = req.body;
+        let { question, userAnswer ,mockIdRef } = req.body;
         
         if (!question || !userAnswer) {
-            console.error("Missing required fields: ", { question, userAnswer });
-            return res.status(400).json({ error: "Both 'question' and 'userAnswer' are required." });
+            console.error("Missing required fields: ", { question,userAnswer});
+            return res.status(400).json({ error: "All fields are required." });
         }
 
-        const feedbackPrompt = "Question:" + question +
-            ", User Answer:" + userAnswer + " Depends on question and user answer for given interview question" +
-            " please give use rating for answer and feedback as area of improvement if any " +
-            " in just 3 to 5 lines to improve it in JSON format with rating field and feedback field";
+        if (!mockIdRef) {
+            // Try fetching the `mockIdRef` from the MockInterview collection
+            const mockInterview = await MockInterview.findOne({ "jsonMockResp.question": question });
+            if (mockInterview) {
+                mockIdRef = mockInterview.mockId;
+            } else {
+                console.error("mockIdRef missing and could not be retrieved.");
+                return res.status(400).json({ error: "mockIdRef is required." });
+            }
+        }
+        
+
+        const feedbackPrompt = `Question: ${question}, 
+        User Answer: ${userAnswer}. 
+        Based on this question, provide:
+        1. The correct answer in the "correctAns" field.
+        2. A rating for the user's answer (1-10) in the "rating" field.
+        3. Feedback for improvement in the "feedback" field. 
+        
+        Respond in JSON format ONLY, like this:
+        {
+          "correctAns": "The correct answer to the given question.",
+          "rating": 7,
+          "feedback": "Your answer is good, but you can improve by adding examples."
+        }`;
+        
 
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
@@ -118,7 +141,7 @@ export const getAIInterviewFeedback = async (req, res) => {
 
         const chatSession = model.startChat({ generationConfig });
         const result = await chatSession.sendMessage(feedbackPrompt);
-        let responseText = result.response.text();
+        let responseText =  result.response.text();
 
         const jsonMatch = responseText.match(/\{.*\}/s);
         if (!jsonMatch) {
@@ -134,7 +157,20 @@ export const getAIInterviewFeedback = async (req, res) => {
             return res.status(500).json({ error: "Invalid JSON response from AI" });
         }
 
-        res.json({ feedback: parsedResponse });
+        const {correctAns, feedback, rating} = parsedResponse;
+
+        const newUserAnswer = new UserAnswer({
+            mockIdRef,
+            question,
+            correctAns,
+            userAnswer,
+            feedback,
+            rating,
+        });
+
+        await newUserAnswer.save();
+
+        res.json({ feedback: parsedResponse, rating, correctAns });
 
     } catch (error) {
         console.error("Error fetching AI feedback:", error);

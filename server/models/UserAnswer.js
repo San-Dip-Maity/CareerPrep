@@ -22,10 +22,6 @@ const userAnswerSchema = new mongoose.Schema({
     rating: {
         type: String
     },
-    userEmail: {
-        type: String,
-        required: true
-    },
     createdAt: {
         type: Date,
         default: Date.now
