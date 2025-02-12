@@ -174,3 +174,23 @@ export const getAIInterviewFeedback = async (req, res) => {
 };
 
 
+export const getAllAIInterviewFeedback = async (req, res) => {
+    try {
+        const { mockId } = req.params;
+
+        if (!mockId) {
+            return res.status(400).json({ error: "mockId is required." });
+        }
+
+        const feedbacks = await UserAnswer.find({ mockIdRef: mockId });
+
+        if (!feedbacks.length) {
+            return res.status(404).json({ error: "No feedback found for this mock interview." });
+        }
+
+        res.json(feedbacks);
+    } catch (error) {
+        console.error("Error fetching AI feedback:", error);
+        res.status(500).json({ error: "Failed to fetch AI feedback." });
+    }
+};

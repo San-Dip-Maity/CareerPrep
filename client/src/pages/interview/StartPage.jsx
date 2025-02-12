@@ -55,7 +55,7 @@ const StartPage = () => {
       {activeQuestionIndex != questions?.length-1 && 
       <button onClick={() => setActiveQuestionIndex(activeQuestionIndex+1)} className=' my-10 bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-30'>Next Question</button>}
       {activeQuestionIndex == questions?.length-1 && 
-      <button onClick={() => navigate(`/mockInterview/${mockId}/feedback`)} className=' my-10 bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-30'>End Interview</button>}
+      <button onClick={() => navigate(`/mockInterview/${mockId}/feedback`, { replace: true })} className=' my-10 bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-30'>End Interview</button>}
     </div>
     </div>
   )
