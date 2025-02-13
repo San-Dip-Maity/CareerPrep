@@ -15,6 +15,7 @@
     "@tensorflow/tfjs": "^4.22.0",
     "@tensorflow/tfjs-backend-webgl": "^4.22.0",
     "axios": "^1.7.9",
+    "face-api.js": "^0.22.2",
     "framer-motion": "^11.8.0",
     "lucide-react": "^0.446.0",
     "react": "^18.3.1",
