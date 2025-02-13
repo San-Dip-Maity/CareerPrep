@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Lightbulb, WebcamIcon } from "lucide-react";
 import Webcam from "react-webcam";
-import { proxy } from "../../utils/constUtils";
 import axios from "axios";
 import { useParams,useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { AUTH_API_END_POINT, proxy } from "../../utils/constUtils";
+import FaceRecognition from "../../components/Face/FaceDetector";
 
 const StartInterview = () => {
   const [webcamEnabled, setWebcamEnabled] = useState(false);
@@ -13,6 +14,28 @@ const StartInterview = () => {
   const navigate = useNavigate();
 
   const { mockId } = useParams();
+  const userId = localStorage.getItem("userId");
+
+  useEffect(() => {
+        if(!userId){
+          axios.get(`${AUTH_API_END_POINT}getuser`, { withCredentials: true })
+          .then((res) => {
+            localStorage.setItem("userId", res.data.id);
+          })
+          .catch((err) => console.error("Error fetching user:", err));
+        }
+  }
+  ,[userId]);
+
+  const handleFaceMismatch = () => {
+    alert("Face does not match! The interview is canceled.");
+    navigate("/");
+  };
+
+  const handleNoFaceDetected = () => {
+    alert("No face detected! The interview is canceled.");
+    navigate("/");
+  };
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -46,6 +69,15 @@ const StartInterview = () => {
       >
         Let's Get Started
       </motion.h1>
+
+       {userId && (
+        <FaceRecognition
+          userId={userId}
+          mockId={mockId}
+          onFaceMismatch={handleFaceMismatch}
+          onNoFace={handleNoFaceDetected}
+        />
+      )}
       
       {loading ? (
         <motion.p 
