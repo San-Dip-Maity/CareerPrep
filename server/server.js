@@ -8,6 +8,7 @@ import jobRoutes from "./routes/jobRoutes.js";
 import companyRoutes from "./routes/companyRoute.js";
 import savevedJobsRoutes from "./routes/savedJobsRoutes.js";
 import applicationRoutes from "./routes/applicationRoutes.js";
+import faceRoutes from "./routes/faceRoutes.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -31,7 +32,8 @@ app.use("/api/job", jobRoutes);
 app.use("/api/company", companyRoutes); 
 app.use("/api/saved-jobs", savevedJobsRoutes);
 app.use("/api/applications", applicationRoutes);
-app.use("/api/interview",mockInterviewRoute)
+app.use("/api/interview",mockInterviewRoute);
+app.use("/api/face",faceRoutes);
 
 app.get("/", (req,res)=>{
   return res.json({appName: "CareerPrep"})

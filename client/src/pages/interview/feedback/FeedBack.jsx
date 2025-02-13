@@ -138,13 +138,13 @@ useEffect(() => {
                     )}
 
                     {/* Correct Answer */}
-                    {q.correctAnswer && (
+                    {q.correctAns && (
                       <div className="mb-4 bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
                         <p className="font-medium text-green-600 dark:text-green-400 mb-2">
                           Correct Answer:
                         </p>
                         <p className="text-gray-700 dark:text-gray-300">
-                          {q.correctAnswer}
+                          {q.correctAns}
                         </p>
                       </div>
                     )}
