@@ -2,30 +2,30 @@ import React, { useEffect, useState } from "react";
 import { Lightbulb, WebcamIcon } from "lucide-react";
 import Webcam from "react-webcam";
 import axios from "axios";
-import { useParams,useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { AUTH_API_END_POINT, proxy } from "../../utils/constUtils";
 import FaceRecognition from "../../components/Face/FaceDetector";
 
 const StartInterview = () => {
   const [webcamEnabled, setWebcamEnabled] = useState(false);
-  const [questions, setQuestions] = useState(null); 
-  const [loading, setLoading] = useState(true); 
+  const [questions, setQuestions] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const { mockId } = useParams();
   const userId = localStorage.getItem("userId");
 
   useEffect(() => {
-        if(!userId){
-          axios.get(`${AUTH_API_END_POINT}getuser`, { withCredentials: true })
-          .then((res) => {
-            localStorage.setItem("userId", res.data.id);
-          })
-          .catch((err) => console.error("Error fetching user:", err));
-        }
-  }
-  ,[userId]);
+    if (!userId) {
+      axios
+        .get(`${AUTH_API_END_POINT}getuser`, { withCredentials: true })
+        .then((res) => {
+          localStorage.setItem("userId", res.data.id);
+        })
+        .catch((err) => console.error("Error fetching user:", err));
+    }
+  }, [userId]);
 
   const handleFaceMismatch = () => {
     alert("Face does not match! The interview is canceled.");
@@ -70,7 +70,7 @@ const StartInterview = () => {
         Let's Get Started
       </motion.h1>
 
-       {userId && (
+      {userId && (
         <FaceRecognition
           userId={userId}
           mockId={mockId}
@@ -78,9 +78,9 @@ const StartInterview = () => {
           onNoFace={handleNoFaceDetected}
         />
       )}
-      
+
       {loading ? (
-        <motion.p 
+        <motion.p
           className="text-xl text-gray-600 dark:text-gray-300"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -95,11 +95,29 @@ const StartInterview = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h2 className="text-2xl font-semibold dark:text-white">Interview Details</h2>
+            <h2 className="text-2xl font-semibold dark:text-white">
+              Interview Details
+            </h2>
             <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg">
-              <p><strong>Job Role:</strong> {questions?.jobPosition || "N/A"}</p>
-              <p><strong>Tech Stack:</strong> {questions?.jobDesc || "N/A"}</p>
-              <p><strong>Experience:</strong> {questions?.jobExperience || "N/A"}</p>
+              <p>
+                <strong>Job Role:</strong>{" "}
+                {questions?.jobPosition
+                  .toLowerCase()
+                  .split(" ")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ") || "N/A"}
+              </p>
+              <p>
+                <strong>Tech Stack:</strong>{" "}
+                {questions?.jobDesc
+                  .toLowerCase()
+                  .split(" ")
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(" ") || "N/A"}
+              </p>
+              <p>
+                <strong>Experience:</strong> {questions?.jobExperience || "N/A"}
+              </p>
             </div>
 
             <div className="p-4 bg-yellow-200 dark:bg-yellow-500 rounded-lg">
@@ -107,8 +125,10 @@ const StartInterview = () => {
                 <Lightbulb /> <strong>Instructions</strong>
               </h2>
               <p className="text-gray-600 dark:text-gray-100">
-                Enable your Webcam and Microphone to start the interview. You will get 5 questions, and at the end, you'll receive feedback.
-                <br /><strong>Note:</strong> We do not store any video or audio data.
+                Enable your Webcam and Microphone to start the interview. You
+                will get 5 questions, and at the end, you'll receive feedback.
+                <br />
+                <strong>Note:</strong> We do not store any video or audio data.
               </p>
             </div>
           </motion.div>
@@ -120,7 +140,10 @@ const StartInterview = () => {
             transition={{ delay: 0.2, duration: 0.5 }}
           >
             {webcamEnabled ? (
-              <Webcam mirrored className="w-[450px] mt-2 rounded-lg border shadow-lg" />
+              <Webcam
+                mirrored
+                className="w-[450px] mt-2 rounded-lg border shadow-lg"
+              />
             ) : (
               <>
                 <WebcamIcon className="h-72 w-full my-5 bg-gray-300 dark:bg-gray-700 p-10 rounded-lg border" />
@@ -140,8 +163,11 @@ const StartInterview = () => {
 
       <div>
         <button
-        onClick={() => navigate(`/mockInterview/startPage/${mockId}`)} 
-          className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-300">Start Interview</button>
+          onClick={() => navigate(`/mockInterview/startPage/${mockId}`)}
+          className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors duration-300"
+        >
+          Start Interview
+        </button>
       </div>
     </div>
   );

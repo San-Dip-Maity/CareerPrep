@@ -159,7 +159,7 @@ useEffect(() => {
         className="mt-8 px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium flex items-center gap-2 hover:bg-indigo-700 transition-colors"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        onClick={() => navigate("/mockInterview")}
+        onClick={() => navigate("/mockInterview/dashboard")}
       >
         <Home className="w-5 h-5" />
         Go Home

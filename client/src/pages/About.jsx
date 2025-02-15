@@ -3,26 +3,26 @@ import { motion } from "framer-motion";
 
 const TeamMember = ({ name, role, image }) => (
   <div className="relative group w-64 mx-auto">
-  {/* Image Card */}
-  <motion.div
-    className="h-72 w-64 bg-cover bg-center rounded-xl shadow-lg overflow-hidden"
-    style={{ backgroundImage: `url(${image})` }}
-    whileHover={{ scale: 1.05 }}
-    transition={{ duration: 0.3 }}
-  ></motion.div>
+    {/* Image Card */}
+    <motion.div
+      className="h-72 w-64 bg-cover bg-center rounded-xl shadow-lg overflow-hidden"
+      style={{ backgroundImage: `url(${image})` }}
+      whileHover={{ scale: 1.05 }}
+      transition={{ duration: 0.3 }}
+    ></motion.div>
 
-  {/* Name and Role Card */}
-  <motion.div
-    className="absolute top-0 h-72 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-    whileHover={{ scale: 1 }}
-    transition={{ duration: 0.3 }}
-  >
-    <h3 className="text-xl font-semibold dark:text-white text-center">
-      {name}
-    </h3>
-    <p className="text-gray-600 dark:text-gray-300 text-center">{role}</p>
-  </motion.div>
-</div>
+    {/* Name and Role Card */}
+    <motion.div
+      className="absolute top-0 h-72 w-64 bg-white/30 dark:bg-gray-800/30 backdrop-blur-md rounded-xl shadow-lg flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 border border-white/20 dark:border-gray-700"
+      whileHover={{ scale: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      <h3 className="text-xl font-semibold dark:text-white text-center">
+        {name}
+      </h3>
+      <p className="text-gray-600 dark:text-gray-300 text-center">{role}</p>
+    </motion.div>
+  </div>
 );
 
 export default function About() {
@@ -88,11 +88,7 @@ export default function About() {
               role="CEO & Founder"
               image="team-member.png"
             />
-            <TeamMember
-              name="Joy Mahata" 
-              role="CTO" 
-              image="team-member2.png" 
-            />
+            <TeamMember name="Joy Mahata" role="CTO" image="team-member2.png" />
             <TeamMember
               name="Zaheed Hossain Molla"
               role="Head of HR"
