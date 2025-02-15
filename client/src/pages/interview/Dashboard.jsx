@@ -13,6 +13,8 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const {mockId} = useParams();
+
   const auth = useSelector((state) => state.user) || {}; 
   const user = auth.user || {}; 
   const userEmail = user.email || "";
@@ -24,7 +26,7 @@ const Dashboard = () => {
     const fetchMockInterviews = async () => {
       try {
         const response = await axios.get(
-          `${proxy}interview/user-mock-interviews?userEmail=${userEmail}`
+          `${proxy}interview/user-mock-interviews/${mockId}?userEmail=${userEmail}`
         );
         setMockInterviews(response.data);
       } catch (error) {
@@ -36,6 +38,7 @@ const Dashboard = () => {
 
     fetchMockInterviews();
   }, [userEmail]);
+
 
 
 
@@ -95,13 +98,13 @@ const Dashboard = () => {
                   <motion.button className="relative px-6 py-3 font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-lg hover:from-blue-700 hover:to-blue-900 transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-2xl focus:ring focus:ring-blue-400"
                    whileHover={{ scale: 1.1 }}
                    whileTap={{ scale: 0.95 }}
-                   onClick={() => console.log("Feedback button clicked")}
+                   onClick={() => navigate(`/mockInterview/${interview.mockId}/feedback`)}
                   >
                     Feedback
                     <span className="absolute inset-0 bg-white opacity-10 rounded-lg transition-opacity duration-300 hover:opacity-20"></span>
                   </motion.button>
                   <motion.button className="relative px-6 py-3 font-semibold text-white bg-gradient-to-r from-purple-600 to-purple-800 rounded-lg shadow-lg hover:from-purple-700 hover:to-purple-900 transition-all duration-300 ease-in-out transform hover:scale-105 focus:ring focus:ring-purple-400"
-                  onClick={() => navigate("/mockinterview/startInterview")}
+                  onClick={() => navigate(`/mockinterview/startInterview/${interview.mockId}`)}
                   >
                     Start
                     <span className="absolute top-0 right-0 w-3 h-3 bg-white rounded-full animate-ping"></span>

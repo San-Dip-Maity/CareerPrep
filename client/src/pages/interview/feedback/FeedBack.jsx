@@ -32,21 +32,7 @@ useEffect(() => {
     }
   };
   fetchAllfeedback();
-}, [mockId]);useEffect(() => {
-    const fetchAllfeedback = async () => {
-      try {
-        const response = await axios.get(
-          `${proxy}interview/generate-allfeedback/${mockId}`,
-          { withCredentials: true }
-        );
-        console.log("All Feedback:", response.data);
-        setFeedback(response.data);
-      } catch (error) {
-        console.error("Error fetching feedback:", error);
-      }
-    };
-    fetchAllfeedback();
-  }, [mockId]);
+}, [mockId]);
 
   return (
     <motion.div
