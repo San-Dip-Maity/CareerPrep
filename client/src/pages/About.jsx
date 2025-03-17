@@ -82,7 +82,7 @@ export default function About() {
           <h2 className="text-3xl font-semibold mb-6 text-center dark:text-white">
             Our Team
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 object-fill">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 object-fill cursor-pointer">
             <TeamMember
               name="Sandip Maity"
               role="CEO & Founder"
@@ -106,7 +106,7 @@ export default function About() {
           <h2 className="text-3xl font-semibold mb-8 text-center dark:text-white">
             Why Choose Our AI-Powered Mock Interview Platform
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 cursor-pointer">
             {[
               {
                 title: "Personalized Interview Questions",
