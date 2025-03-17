@@ -16,7 +16,7 @@ export const getAIInterviewQuestions = async (req, res) => {
             return res.status(400).json({ error: "All fields (jobRole, jobDescription, experience, userEmail) are required" });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
         const generationConfig = {
             temperature: 1,
