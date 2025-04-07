@@ -124,10 +124,10 @@ export const getAIInterviewFeedback = async (req, res) => {
         const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
         const generationConfig = {
-            temperature: 0.7,  // Lower temperature for more deterministic responses
+            temperature: 0.7, 
             topP: 0.9,
             topK: 40,
-            maxOutputTokens: 1024, // Reduce excessive token usage
+            maxOutputTokens: 1024,
             responseMimeType: "text/plain",
         };
 

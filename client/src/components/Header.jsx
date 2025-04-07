@@ -166,7 +166,7 @@ const Header = () => {
                         : "text-gray-800 dark:text-gray-200 hover:text-purple-600 dark:hover:text-purple-400"
                     }
                   >
-                    Employers
+                    Post Job
                   </NavLink>
                   <NavLink
                     to={`/company/${user.id}`}

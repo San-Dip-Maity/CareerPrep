@@ -42,7 +42,7 @@ const Footer = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/mockinterview" className="hover:underline">
+                  <Link to="/mockInterview" className="hover:underline">
                     Mock Interview
                   </Link>
                 </li>

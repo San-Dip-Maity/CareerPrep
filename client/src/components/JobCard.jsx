@@ -13,7 +13,6 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 
-
 const JobCard = ({
   title,
   company,
