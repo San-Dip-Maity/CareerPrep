@@ -1,10 +1,10 @@
 {
   "name": "careerprep",
   "version": "1.0.0",
-  "main": "server/server.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon server/server.js",
-    "start": "node --watch server/server.js"
+    "dev": "nodemon server.js",
+    "start": "node --watch server.js"
   },
   "keywords": [],
   "type": "module",
