@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node --watch server.js"
+    "start": "node server.js"
   },
   "keywords": [],
   "type": "module",
