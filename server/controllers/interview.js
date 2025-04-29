@@ -16,7 +16,7 @@ export const getAIInterviewQuestions = async (req, res) => {
             return res.status(400).json({ error: "All fields (jobRole, jobDescription, experience, userEmail) are required" });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const generationConfig = {
             temperature: 1,
@@ -29,6 +29,8 @@ export const getAIInterviewQuestions = async (req, res) => {
         const chatSession = model.startChat({ generationConfig });
 
         const prompt = `job role: ${jobRole}, job description: ${jobDescription}, and experience level: ${experience}. Please give me 5 interview questions with answers in JSON format. The response should be a valid JSON array with "question" and "answer" fields.`;
+
+        
 
         const result = await chatSession.sendMessage(prompt);
         let responseText = result.response.text();
